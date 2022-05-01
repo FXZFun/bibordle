@@ -1,0 +1,208 @@
+body {
+    background-color: #fafafa;
+    text-align: center;
+    margin: auto;
+    font-family: 'Maven Pro', 'Open Sans', sans-serif;
+}
+
+main {
+    overflow: auto;
+}
+
+table {
+    margin: auto;
+    border-spacing: 5px;
+}
+
+tr.notActive {
+    opacity: 0.7;
+}
+
+td {
+    border: none;
+    height: 2em;
+    width: 2em;
+    font-size: 2em;
+    text-align: center;
+    background-color: lightgray;
+    border-radius: 10px;
+}
+
+.keyboard {
+    margin-top: 20px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    margin: 5px;
+}
+
+.keyboard button {
+    background-color: #E0E0E0;
+    border: none;
+    border-radius: 10px;
+    padding: 1em;
+    margin: 1px;
+    font-family: 'Maven Pro', 'Open Sans', sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.keyboard button i {
+    font-size: 1em;
+}
+
+.overlay {
+    background-color: #808080a4;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+    overflow: auto;
+}
+
+.message {
+    background-color: white;
+    width: 70%;
+    overflow: auto;
+    border-radius: 12px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    max-height: 90vh;
+}
+
+#status.win::before {
+    content: "check_circle ";
+    font-family: 'Material Icons';
+    vertical-align: middle;
+    color: #2E7D32;
+}
+
+#status.win::after {
+    content: "You Won";
+}
+
+#status.lose::before {
+    content: "cancel ";
+    font-family: 'Material Icons';
+    vertical-align: middle;
+    color: #C62828;
+}
+
+#status.lose::after {
+    content: "You Lost";
+}
+
+.alert {
+    background-color: #212121;
+    color: #fafafa;
+    border-radius: 5px;
+    padding: 10px;
+    display: none;
+    position: fixed;
+    width: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#btnRow {
+    padding: 20px;
+}
+
+.switchMode {
+    border: none;
+    background-color: #81C784;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-family: 'Maven Pro', 'Open Sans', sans-serif;
+    text-decoration: none;
+    color: #212121;
+}
+
+.switchMode.active {
+    border: none;
+    background-color: #388e3c;
+    font-weight: bold;
+    color: #101010;
+}
+
+@media screen and (min-width: 500px) {
+    .keyboard button {
+        font-size: 1.1em;
+    }
+}
+
+button.bad,
+td.bad {
+    background-color: #9E9E9E;
+}
+
+button.inword,
+td.inword {
+    background-color: #FFD600;
+}
+
+button.good,
+td.good {
+    background-color: #4CAF50;
+}
+
+/* fonts */
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/res/fonts/MaterialIcons-Regular.ttf);
+    /* For IE6-8 */
+    src: local('Material Icons'),
+        local('MaterialIcons-Regular'),
+        url(/res/fonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
+@font-face {
+    font-family: 'Maven Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/res/fonts/MavenPro-VariableFont_wght.ttf);
+    /* For IE6-8 */
+    src: local('Maven Pro'),
+        url(/res/fonts/MavenPro-VariableFont_wght.ttf) format('truetype');
+}

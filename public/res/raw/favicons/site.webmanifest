@@ -1,0 +1,41 @@
+{
+    "id": "2F57D8C1-5E08-45AD-93CF-761FDDAD0B20",
+    "name": "Bibordle - The Bible Wordle",
+    "short_name": "Bibordle",
+    "icons": [
+        {
+            "src": "/res/raw/favicons/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/res/raw/favicons/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/res/raw/favicons/maskable_icon_x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/res/raw/favicons/maskable_icon_x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/res/raw/favicons/maskable_icon.png",
+            "sizes": "1024x1024",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "theme_color": "#fafafa",
+    "background_color": "#fafafa",
+    "display": "standalone",
+    "start_url": "/"
+}

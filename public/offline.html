@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibordle - The Bible Wordle</title>
+    <link rel="stylesheet" href="/res/styles/main.min.css" type="text/css">
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/res/raw/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/res/raw/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/res/raw/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/res/raw/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/res/raw/favicons/safari-pinned-tab.svg" color="#212121">
+    <link rel="shortcut icon" href="/res/raw/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#212121">
+    <meta name="msapplication-config" content="/res/raw/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!--  -->
+    <meta name="description" content="Guess the five letter word from the Bible in this new Wordle variant">
+    <meta name="theme-color" content="#fafafa">
+    <link rel="manifest" href="/res/scripts/manifest.json">
+    <!-- Social -->
+    <meta property="og:url" content="https://bibordle.web.app/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Bibordle - The Bible Wordle" />
+    <meta property="og:description" content="Guess the five letter word from the Bible in this new Wordle variant" />
+    <meta property="og:image" content="https://bibordle.web.app/res/raw/preview.png" />
+    <meta property="og:image:url" content="https://bibordle.web.app/res/raw/preview.png" />
+    <meta property="twitter:image" content="https://bibordle.web.app/res/raw/preview.png" />
+    <style>
+        h1.offline-icon {
+            font-family: 'Material Icons';
+            font-size: 6em;
+            margin: 0;
+        }
+
+        main {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Bibordle</h1>
+    <main>
+        <h1 class="offline-icon">wifi_off</h1>
+        <h1>You're Offline</h1>
+        <p>Would you like to play unlimited while you're offline?</p>
+        <p><a href="/practice/" class="switchMode">Go to Practice</a></p>
+    </main>
+    <script>navigator.serviceWorker.register('/serviceworker.js');</script>
+</body>
+
+</html>

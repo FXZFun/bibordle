@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibordle - The Bible Wordle</title>
+    <link rel="stylesheet" href="/res/styles/main.min.css" type="text/css">
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/res/raw/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/res/raw/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/res/raw/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/res/raw/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/res/raw/favicons/safari-pinned-tab.svg" color="#212121">
+    <link rel="shortcut icon" href="/res/raw/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#212121">
+    <meta name="msapplication-config" content="/res/raw/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!--  -->
+    <meta name="description" content="Guess the five letter word from the Bible in this new Wordle variant">
+    <meta name="theme-color" content="#fafafa">
+    <link rel="manifest" href="/res/scripts/manifest.json">
+    <!-- Social -->
+    <meta property="og:url" content="https://bibordle.web.app/practice" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Bibordle - The Bible Wordle" />
+    <meta property="og:description" content="Guess the five letter word from the Bible in this new Wordle variant" />
+    <meta property="og:image" content="https://bibordle.web.app/res/raw/preview.png" />
+    <meta property="og:image:url" content="https://bibordle.web.app/res/raw/preview.png" />
+    <meta property="twitter:image" content="https://bibordle.web.app/res/raw/preview.png" />
+</head>
+
+<body>
+    <main>
+        <div id="alert" class="alert">
+            <p id="alertText"></p>
+        </div>
+        <h1 style="margin-bottom: 0;">Bibordle</h1>
+        <p>THE BIBLE WORDLE</p>
+        <div id="btnRow">
+            <a id="daily" class="switchMode" href="/">Daily</a>
+            <a id="practice" class="active switchMode" href="/practice">Practice</a>
+        </div>
+        <table>
+            <tbody>
+                <tr id="line0">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr id="line1" class="notActive">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr id="line2" class="notActive">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr id="line3" class="notActive">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr id="line4" class="notActive">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr id="line5" class="notActive">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="keyboard">
+            <div class="row">
+                <button onclick="typeKey('q')" id="keyboard-q">q</button>
+                <button onclick="typeKey('w')" id="keyboard-w">w</button>
+                <button onclick="typeKey('e')" id="keyboard-e">e</button>
+                <button onclick="typeKey('r')" id="keyboard-r">r</button>
+                <button onclick="typeKey('t')" id="keyboard-t">t</button>
+                <button onclick="typeKey('y')" id="keyboard-y">y</button>
+                <button onclick="typeKey('u')" id="keyboard-u">u</button>
+                <button onclick="typeKey('i')" id="keyboard-i">i</button>
+                <button onclick="typeKey('o')" id="keyboard-o">o</button>
+                <button onclick="typeKey('p')" id="keyboard-p">p</button>
+            </div>
+            <div class="row">
+                <button onclick="typeKey('a')" id="keyboard-a">a</button>
+                <button onclick="typeKey('s')" id="keyboard-s">s</button>
+                <button onclick="typeKey('d')" id="keyboard-d">d</button>
+                <button onclick="typeKey('f')" id="keyboard-f">f</button>
+                <button onclick="typeKey('g')" id="keyboard-g">g</button>
+                <button onclick="typeKey('h')" id="keyboard-h">h</button>
+                <button onclick="typeKey('j')" id="keyboard-j">j</button>
+                <button onclick="typeKey('k')" id="keyboard-k">k</button>
+                <button onclick="typeKey('l')" id="keyboard-l">l</button>
+            </div>
+            <div class="row">
+                <button onclick="backspace()"><i class="material-icons">backspace</i></button>
+                <button onclick="typeKey('z')" id="keyboard-z">z</button>
+                <button onclick="typeKey('x')" id="keyboard-x">x</button>
+                <button onclick="typeKey('c')" id="keyboard-c">c</button>
+                <button onclick="typeKey('v')" id="keyboard-v">v</button>
+                <button onclick="typeKey('b')" id="keyboard-b">b</button>
+                <button onclick="typeKey('n')" id="keyboard-n">n</button>
+                <button onclick="typeKey('m')" id="keyboard-m">m</button>
+                <button onclick="guess()"><i class="material-icons" style="font-weight: bold">check</i></button>
+            </div>
+        </div>
+        <div class="overlay" id="statsPage">
+            <div class="message">
+                <h1 id="status"></h1>
+                <p>The word was <span id="word">_____</span></p>
+                <p id="verse"></p>
+                <a id="reference" target="_blank" href="/search"></a>
+                <hr>
+                <span id="gamesPlayed">0</span>
+                <p>games</p>
+                <button onclick="document.getElementById('statsPage').style.display='none'"
+                    style="border: none;padding: 15px 20px;border-radius: 12px;"><i
+                        class="material-icons">close</i></button>
+                <button onclick="share()"
+                    style="border: none;padding: 15px 20px;border-radius: 12px;background: #4caf50;"><i
+                        class="material-icons" style="vertical-align: middle;">share</i> Share</button>
+            </div>
+        </div>
+    </main>
+    <script src="/__/firebase/8.10.1/firebase-app.js"></script>
+    <script src="/__/firebase/8.10.1/firebase-database.js"></script>
+    <script src="/__/firebase/init.js"></script>
+    <script src="/res/scripts/words.min.js" defer></script>
+    <script src="/res/scripts/bibordle-practice.min.js" defer></script>
+    <script src="/res/scripts/kjv.min.js" defer></script>
+    <script>navigator.serviceWorker.register('/serviceworker.js');</script>
+</body>
+
+</html>
