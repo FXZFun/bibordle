@@ -151,7 +151,15 @@
                 <p>After each guess, the tiles will change colors to show how close your guess was to the word.</p>
                 <hr>
                 <h2>Examples</h2>
-                <table><tr><td class="bad">J</td><td class="inword">E</td><td>S</td><td class="good">U</td><td>S</td></tr></table>
+                <table>
+                    <tr>
+                        <td class="bad">J</td>
+                        <td class="inword">E</td>
+                        <td>S</td>
+                        <td class="good">U</td>
+                        <td>S</td>
+                    </tr>
+                </table>
                 <p>The letter <b>U</b> is in the correct spot</p>
                 <p>The letter <b>E</b> is in the word but in the wrong spot</p>
                 <p>The letter <b>J</b> is not in the word</p>
@@ -168,7 +176,16 @@
     <script src="/res/scripts/words.min.js" defer></script>
     <script src="/res/scripts/bibordle.min.js" defer></script>
     <script src="/res/scripts/kjv.min.js" defer></script>
-    <script>if (!localStorage.hasOwnProperty("educated")) {document.getElementById("instructions").style.display='block';localStorage.setItem("educated", true);} navigator.serviceWorker.register('/serviceworker.js');if (!navigator.onLine) showAlert("You're offline, playing practice mode", false);</script>
+    <script>if (!localStorage.hasOwnProperty("educated")) { document.getElementById("instructions").style.display = 'block'; localStorage.setItem("educated", true); } navigator.serviceWorker.register('/serviceworker.js'); if (!navigator.onLine) showAlert("You're offline, playing practice mode", false);</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RR5336TJ96"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-RR5336TJ96');
+    </script>
 </body>
 
 </html>

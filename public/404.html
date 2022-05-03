@@ -44,7 +44,11 @@
             width: 100%;
         }
 
-        @media screen and (min-width: 500px) {img {width: 50%;}}
+        @media screen and (min-width: 500px) {
+            img {
+                width: 50%;
+            }
+        }
     </style>
 </head>
 
@@ -57,6 +61,15 @@
         <p><a href="/" class="switchMode">Take Me Home</a></p>
     </main>
     <script>navigator.serviceWorker.register('/serviceworker.js');</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RR5336TJ96"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-RR5336TJ96');
+    </script>
 </body>
 
 </html>
