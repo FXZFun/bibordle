@@ -19,7 +19,7 @@ function typeKey(key) {
 
     if (key == "enter") guess();
     else if (key == "backspace") backspace();
-    else {
+    else if (letterId < 5) {
         document.getElementById("line" + lineId).children[letterId].innerText = key.toUpperCase();
         letterId++;
         currentLetters.push(key.toLowerCase());
@@ -34,6 +34,7 @@ function backspace() {
 
 function guess() {
     var currentGuess = currentLetters.join("");
+    var solutionCopy = solution;
 
     if (currentGuess.length == 5 && !words.includes(currentGuess)) showAlert("Not in word list") //trigger not in word list
     else if (currentGuess.length != 5) showAlert("Not enough letters") // trigger too short
@@ -44,12 +45,13 @@ function guess() {
         localStorage.setItem("solution-daily", solution);
 
         currentLetters.forEach((letter, i) => {
-            if (solution.includes(letter)) {
-                if (solution[i] == letter) updateLetterClass(letter, i, "good");
-                else if (letter == currentLetters[solution.indexOf(letter)]) updateLetterClass(letter, i, "bad"); // gray
+            if (solutionCopy.includes(letter)) {
+                if (solutionCopy[i] == letter) updateLetterClass(letter, i, "good");
+                else if (i == solutionCopy.indexOf(letter)) updateLetterClass(letter, i, "bad"); // gray
                 else updateLetterClass(letter, i, "inword"); //yellow
             }
             else updateLetterClass(letter, i, "bad"); // gray
+            solutionCopy = solutionCopy.replace(letter, "_");
         });
 
         if (currentGuess == solution || lineId == 5) finishGame();
@@ -102,13 +104,13 @@ function showStats(result) {
     else document.getElementById("status").classList.add("lose");
 
     // getting the verse from kjv
-    var matchString = solution + "(?=[^\\w\\d])";
+    var matchString = "(?<![\\w\\d])" + solution + "(?![\\w\\d])";
     var regFilter = new RegExp(matchString, "gi");
     var matchingVerses = kjv.filter(v => v.text.match(regFilter));
     var verse = matchingVerses[Math.floor(Math.random() * matchingVerses.length)];
     // set values
     document.getElementById("word").innerText = solution.toUpperCase();
-    document.getElementById("verse").innerHTML = verse['text'].replaceAll(new RegExp(solution, "gi"), (match) => "<b>" + match + "</b>");
+    document.getElementById("verse").innerHTML = verse['text'].replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
     document.getElementById("reference").innerText = verse['book_name'] + " " + verse['chapter'] + ":" + verse['verse'];
     document.getElementById("reference").href = "/search/?reference=" + verse['book_name'] + " " + verse['chapter'] + ":" + verse['verse'] + "&load=true&word=" + solution;
 

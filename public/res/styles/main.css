@@ -164,6 +164,7 @@ td.good {
     font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
+    font-display: swap;
     src: url(/res/fonts/MaterialIcons-Regular.ttf);
     /* For IE6-8 */
     src: local('Material Icons'),
@@ -201,6 +202,7 @@ td.good {
     font-family: 'Maven Pro';
     font-style: normal;
     font-weight: 400;
+    font-display: swap;
     src: url(/res/fonts/MavenPro-VariableFont_wght.ttf);
     /* For IE6-8 */
     src: local('Maven Pro'),
