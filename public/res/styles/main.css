@@ -208,3 +208,45 @@ td.good {
     src: local('Maven Pro'),
         url(/res/fonts/MavenPro-VariableFont_wght.ttf) format('truetype');
 }
+
+@media screen and (prefers-color-scheme: dark) {
+    body {
+        color: #fafafa !important;
+        background-color: #000000;
+    }
+    
+    td {
+        color: #000000;
+    }
+    
+    .message {
+        background-color: #000000;
+    }
+    
+    .alert {
+        background-color: #fafafa;
+        color: #000000;
+    }
+}
+
+body.darkMode {
+    color: #fafafa !important;
+    background-color: #000000;
+}
+
+body.darkMode td {
+    color: #000000;
+}
+
+body.darkMode .message {
+    background-color: #000000;
+}
+
+body.darkMode .alert {
+    background-color: #fafafa;
+    color: #000000;
+}
+
+body.darkMode .message a {
+    color: #fafafa;
+}

@@ -1,22 +1,44 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bibordle Search</title>
-    <link rel="stylesheet" href="/res/styles/main.css" type="text/css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
-    <meta name="description" content="Bibordle | Guess The Five Letter Bible Word in Six Tries">
+    <title>Bibordle - The Bible Wordle</title>
+    <link rel="stylesheet" href="/res/styles/main.min.css" type="text/css">
+    <link rel="preload" href="/res/fonts/MaterialIcons-Regular.ttf" as="font">
+    <link rel="preload" href="/res/fonts/MavenPro-VariableFont_wght.ttf" as="font">
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/res/raw/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/res/raw/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/res/raw/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/res/raw/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/res/raw/favicons/safari-pinned-tab.svg" color="#212121">
+    <link rel="shortcut icon" href="/res/raw/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#212121">
+    <meta name="msapplication-config" content="/res/raw/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!--  -->
+    <meta name="description" content="Guess the five letter word from the Bible in this new Wordle variant">
     <meta name="theme-color" content="#fafafa">
-    <link rel="shortcut icon" type="image/png" href="../favicon.png">
-    <link rel="manifest" href="/bibordle/manifest.json">
+    <link rel="manifest" href="/res/scripts/manifest.json">
     <!-- Social -->
-    <meta property="og:url" content="https://dubster.web.app/bibordle/" />
+    <meta property="og:url" content="https://bibordle.web.app/" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Bibordle" />
-    <meta property="og:description" content="Guess The Five Letter Bible Word in Six Tries" />
-    <meta property="og:image" content="https://dubster.web.app/bibordle/theme.png" />
+    <meta property="og:title" content="Bibordle - The Bible Wordle" />
+    <meta property="og:description" content="Guess the five letter word from the Bible in this new Wordle variant" />
+    <meta property="og:image" content="https://bibordle.web.app/res/raw/preview.png" />
+    <meta property="og:image:url" content="https://bibordle.web.app/res/raw/preview.png" />
+    <meta property="twitter:image" content="https://bibordle.web.app/res/raw/preview.png" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RR5336TJ96"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-RR5336TJ96');
+    </script>
 </head>
 
 <body>
@@ -26,47 +48,65 @@
         </div>
         <h1>Bibordle Search</h1>
         <div id="btnRow">
-            <button id="daily" class="switchMode" onclick="location.href='/bibordle/'">Home</button>
+            <a href="/" id="daily" class="switchMode">Home</a>
         </div>
-        <input type="text" placeholder="Search" id="wordSearch">
-        <button onclick="getWord(document.getElementById('wordSearch').value);">Search</button>
-        <p><span id="word">UNKNOWN</span> is in <span id="reference">UNKNOWN</span>:</p>
+        <form onsubmit="getWord(document.getElementById('wordSearch').value); return false;">
+            <input type="text" placeholder="Search" id="wordSearch">
+            <button onclick="getWord(document.getElementById('wordSearch').value);" class="switchMode"><i
+                    class="material-icons">search</i></button>
+        </form>
+        <p><span id="word">UNKNOWN</span> in <span id="reference">UNKNOWN</span>:</p>
         <p id="verse">UNKNOWN</p>
-        <button onclick="showChapter()">View Full Chapter</button>
-        <button onclick="upChapter()">Go to next Chapter</button>
-        <button onclick="downChapter()">Go to previous Chapter</button>
+        <button onclick="downChapter()" class="switchMode"><i class="material-icons">chevron_left</i> Go to previous
+            Chapter</button>
+        <button onclick="upChapter()" class="switchMode">Go to next Chapter <i
+                class="material-icons">chevron_right</i></button>
         <br>
-        <select id="chapterSelect"></select>
+        <button onclick="showChapter()" class="switchMode"><i class="material-icons">description</i> View Full
+            Chapter</button>
+        <br>
         <select id="bookSelect"></select>
-        <button
-            onclick="jump(document.getElementById('bookSelect').value, parseInt(document.getElementById('chapterSelect').value))">Jump
-            to Book</button>
+        <select id="chapterSelect"></select>
+        <button class="switchMode"
+            onclick="jump(document.getElementById('bookSelect').value, parseInt(document.getElementById('chapterSelect').value))"><i
+                class="material-icons">description</i> Jump
+            to Chapter</button>
         <br>
-        <button
-            onclick="share(document.getElementById('reference').innerText, document.getElementById('word').innerText)">Share
-            Verse</button>
-        </div>
-        <div id="installContainer" class="hidden">
-            <button id="buttonInstallDesktop"><i class="material-icons">install_desktop</i></button>
-            <button id="buttonInstallMobile"><i class="material-icons">install_mobile</i></button>
+        <button class="switchMode"
+            onclick="share(document.getElementById('reference').innerText, document.getElementById('word').innerText)"><i
+                class="material-icons">share</i> Share</button>
         </div>
         <textarea id="share" style="opacity: 0;"></textarea>
     </main>
+    <style>
+        button i.material-icons {
+            vertical-align: middle;
+        }
+    </style>
     <script src="/__/firebase/8.10.1/firebase-app.js"></script>
     <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
     <script src="/__/firebase/8.10.1/firebase-database.js"></script>
     <script src="/res/scripts/words.js"></script>
     <script src="/res/scripts/kjv.js"></script>
-    <!-- <script src="../shared.js"></script> -->
-    <script src="/res/scripts/thing1.js"></script>
     <script>
+        var chaptersAndBooks = { "Genesis": 50, "Exodus": 40, "Leviticus": 27, "Numbers": 36, "Deuteronomy": 34, "Joshua": 24, "Judges": 21, "Ruth": 4, "1 Samuel": 31, "2 Samuel": 24, "1 Kings": 22, "2 Kings": 25, "1 Chronicles": 29, "2 Chronicles": 36, "Ezra": 10, "Nehemiah": 13, "Esther": 10, "Job": 42, "Psalms": 150, "Proverbs": 31, "Ecclesiastes": 12, "Song of Solomon": 8, "Isaiah": 66, "Jeremiah": 52, "Lamentations": 5, "Ezekiel": 48, "Daniel": 12, "Hosea": 14, "Joel": 3, "Amos": 9, "Obadiah": 1, "Jonah": 3, "Micah": 7, "Nahum": 3, "Habakkuk": 3, "Zephaniah": 3, "Haggai": 2, "Zechariah": 14, "Malachi": 4, "Matthew": 28, "Mark": 16, "Luke": 24, "John": 21, "Acts": 28, "Romans": 16, "1 Corinthians": 16, "2 Corinthians": 13, "Galatians": 6, "Ephesians": 6, "Philippians": 4, "Colossians": 4, "1 Thessalonians": 5, "2 Thessalonians": 3, "1 Timothy": 6, "2 Timothy": 4, "Titus": 3, "Philemon": 1, "Hebrews": 12, "James": 5, "1 Peter": 5, "2 Peter": 3, "1 John": 5, "2 John": 1, "3 John": 0, "Jude": 0, "Revelation": 21 };
+        var bookNames = ["Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth", "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra", "Nehemiah", "Esther", "Job", "Psalms", "Proverbs", "Ecclesiastes", "Song of Solomon", "Isaiah", "Jeremiah", "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel", "Amos", "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai", "Zechariah", "Malachi", "Matthew", "Mark", "Luke", "John", "Acts", "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians", "Colossians", "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy", "Titus", "Philemon", "Hebrews", "James", "1 Peter", "2 Peter", "1 John", "2 John", "3 John", "Jude", "Revelation"];
+        function showAlert(message, hide = true) {
+            document.getElementById("alertText").innerText = message;
+            document.getElementById("alert").style.display = "block";
+            if (hide) {
+                setTimeout(function () {
+                    document.getElementById("alert").style.display = "none";
+                }, 3000);
+            }
+        }
         var kjv2;
         var verse;
         var book;
         var chapter;
         var newReference;
         function findVerse(wordToFind) {
-            var matchString = wordToFind + "(?=[^\\w\\d])";
+            var matchString = "(?<![\\w\\d])" + wordToFind + "(?![\\w\\d])";
             var regFilter = new RegExp(matchString, "g");
             kjv2 = kjv.filter(v => v.text.toLowerCase().match(regFilter));
             return kjv2;
@@ -81,29 +121,43 @@
             if (verses[verse] != null) {
                 document.getElementById("word").innerText = word.toUpperCase();
                 document.getElementById("reference").innerText = verses[verse]["book_name"] + " " + verses[verse]["chapter"] + ":" + verses[verse]["verse"];
-                var regFilter = new RegExp(word, "ig");
+                var matchString = "(?<![\\w\\d])" + word + "(?![\\w\\d])";
+                var regFilter = new RegExp(matchString, "ig");
                 document.getElementById("verse").innerHTML = verses[verse]['text'].replaceAll(regFilter, match => "<b>" + match + "</b>");
                 document.title = document.getElementById("word").innerText + " | " + document.getElementById("reference").innerText + " | Bibordle Search"
                 history.replaceState(null, "", "?load=true&word=" + document.getElementById("word").innerText + "&reference=" + document.getElementById("reference").innerText);
                 chapter = verses[verse]["chapter"];
                 book = verses[verse]["book_name"];
+                document.getElementById("bookSelect").value = verses[verse]["book_name"];
+                document.getElementById("chapterSelect").value = verses[verse]["chapter"];
             } else {
                 showAlert(word.toUpperCase() + " is not in the Bible", true);
             }
         }
         function getChapter(chapter, book) {
+            chapter = parseInt(chapter);
             console.log(book);
             var chapters = findChapter(book.toLowerCase(), chapter);
             document.getElementById("reference").innerText = book + " " + chapter;
             document.getElementById("verse").innerText = "";
-            var regFilter = new RegExp(document.getElementById("word").innerText, "ig");
+            var matchString = "(?<![\\w\\d])" + document.getElementById("word").innerText + "(?![\\w\\d])";
+            var regFilter = new RegExp(matchString, "ig");
             chapters.forEach((c) => {
                 var newText = c['text'].replaceAll(regFilter, match => "<b>" + match + "</b>");
                 document.getElementById("verse").innerHTML += `<sup>${c["verse"]}</sup>${newText}`;
             });
             document.title = document.getElementById("word").innerText + " | " + document.getElementById("reference").innerText + " | Bibordle Search"
             history.replaceState(null, "", "?load=true&book=true&word=" + document.getElementById("word").innerText + "&reference=" + document.getElementById("reference").innerText);
-            document.getElementById("chapterSelect").value = chapter;
+            document.getElementById("chapterSelect").innerText = "";
+            for (var i = 1; i <= chaptersAndBooks[book]; i++) {
+                var c = document.createElement("option");
+                c.value = i;
+                c.innerText = i;
+                if (i == chapter) {
+                    c.selected = true;
+                }
+                document.getElementById("chapterSelect").appendChild(c);
+            }
             document.getElementById("bookSelect").value = book;
         }
         function loadWord(reference, word) {
@@ -120,7 +174,8 @@
             if (kjv[verse] != null) {
                 document.getElementById("word").innerText = word.toUpperCase();
                 document.getElementById("reference").innerText = kjv[verse]["book_name"] + " " + kjv[verse]["chapter"] + ":" + kjv[verse]["verse"];
-                var regFilter = new RegExp(word, "ig");
+                var matchString = "(?<![\\w\\d])" + word + "(?![\\w\\d])";
+                var regFilter = new RegExp(matchString, "ig");
                 document.getElementById("verse").innerHTML = kjv[verse]['text'].replaceAll(regFilter, match => "<b>" + match + "</b>");
             }
             document.getElementById("wordSearch").value = word;
@@ -150,14 +205,12 @@
         }
 
         function share(reference, word) {
-            document.getElementById("share").value = "https://dubster.web.app/bibordle/search/?load=true&reference=" + reference + "&word=" + word;
+            var verseText = document.getElementById("verse").innerText;
+            document.getElementById("share").value = verseText + "\n" + reference + "\n" + "https://bibordle.web.app/search/?load=true&reference=" + reference + "&word=" + word;
             document.getElementById("share").select();
             document.execCommand("copy");
-            alert('Copied!');
+            showAlert('Copied to Clipboard!');
         }
-
-        var chaptersAndBooks = { "Genesis": 50, "Exodus": 40, "Leviticus": 27, "Numbers": 36, "Deuteronomy": 34, "Joshua": 24, "Judges": 21, "Ruth": 4, "1 Samuel": 31, "2 Samuel": 24, "1 Kings": 22, "2 Kings": 25, "1 Chronicles": 29, "2 Chronicles": 36, "Ezra": 10, "Nehemiah": 13, "Esther": 10, "Job": 42, "Psalms": 150, "Proverbs": 31, "Ecclesiastes": 12, "Song of Solomon": 8, "Isaiah": 66, "Jeremiah": 52, "Lamentations": 5, "Ezekiel": 48, "Daniel": 12, "Hosea": 14, "Joel": 3, "Amos": 9, "Obadiah": 1, "Jonah": 3, "Micah": 7, "Nahum": 3, "Habakkuk": 3, "Zephaniah": 3, "Haggai": 2, "Zechariah": 14, "Malachi": 4, "Matthew": 28, "Mark": 16, "Luke": 24, "John": 21, "Acts": 28, "Romans": 16, "1 Corinthians": 16, "2 Corinthians": 13, "Galatians": 6, "Ephesians": 6, "Philippians": 4, "Colossians": 4, "1 Thessalonians": 5, "2 Thessalonians": 3, "1 Timothy": 6, "2 Timothy": 4, "Titus": 3, "Philemon": 1, "Hebrews": 12, "James": 5, "1 Peter": 5, "2 Peter": 3, "1 John": 5, "2 John": 1, "3 John": 0, "Jude": 0, "Revelation": 21 };
-        var bookNames = ["Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth", "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra", "Nehemiah", "Esther", "Job", "Psalms", "Proverbs", "Ecclesiastes", "Song of Solomon", "Isaiah", "Jeremiah", "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel", "Amos", "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai", "Zechariah", "Malachi", "Matthew", "Mark", "Luke", "John", "Acts", "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians", "Colossians", "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy", "Titus", "Philemon", "Hebrews", "James", "1 Peter", "2 Peter", "1 John", "2 John", "3 John", "Jude", "Revelation"];
 
         function showChapter() {
             getChapter(chapter, book);

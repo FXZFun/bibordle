@@ -98,6 +98,20 @@ function showAlert(message, hide = true) {
     }
 }
 
+function toggleDarkMode() {
+    if (document.querySelector('body').classList.contains('darkMode')) {
+        localStorage.removeItem('darkMode');
+        document.querySelector('body').classList.remove('darkMode');
+    } else {
+        document.querySelector('body').classList.add('darkMode');
+        localStorage.setItem('darkMode', true);
+    }
+}
+
+if (localStorage.hasOwnProperty("darkMode")) {
+    toggleDarkMode();
+}
+
 function showStats(result) {
     document.getElementById("statsPage").style.display = "block";
     if (result) document.getElementById("status").classList.add("win");
