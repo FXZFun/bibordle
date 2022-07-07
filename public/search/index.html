@@ -46,7 +46,7 @@
         <div id="alert" class="alert">
             <p id="alertText">Hello</p>
         </div>
-        <h1>Bibordle Search</h1>
+        <h1 onclick="toggleDarkMode()">Bibordle Search</h1>
         <div id="btnRow">
             <a href="/" id="daily" class="switchMode">Home</a>
         </div>
@@ -275,6 +275,20 @@
 
         document.getElementById("chapterSelect").value = chapter;
         document.getElementById("bookSelect").value = book;
+
+        function toggleDarkMode() {
+            if (document.querySelector('body').classList.contains('darkMode')) {
+                localStorage.removeItem('darkMode');
+                document.querySelector('body').classList.remove('darkMode');
+            } else {
+                document.querySelector('body').classList.add('darkMode');
+                localStorage.setItem('darkMode', true);
+            }
+        }
+
+        if (localStorage.hasOwnProperty("darkMode")) {
+            toggleDarkMode();
+        }
     </script>
 </body>
 
