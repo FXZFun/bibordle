@@ -1,0 +1,22 @@
+TEST CASES
+================
+
+Add these words (run in console)
+words.push("lelbo");words.push("belle");words.push("bello");words.push("elboo");words.push("rebly");words.push("tulle");solution="tulle";
+
+Guess those words in that order
+
+Expected Result:
+-------------------
+LELBO
+BELLE
+BELLO
+ELBOO
+REBLY
+TULLE
+🟨🟨🟩⬜⬜
+⬜⬜🟩🟩🟩
+⬜🟨🟩🟩⬜
+🟨🟨⬜⬜⬜
+⬜🟨⬜🟩⬜
+🟩🟩🟩🟩🟩
