@@ -41,7 +41,6 @@ function backspace() {
 
 function guess() {
     var currentGuess = currentLetters.join("");
-    var solutionCopy = solution;
 
     if (currentGuess.length == 5 && !words.includes(currentGuess)) showAlert("Not in word list") //trigger not in word list
     else if (currentGuess.length != 5) showAlert("Not enough letters") // trigger too short
@@ -52,13 +51,13 @@ function guess() {
         localStorage.setItem("solution-daily", solution);
 
         currentLetters.forEach((letter, i) => {
-            if (solutionCopy.includes(letter)) {
-                if (solutionCopy[i] == letter) updateLetterClass(letter, i, "good");
-                else if (i == solutionCopy.indexOf(letter)) updateLetterClass(letter, i, "bad"); // gray
+            if (solution.includes(letter)) {
+                if (solution[i] == letter) updateLetterClass(letter, i, "good")
+                // if more than one letter in guess but only one of that letter in solution, it is bad
+                else if (currentLetters.indexOf(currentLetters[i]) !== currentLetters.lastIndexOf(currentLetters[i]) && solution.indexOf(currentLetters[i]) == solution.lastIndexOf(currentLetters[i])) updateLetterClass(letter, i, "bad");
                 else updateLetterClass(letter, i, "inword"); //yellow
             }
             else updateLetterClass(letter, i, "bad"); // gray
-            solutionCopy = solutionCopy.replace(letter, "_");
         });
 
         if (currentGuess == solution || lineId == 5) finishGame();
