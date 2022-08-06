@@ -41,6 +41,7 @@ function backspace() {
 
 function guess() {
     var currentGuess = currentLetters.join("");
+    var lettersNeeded = solution.split("");
 
     if (currentGuess.length == 5 && !words.includes(currentGuess)) showAlert("Not in word list") //trigger not in word list
     else if (currentGuess.length != 5) showAlert("Not enough letters") // trigger too short
@@ -50,14 +51,48 @@ function guess() {
         localStorage.setItem("loadGame-daily", new Date().getMonth() + 1 + "/" + new Date().getDate() + "/" + new Date().getFullYear());
         localStorage.setItem("solution-daily", solution);
 
-        currentLetters.forEach((letter, i) => {
-            if (solution.includes(letter)) {
-                if (solution[i] == letter) updateLetterClass(letter, i, "good")
-                // if more than one letter in guess but only one of that letter in solution, it is bad
-                else if (currentLetters.indexOf(currentLetters[i]) !== currentLetters.lastIndexOf(currentLetters[i]) && solution.indexOf(currentLetters[i]) == solution.lastIndexOf(currentLetters[i])) updateLetterClass(letter, i, "bad");
-                else updateLetterClass(letter, i, "inword"); //yellow
+        // currentLetters.forEach((letter, i) => {
+        //     if (solution.includes(letter)) {
+        //         // right spot, right letter = correct
+        //         if (solution[i] == letter) updateLetterClass(letter, i, "good")
+
+        //         // handle duplicate letters
+        //         // if currentLetters has more duplicates of this letter than the solution
+        //         else if (currentLetters.filter(_ => _ == letter).length > solution.split("").filter(_ => _ == letter).length) {
+        //             // if there are any more letters after this one + already handled good ones
+        //             if ([...document.getElementById("line" + lineId).children].filter(_ => _.innerText == letter && _.classList == "good").length + 
+        //                 [...currentLetters].splice(i + 1).filter(_ => _ == letter).length > solution.split("").filter(_ => _ == letter).length) {
+        //                 updateLetterClass(letter, i, "inword"); // in word
+        //             }
+        //             else {
+        //                 updateLetterClass(letter, i, "bad"); // gray
+        //             }
+        //         } else {
+        //             updateLetterClass(letter, i, "inword"); // in word
+        //         }
+        //     }
+        //     else updateLetterClass(letter, i, "bad"); // gray
+        // });
+
+        currentLetters.forEach((g, i) => {
+            if (g == solution.split("")[i]) {
+                // document.getElementById("line" + line).children[i].classList.add("good");
+                lettersNeeded.splice(lettersNeeded.indexOf(g), 1);
+                // document.getElementById(g).classList.add("good");
+                updateLetterClass(g, i, "good");
             }
-            else updateLetterClass(letter, i, "bad"); // gray
+        });
+        currentLetters.forEach((g, i) => {
+            if (solution.includes(g) && lettersNeeded.includes(g) && g != solution.split("")[i]) {
+                // document.getElementById("line" + line).children[i].classList.add("inword");
+                lettersNeeded.splice(lettersNeeded.indexOf(g), 1);
+                // document.getElementById(g).classList.add("inword");
+                updateLetterClass(g, i, "inword");
+            } else if (g != solution.split("")[i]) {
+                // document.getElementById("line" + line).children[i].classList.add("bad");
+                // document.getElementById(g).classList.add("bad");
+                updateLetterClass(g, i, "bad");
+            }
         });
 
         if (currentGuess == solution || lineId == 5) finishGame();
@@ -67,7 +102,7 @@ function guess() {
             letterId = 0;
             currentGuess = "";
             document.getElementById("line" + lineId).classList.remove("notActive");
-            shareResult += "\n";
+            // shareResult += "\n";
         }
     }
 }
@@ -75,9 +110,9 @@ function guess() {
 function updateLetterClass(letter, index, colorClass) {
     document.getElementById(`line${lineId}`).children[index].classList = colorClass;
     document.getElementById(`keyboard-${letter}`).classList.add(colorClass);
-    if (colorClass == "good") shareResult += "🟩";
-    else if (colorClass == "inword") shareResult += "🟨";
-    else if (colorClass == "bad") shareResult += "⬜";
+    // if (colorClass == "good") shareResult += "🟩";
+    // else if (colorClass == "inword") shareResult += "🟨";
+    // else if (colorClass == "bad") shareResult += "⬜";
 }
 
 function finishGame() {
@@ -167,7 +202,25 @@ function restoreLastGame() {
 }
 
 function share() {
-    shareResult += "\nbibordle.web.app";
+    var i = 0;
+    var elements = document.getElementById("btnRow").nextElementSibling.querySelectorAll("td")
+    elements.forEach(el => {
+        if (el.classList != "") {
+            if (el.classList == "good") {
+                shareResult += "🟩";
+            } else if (el.classList == "inword") {
+                shareResult += "🟨";
+            } else if (el.classList == "bad") {
+                shareResult += "⬜";
+            }
+        }
+        i++;
+        if (i == 5) {
+            shareResult += "\n";
+            i = 0;
+        }
+    });
+    shareResult += "bibordle.web.app";
     var line = currentLetters.join("") != solution ? "X" : lineId + 1;
     shareResult = shareResult.replace("{number}", number).replace("{guesses}", line);
 
