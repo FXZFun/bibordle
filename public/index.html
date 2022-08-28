@@ -8,7 +8,9 @@
     <title>Bibordle - The Bible Wordle</title>
     <link rel="stylesheet" href="/res/styles/main.min.css" type="text/css">
     <link rel="preload" href="/res/fonts/MaterialIcons-Regular.ttf" as="font">
+    <link rel="stylesheet" href="/res/fonts/MaterialIcons-Regular.ttf">
     <link rel="preload" href="/res/fonts/MavenPro-VariableFont_wght.ttf" as="font">
+    <link rel="stylesheet" href="/res/fonts/MavenPro-VariableFont_wght.ttf">
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/res/raw/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/res/raw/favicons/favicon-32x32.png">
@@ -47,10 +49,10 @@
             <p id="alertText"></p>
         </div>
         <h1 style="margin-bottom: 0;" onclick="toggleDarkMode()" title="Toggle Dark Mode">Bibordle</h1>
-        <p>THE BIBLE WORDLE</p>
+        <p style="margin-bottom: 40px;">THE BIBLE WORDLE</p>
         <div id="btnRow">
-            <a id="daily" class="active switchMode" href="/">Daily</a>
-            <a id="practice" class="switchMode" href="/practice">Practice</a>
+            <a id="practice" class="switchMode left" href="/practice" title="Unlimited Mode"><i class="material-icons">all_inclusive</i></a>
+            <a id="statsBtn" class="switchMode right" href="javascript:showStats()" title="Show Stats"><i class="material-icons">leaderboard</i></a>
         </div>
         <table>
             <tbody>
@@ -123,7 +125,7 @@
                 <button onclick="typeKey('l')" id="keyboard-l">l</button>
             </div>
             <div class="row">
-                <button onclick="backspace()"><i class="material-icons">backspace</i></button>
+                <button onclick="typeKey('backspace')"><i class="material-icons">backspace</i></button>
                 <button onclick="typeKey('z')" id="keyboard-z">z</button>
                 <button onclick="typeKey('x')" id="keyboard-x">x</button>
                 <button onclick="typeKey('c')" id="keyboard-c">c</button>
@@ -136,19 +138,35 @@
         </div>
         <div class="overlay" id="statsPage">
             <div class="message">
+                <button onclick="document.getElementById('statsPage').style.display='none'" class="close">
+                    <i class="material-icons">close</i>
+                </button>
                 <h2 id="status"></h2>
-                <p>The word was <span id="word">_____</span></p>
-                <p id="verse"></p>
-                <a id="reference" target="_blank" href="/search"></a>
-                <hr>
-                <span id="gamesPlayed">0</span>
-                <p>games</p>
-                <button onclick="document.getElementById('statsPage').style.display='none'"
-                    style="border: none;padding: 15px 20px;border-radius: 12px;"><i
-                        class="material-icons">close</i></button>
-                <button onclick="share()"
-                    style="border: none;padding: 15px 20px;border-radius: 12px;background: #4caf50;"><i
-                        class="material-icons" style="vertical-align: middle;">share</i> Share</button>
+                <p>
+                    The word was <span id="word">_____</span>
+                    <i class="material-icons wordInfo" title="Word Stats" onclick="showWordInfo()">info</i>
+                </p>
+                <p>
+                    <span id="verse"></span>
+                    <a id="reference" target="_blank" href="/search"></a>
+                </p>
+                <div class="stats">
+                    <div>
+                        <span id="gameScore">X</span>
+                        <p>out of 5</p>
+                    </div>
+                    <div>
+                        <span id="gamesPlayed">6</span>
+                        <p>played</p>
+                    </div>
+                    <div>
+                        <span id="successRate">95%</span>
+                        <p>success</p>
+                    </div>
+                </div>
+                <button onclick="share()" class="shareBtn">
+                    <i class="material-icons" style="vertical-align: middle;">share</i> Share
+                </button>
             </div>
         </div>
         <div class="overlay" id="instructions">
