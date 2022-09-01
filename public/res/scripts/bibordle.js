@@ -122,7 +122,9 @@ function finishGame() {
         if (currentLetters.join("") == solution) {
             var gamesWon = localStorage.hasOwnProperty("gamesWon-daily") ? parseInt(localStorage.getItem("gamesWon-daily")) : 0;
             localStorage.setItem("gamesWon-daily", gamesWon + 1);
+            //ga('send', 'event', { eventCategory: 'Game End', eventAction: 'Win' });
         }
+        //else ga('send', 'event', { eventCategory: 'Game End', eventAction: 'Lose' });
         var gamesPlayed = localStorage.hasOwnProperty("gamesPlayed-daily") ? parseInt(localStorage.getItem("gamesPlayed-daily")) : 0;
         localStorage.setItem("gamesPlayed-daily", gamesPlayed + 1);
     }
@@ -158,31 +160,33 @@ function showStats(result) {
     if (result) document.getElementById("status").classList.add("win");
     else document.getElementById("status").classList.add("lose");
 
-    // getting the verse from kjv
-    var matchString = "(?<![\\w\\d])" + solution + "(?![\\w\\d])";
-    var regFilter = new RegExp(matchString, "gi");
-    var matchingVerses = kjv.filter(v => v.text.match(regFilter));
-    var verse = matchingVerses[Math.floor(Math.random() * matchingVerses.length)];
-    // set values
-    document.getElementById("word").innerText = solution.toUpperCase();
-    document.getElementById("verse").innerHTML = verse['text'].replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
-    document.getElementById("reference").innerText = verse['book_name'] + " " + verse['chapter'] + ":" + verse['verse'];
-    document.getElementById("reference").href = "/search/?reference=" + verse['book_name'] + " " + verse['chapter'] + ":" + verse['verse'] + "&load=true&word=" + solution;
+    if (solution == localStorage.getItem("solution-daily")) {
+        var matchString = "(?<![\\w\\d])" + solution + "(?![\\w\\d])";
+        var regFilter = new RegExp(matchString, "gi");
+        var matchingVerses = kjv.filter(v => v.text.match(regFilter));
+        var verse = matchingVerses[Math.floor(Math.random() * matchingVerses.length)];
+        document.getElementById("word").innerText = solution.toUpperCase();
+        document.getElementById("verse").innerHTML = verse['text'].replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
+        document.getElementById("reference").innerText = verse['book_name'] + " " + verse['chapter'] + ":" + verse['verse'];
+        document.getElementById("reference").href = "/search/?reference=" + verse['book_name'] + " " + verse['chapter'] + ":" + verse['verse'] + "&load=true&word=" + solution;
 
-    localStorage.setItem("completedOn-daily", localStorage.getItem("loadGame-daily"));
-    document.getElementById("gamesPlayed").innerText = parseInt(localStorage.getItem("gamesPlayed-daily"));
-
-    showAlert(solution.toUpperCase(), true);
-    if (document.getElementById("statsBtn") == null) {
-        var btn = document.createElement('button');
-        btn.id = "statsBtn";
-        btn.innerText = "Show Stats";
-        btn.classList.add("switchMode")
-        btn.onclick = () => {
-            showStats(result)
-        }
-        document.getElementById("btnRow").appendChild(btn);
+        localStorage.setItem("completedOn-daily", localStorage.getItem("loadGame-daily"));
+    } else {
+        var word = localStorage.getItem("solution-daily");
+        var matchString = "(?<![\\w\\d])" + word + "(?![\\w\\d])";
+        var regFilter = new RegExp(matchString, "gi");
+        var matchingVerses = kjv.filter(v => v.text.match(regFilter));
+        var verse = matchingVerses[Math.floor(Math.random() * matchingVerses.length)];
+        document.getElementById("word").innerText = word.toUpperCase();
+        document.getElementById("verse").innerHTML = verse['text'].replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
+        document.getElementById("reference").innerText = verse['book_name'] + " " + verse['chapter'] + ":" + verse['verse'];
+        document.getElementById("reference").href = "/search/?reference=" + verse['book_name'] + " " + verse['chapter'] + ":" + verse['verse'] + "&load=true&word=" + solution;
     }
+
+
+    document.getElementById("gameScore").innerText = currentLetters.join("") != solution ? "X" : lineId + 1;
+    document.getElementById("gamesPlayed").innerText = parseInt(localStorage.getItem("gamesPlayed-daily"));
+    document.getElementById("successRate").innerText = parseInt(parseInt(localStorage.getItem("gamesWon-daily")) / parseInt(localStorage.getItem("gamesPlayed-daily")) * 100) + "%";
 }
 
 
@@ -199,6 +203,13 @@ function restoreLastGame() {
             }
         });
     }
+}
+
+function showWordInfo() {
+    var matchString = "(?<![\\w\\d])" + solution + "(?![\\w\\d])";
+    var regFilter = new RegExp(matchString, "gi");
+    var matchingVerses = kjv.filter(v => v.text.match(regFilter));
+    alert("This word appears a total of " + matchingVerses.length + " times");
 }
 
 function share() {
