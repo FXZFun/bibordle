@@ -1,14 +1,11 @@
-var webId = "2F57D8C1-5E08-45AD-93CF-761FDDAD0B20";
+var webId = "f7f43d82-2a81-4675-83b3-fcb996791c0f";
 
 self.addEventListener('install', function (e) {
+    self.skipWaiting();
     e.waitUntil(
         caches.open(webId).then(function (cache) {
             return cache.addAll([
                 '/offline.html',
-                '/practice/',
-                "/res/scripts/words.min.js",
-                "/res/scripts/bibordle-practice.min.js",
-                "/res/scripts/kjv.min.js",
                 "/res/styles/main.min.css",
                 "/res/fonts/MaterialIcons-Regular.ttf",
                 "/res/fonts/MavenPro-VariableFont_wght.ttf"
@@ -18,20 +15,11 @@ self.addEventListener('install', function (e) {
 });
 
 self.addEventListener('fetch', event => {
-    if (!event.request.url.includes("practice") && (event.request.mode === 'navigate' || (event.request.method === 'GET' && event.request.headers.get('accept').includes('text/html')))) {
-        event.respondWith(
-            fetch(event.request.url).catch(error => {
-                return caches.match("/offline.html");
-            })
-        );
-    }
-    else {
-        event.respondWith(caches.match(event.request)
+    event.respondWith(caches.match(event.request)
             .then(function (response) {
-                return response || fetch(event.request);
+                return response || fetch(event.request).catch(() => caches.match("/offline.html"));
             })
         );
-    }
 });
 
 self.addEventListener('activate', function (event) {

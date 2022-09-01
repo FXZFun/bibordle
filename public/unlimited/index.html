@@ -6,12 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bibordle - The Bible Wordle</title>
-    <link rel="stylesheet" href="/res/styles/main.css" type="text/css">
-    <!-- Fonts -->
-    <link rel="preload" href="/res/fonts/MaterialIcons-Regular.ttf" as="font" crossorigin>
-    <link rel="font" href="/res/fonts/MaterialIcons-Regular.ttf">
-    <link rel="preload" href="/res/fonts/MavenPro-Regular.ttf" as="font" crossorigin>
-    <link rel="font" href="/res/fonts/MavenPro-Regular.ttf">
+    <link rel="stylesheet" href="/res/styles/main.min.css" type="text/css">
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/res/raw/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/res/raw/favicons/favicon-32x32.png">
@@ -26,7 +21,7 @@
     <meta name="description" content="Guess the five letter word from the Bible in this new Wordle variant">
     <meta name="theme-color" content="#fafafa">
     <!-- Social -->
-    <meta property="og:url" content="https://bibordle.web.app/" />
+    <meta property="og:url" content="https://bibordle.web.app/unlimited" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Bibordle - The Bible Wordle" />
     <meta property="og:description" content="Guess the five letter word from the Bible in this new Wordle variant" />
@@ -42,7 +37,6 @@
 
         gtag('config', 'G-RR5336TJ96');
     </script>
-    <!-- <script src="https://fxzfun.com/trk/bibordle.js"></script> -->
 </head>
 
 <body>
@@ -51,10 +45,9 @@
             <p id="alertText"></p>
         </div>
         <h1 style="margin-bottom: 0;" onclick="toggleDarkMode()" title="Toggle Dark Mode">Bibordle</h1>
-        <p style="margin-bottom: 40px;">THE BIBLE WORDLE</p>
+        <p>THE BIBLE WORDLE</p>
         <div id="btnRow">
-            <a id="unlimited" class="switchMode left" href="/unlimited" title="Unlimited Mode"><i
-                    class="material-icons">all_inclusive</i></a>
+            <a id="daily" class="switchMode left" href="/" title="Daily Mode"><i class="material-icons">home</i></a>
             <a id="statsBtn" class="switchMode right" href="javascript:showStats()" title="Show Stats"><i
                     class="material-icons">leaderboard</i></a>
         </div>
@@ -173,35 +166,10 @@
                 </button>
             </div>
         </div>
-        <div class="overlay" id="instructions">
-            <div class="message">
-                <h2>How to Play</h2>
-                <p>Guess the word from the Bible in six tries</p>
-                <p>Each guess must be a valid five-letter word from the KJV.</p>
-                <p>After each guess, the tiles will change colors to show how close your guess was to the word.</p>
-                <hr>
-                <h2>Examples</h2>
-                <table>
-                    <tr>
-                        <td class="bad">J</td>
-                        <td class="inword">E</td>
-                        <td>S</td>
-                        <td class="good">U</td>
-                        <td>S</td>
-                    </tr>
-                </table>
-                <p>The letter <b>U</b> is in the correct spot</p>
-                <p>The letter <b>E</b> is in the word but in the wrong spot</p>
-                <p>The letter <b>J</b> is not in the word</p>
-
-                <button onclick="document.getElementById('instructions').style.display='none'" class="close"><i
-                        class="material-icons">close</i></button>
-            </div>
-        </div>
     </main>
     <script src="/res/scripts/words.min.js" defer></script>
-    <script src="/res/scripts/bibordle.min.js" defer></script>
-    <script>if (!localStorage.hasOwnProperty("educated")) { document.getElementById("instructions").style.display = 'block'; localStorage.setItem("educated", true); } navigator.serviceWorker.register('/serviceworker.js?v=f7f43d82-2a81-4675-83b3-fcb996791c0f'); if (!navigator.onLine) showAlert("You're offline", false);</script>
+    <script src="/res/scripts/bibordle-unlimited.js" defer></script>
+    <script>navigator.serviceWorker.register('/serviceworker.js?v=f7f43d82-2a81-4675-83b3-fcb996791c0f');</script>
 </body>
 
 </html>
