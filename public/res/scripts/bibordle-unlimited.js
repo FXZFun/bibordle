@@ -4,12 +4,13 @@ var verse = "";
 var reference = "";
 var wordCount = 0;
 
+var solution = words[Math.floor(Math.random() * words.length)];
 var restoringFromLocalStorage = false;
 var lineId = 0;
 var letterId = 0;
 var currentLetters = [];
 var guessedWords = ["", "", "", "", "", ""];
-var shareResult = "Bibordle #{number} {guesses}/6\n";
+var shareResult = "Bibordle Practice #{number} {guesses}/6\n";
 var gameEnabled = true;
 var validLetters = "qwertyuiopasdfghjklzxcvbnmenterbackspace";
 
@@ -61,7 +62,6 @@ function guess() {
                 updateLetterClass(g, i, "good");
             }
         });
-
         currentLetters.forEach((g, i) => {
             if (solution.includes(g) && lettersNeeded.includes(g) && g != solution.split("")[i]) {
                 lettersNeeded.splice(lettersNeeded.indexOf(g), 1);
@@ -92,13 +92,11 @@ function finishGame() {
 
     if (!restoringFromLocalStorage) {
         if (currentLetters.join("") == solution) {
-            var gamesWon = localStorage.hasOwnProperty("gamesWon-daily") ? parseInt(localStorage.getItem("gamesWon-daily")) : 0;
-            localStorage.setItem("gamesWon-daily", gamesWon + 1);
-            gtag('send', 'event', { eventCategory: 'Game End', eventAction: 'Win' });
+            var gamesWon = localStorage.hasOwnProperty("gamesWon-practice") ? parseInt(localStorage.getItem("gamesWon-practice")) : 0;
+            localStorage.setItem("gamesWon-practice", gamesWon + 1);
         }
-        else gtag('send', 'event', { eventCategory: 'Game End', eventAction: 'Lose' });
-        var gamesPlayed = localStorage.hasOwnProperty("gamesPlayed-daily") ? parseInt(localStorage.getItem("gamesPlayed-daily")) : 0;
-        localStorage.setItem("gamesPlayed-daily", gamesPlayed + 1);
+        var gamesPlayed = localStorage.hasOwnProperty("gamesPlayed-practice") ? parseInt(localStorage.getItem("gamesPlayed-practice")) : 0;
+        localStorage.setItem("gamesPlayed-practice", gamesPlayed + 1);
     }
     showStats(currentLetters.join("") == solution);
 }
@@ -137,42 +135,19 @@ function showStats(result) {
         document.getElementById("status").classList.add("lose");
     }
 
-    if (solution == localStorage.getItem("solution-daily")) {
+    if (!gameEnabled) {
+        // getting the verse from kjv
         var matchString = "(?<![\\w\\d])" + solution + "(?![\\w\\d])";
+        // set values
         document.getElementById("word").innerText = solution.toUpperCase();
         document.getElementById("verse").innerHTML = verse.replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
         document.getElementById("reference").innerText = reference;
-        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=KJV";
+        document.getElementById("reference").href = "/search/?reference=" + reference + "&load=true&word=" + solution;
 
-        localStorage.setItem("completedOn-daily", localStorage.getItem("loadGame-daily"));
-    } else {
-        var word = localStorage.getItem("solution-daily");
-        var matchString = "(?<![\\w\\d])" + word + "(?![\\w\\d])";
-        document.getElementById("word").innerText = word.toUpperCase();
-        document.getElementById("verse").innerHTML = verse.replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
-        document.getElementById("reference").innerText = reference;
-        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=KJV";
-    }
-
-
-    document.getElementById("gameScore").innerText = currentLetters.join("") != solution ? "X" : lineId + 1;
-    document.getElementById("gamesPlayed").innerText = parseInt(localStorage.getItem("gamesPlayed-daily"));
-    document.getElementById("successRate").innerText = parseInt(parseInt(localStorage.getItem("gamesWon-daily")) / parseInt(localStorage.getItem("gamesPlayed-daily")) * 100) + "%";
-}
-
-
-function restoreLastGame() {
-    if (localStorage.getItem("solution-daily") == solution) {
-        restoringFromLocalStorage = true;
-        var lastGuesses = JSON.parse(localStorage.getItem("wordsGuessed-daily"));
-        lastGuesses.forEach(lastGuess => {
-            if (lastGuess != "") {
-                for (var letter of lastGuess) {
-                    typeKey(letter);
-                };
-                guess();
-            }
-        });
+        localStorage.setItem("completedOn-practice", localStorage.getItem("loadGame-practice"));
+        document.getElementById("gameScore").innerText = currentLetters.join("") != solution ? "X" : lineId + 1;
+        document.getElementById("gamesPlayed").innerText = parseInt(localStorage.getItem("gamesPlayed-practice"));
+        document.getElementById("successRate").innerText = parseInt(parseInt(localStorage.getItem("gamesWon-practice")) / parseInt(localStorage.getItem("gamesPlayed-practice")) * 100) + "%";
     }
 }
 
@@ -180,7 +155,7 @@ function showWordInfo() {
     alert("This word appears a total of " + wordCount + " times");
 }
 
-function share() {
+function generateShareCode() {
     var i = 0;
     var elements = document.getElementById("btnRow").nextElementSibling.querySelectorAll("td")
     elements.forEach(el => {
@@ -203,25 +178,29 @@ function share() {
     var line = currentLetters.join("") != solution ? "X" : lineId + 1;
     shareResult = shareResult.replace("{number}", number).replace("{guesses}", line);
 
-    var text = document.createElement("textarea");
-    text.style = "position: fixed;top:0;left:0;width:2px;height:2px;";
-    text.innerHTML = shareResult;
-    document.body.appendChild(text);
-    text.select();
-    document.execCommand("copy");
-    text.style = "display: none";
-    document.getElementById('statsPage').style.display = 'none';
-    showAlert("Copied to clipboard");
+    return shareResult;
 }
 
-// get daily details from api
-fetch("https://fxzfun.com/api/bibordle/?mode=daily&translation=KJV&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
+function share() {
+    var content = generateShareCode();
+    if (navigator.share && navigator.canShare({text: content})) {
+        navigator.share({text: content});
+    } else {
+        var text = document.createElement("textarea");
+        text.style = "position: fixed;top:0;left:0;width:2px;height:2px;";
+        text.innerHTML = content;
+        document.body.appendChild(text);
+        text.select();
+        document.execCommand("copy");
+        text.style = "display: none";
+        document.getElementById('statsPage').style.display = 'none';
+        showAlert("Copied to clipboard");
+    }
+}
+
+fetch("https://fxzfun.com/api/bibordle/?mode=unlimited&translation=KJV&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff&word=" + solution).then(r => r.json().then(data => {
     number = data.dailyNumber;
-    solution = data.word;
     verse = data.verse;
     reference = data.reference;
     wordCount = data.wordCount;
-    if (localStorage.getItem("loadGame-daily") != null) {
-        restoreLastGame();
-    }
-}));
+}))
