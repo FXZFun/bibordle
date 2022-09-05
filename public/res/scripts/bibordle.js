@@ -1,8 +1,9 @@
-var number = 0;
-var solution = words[Math.floor(Math.random() * words.length)];
+var number = "-";
+var solution = "";
 var verse = "";
 var reference = "";
 var wordCount = 0;
+var translation = localStorage.hasOwnProperty("bibordle-translation") ? localStorage.getItem("bibordle-translation") : "EHV";
 
 var restoringFromLocalStorage = false;
 var lineId = 0;
@@ -19,7 +20,7 @@ document.addEventListener("keyup", event => {
 });
 
 function typeKey(key) {
-    if (!gameEnabled) return;
+    if (!gameEnabled && !restoringFromLocalStorage) return;
 
     if (key == "enter") guess();
     else if (key == "backspace") {
@@ -127,7 +128,7 @@ if (localStorage.hasOwnProperty("darkMode")) {
     toggleDarkMode();
 }
 
-function showStats(result) {
+function showStats(result = (currentLetters.join("") == solution)) {
     document.getElementById("statsPage").style.display = "block";
     if (result) {
         document.getElementById("status").classList.remove("lose");
@@ -142,7 +143,7 @@ function showStats(result) {
         document.getElementById("word").innerText = solution.toUpperCase();
         document.getElementById("verse").innerHTML = verse.replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
         document.getElementById("reference").innerText = reference;
-        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=KJV";
+        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=" + translation;
 
         localStorage.setItem("completedOn-daily", localStorage.getItem("loadGame-daily"));
     } else {
@@ -151,18 +152,19 @@ function showStats(result) {
         document.getElementById("word").innerText = word.toUpperCase();
         document.getElementById("verse").innerHTML = verse.replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
         document.getElementById("reference").innerText = reference;
-        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=KJV";
+        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=" + translation;
     }
 
 
     document.getElementById("gameScore").innerText = currentLetters.join("") != solution ? "X" : lineId + 1;
-    document.getElementById("gamesPlayed").innerText = parseInt(localStorage.getItem("gamesPlayed-daily"));
-    document.getElementById("successRate").innerText = parseInt(parseInt(localStorage.getItem("gamesWon-daily")) / parseInt(localStorage.getItem("gamesPlayed-daily")) * 100) + "%";
+    document.getElementById("gamesPlayed").innerText = localStorage.hasOwnProperty("gamesPlayed-daily") ? parseInt(localStorage.getItem("gamesPlayed-daily")) : 0;
+    document.getElementById("successRate").innerText = localStorage.hasOwnProperty("gamesWon-daily") ? parseInt(parseInt(localStorage.getItem("gamesWon-daily")) / parseInt(localStorage.getItem("gamesPlayed-daily")) * 100) + "%" : 0 + "%";
 }
 
 
 function restoreLastGame() {
     if (localStorage.getItem("solution-daily") == solution) {
+        gameEnabled = false;
         restoringFromLocalStorage = true;
         var lastGuesses = JSON.parse(localStorage.getItem("wordsGuessed-daily"));
         lastGuesses.forEach(lastGuess => {
@@ -173,7 +175,13 @@ function restoreLastGame() {
                 guess();
             }
         });
+        fetch("https://fxzfun.com/api/bibordle/?mode=unlimited&translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff&word=" + solution).then(r => r.json().then(data => {
+            verse = data.verse;
+            reference = data.reference;
+            wordCount = data.wordCount;
+        }));
     }
+    document.getElementById("translationBtn").value = localStorage.hasOwnProperty("bibordle-translation") ? localStorage.getItem("bibordle-translation") : "EHV";
 }
 
 function showWordInfo() {
@@ -214,14 +222,26 @@ function share() {
     showAlert("Copied to clipboard");
 }
 
+function setTranslation(translation) {
+    this.translation = translation;
+    localStorage.setItem("bibordle-translation", translation);
+    getFromApi();
+}
+
 // get daily details from api
-fetch("https://fxzfun.com/api/bibordle/?mode=daily&translation=KJV&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
-    number = data.dailyNumber;
-    solution = data.word;
-    verse = data.verse;
-    reference = data.reference;
-    wordCount = data.wordCount;
-    if (localStorage.getItem("loadGame-daily") != null) {
-        restoreLastGame();
-    }
-}));
+function getFromApi() {
+    fetch("https://fxzfun.com/api/bibordle/?mode=daily&translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
+        number = data.dailyNumber;
+        solution = data.word;
+        verse = data.verse;
+        reference = data.reference;
+        wordCount = data.wordCount;
+        if (localStorage.getItem("loadGame-daily") != null) {
+            restoreLastGame();
+        }
+    }));
+    fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
+        words = data;
+    }));
+}
+getFromApi();

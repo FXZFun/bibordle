@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bibordle - The Bible Wordle</title>
-    <link rel="stylesheet" href="/res/styles/main.css" type="text/css">
+    <link rel="stylesheet" href="/res/styles/main.min.css" type="text/css">
     <!-- Fonts -->
     <link rel="preload" href="/res/fonts/MaterialIcons-Regular.ttf" as="font" crossorigin>
     <link rel="font" href="/res/fonts/MaterialIcons-Regular.ttf">
@@ -52,11 +52,16 @@
         </div>
         <h1 style="margin-bottom: 0;" onclick="toggleDarkMode()" title="Toggle Dark Mode">Bibordle</h1>
         <p style="margin-bottom: 40px;">THE BIBLE WORDLE</p>
-        <div id="btnRow">
-            <a id="unlimited" class="switchMode left" href="/unlimited" title="Unlimited Mode"><i
-                    class="material-icons">all_inclusive</i></a>
-            <a id="statsBtn" class="switchMode right" href="javascript:showStats()" title="Show Stats"><i
+        <a id="unlimited" class="switchMode left" href="/unlimited" title="Unlimited Mode"><i
+                class="material-icons">all_inclusive</i></a>
+        <div class="switchMode right">
+            <a id="statsBtn" class="switchMode" href="javascript:showStats()" title="Show Stats"><i
                     class="material-icons">leaderboard</i></a>
+            <select id="translationBtn" class="switchMode" title="Change Translation"
+                onchange="setTranslation(this.value)">
+                <option>EHV</option>
+                <option>KJV</option>
+            </select>
         </div>
         <table>
             <tbody>
@@ -199,9 +204,15 @@
             </div>
         </div>
     </main>
-    <script src="/res/scripts/words.min.js" defer></script>
     <script src="/res/scripts/bibordle.min.js" defer></script>
-    <script>if (!localStorage.hasOwnProperty("educated")) { document.getElementById("instructions").style.display = 'block'; localStorage.setItem("educated", true); } navigator.serviceWorker.register('/serviceworker.js?v=f7f43d82-2a81-4675-83b3-fcb996791c0f'); if (!navigator.onLine) showAlert("You're offline", false);</script>
+    <script>if (!localStorage.hasOwnProperty("educated")) { document.getElementById("instructions").style.display = 'block'; localStorage.setItem("educated", true); } navigator.serviceWorker.register('/serviceworker.js?v=01b9527f-60c6-4873-817f-4925062efc7a'); if (!navigator.onLine) showAlert("You're offline", false); if ('serviceWorker' in navigator) {
+            caches.keys().then(function (cacheNames) {
+                cacheNames.forEach(function (cacheName) {
+                    if (cacheName != "01b9527f-60c6-4873-817f-4925062efc7a")
+                        caches.delete(cacheName);
+                });
+            });
+        }</script>
 </body>
 
 </html>

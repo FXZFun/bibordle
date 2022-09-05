@@ -1,10 +1,10 @@
-var number = 0;
-var solution = words[Math.floor(Math.random() * words.length)];
+var number = "-";
+var solution = "";
 var verse = "";
 var reference = "";
 var wordCount = 0;
+var translation = localStorage.hasOwnProperty("bibordle-translation") ? localStorage.getItem("bibordle-translation") : "EHV";
 
-var solution = words[Math.floor(Math.random() * words.length)];
 var restoringFromLocalStorage = false;
 var lineId = 0;
 var letterId = 0;
@@ -142,7 +142,7 @@ function showStats(result) {
         document.getElementById("word").innerText = solution.toUpperCase();
         document.getElementById("verse").innerHTML = verse.replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
         document.getElementById("reference").innerText = reference;
-        document.getElementById("reference").href = "/search/?reference=" + reference + "&load=true&word=" + solution;
+        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=" + translation;
 
         localStorage.setItem("completedOn-practice", localStorage.getItem("loadGame-practice"));
         document.getElementById("gameScore").innerText = currentLetters.join("") != solution ? "X" : lineId + 1;
@@ -183,8 +183,8 @@ function generateShareCode() {
 
 function share() {
     var content = generateShareCode();
-    if (navigator.share && navigator.canShare({text: content})) {
-        navigator.share({text: content});
+    if (navigator.share && navigator.canShare({ text: content })) {
+        navigator.share({ text: content });
     } else {
         var text = document.createElement("textarea");
         text.style = "position: fixed;top:0;left:0;width:2px;height:2px;";
@@ -198,9 +198,25 @@ function share() {
     }
 }
 
-fetch("https://fxzfun.com/api/bibordle/?mode=unlimited&translation=KJV&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff&word=" + solution).then(r => r.json().then(data => {
-    number = data.dailyNumber;
-    verse = data.verse;
-    reference = data.reference;
-    wordCount = data.wordCount;
-}))
+function setTranslation(translation) {
+    this.translation = translation;
+    localStorage.setItem("bibordle-translation", translation);
+    getFromApi();
+}
+
+// get daily details from api
+function getFromApi() {
+
+    fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
+        words = data;
+        solution = words[Math.floor(Math.random() * words.length)];
+        document.getElementById("translationBtn").value = localStorage.hasOwnProperty("bibordle-translation") ? localStorage.getItem("bibordle-translation") : "EHV";
+        fetch("https://fxzfun.com/api/bibordle/?mode=unlimited&translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff&word=" + solution).then(r => r.json().then(data => {
+            number = data.dailyNumber;
+            verse = data.verse;
+            reference = data.reference;
+            wordCount = data.wordCount;
+        }));
+    }));
+}
+getFromApi();

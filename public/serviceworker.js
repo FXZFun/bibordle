@@ -1,4 +1,4 @@
-var webId = "f7f43d82-2a81-4675-83b3-fcb996791c0f";
+var webId = "01b9527f-60c6-4873-817f-4925062efc7a";
 
 self.addEventListener('install', function (e) {
     self.skipWaiting();

@@ -123,7 +123,6 @@ td {
 
 .switchMode {
     border: none;
-    background-color: #81C784;
     border-radius: 12px;
     padding: 10px 20px;
     font-family: 'Maven Pro', 'Open Sans', sans-serif;
@@ -145,11 +144,14 @@ td {
     right: 33%;
 }
 
-.switchMode.active {
-    border: none;
-    background-color: #388e3c;
-    font-weight: bold;
-    color: #101010;
+#statsBtn {
+    display: block;
+    padding: 0;
+}
+
+#translationBtn {
+    padding: 0;
+    margin-top: 18px;
 }
 
 @media screen and (min-width: 500px) {
