@@ -10,7 +10,6 @@ var lineId = 0;
 var letterId = 0;
 var currentLetters = [];
 var guessedWords = ["", "", "", "", "", ""];
-var shareResult = "Bibordle Practice #{number} {guesses}/6\n";
 var gameEnabled = true;
 var validLetters = "qwertyuiopasdfghjklzxcvbnmenterbackspace";
 
@@ -157,7 +156,8 @@ function showWordInfo() {
 
 function generateShareCode() {
     var i = 0;
-    var elements = document.getElementById("btnRow").nextElementSibling.querySelectorAll("td")
+    var shareResult = "Bibordle #{number} {guesses}/6\n";
+    var elements = document.getElementById("gameboard").querySelectorAll("td")
     elements.forEach(el => {
         if (el.classList != "") {
             if (el.classList == "good") {
@@ -181,20 +181,32 @@ function generateShareCode() {
     return shareResult;
 }
 
+function legacyShare() {
+    var content = generateShareCode();
+    var text = document.createElement("textarea");
+    text.style = "position: fixed;top:0;left:0;width:2px;height:2px;";
+    text.innerHTML = content;
+    document.body.appendChild(text);
+    text.select();
+    document.execCommand("copy");
+    text.style = "display: none";
+    showAlert("Copied to clipboard");
+    document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
+    setTimeout(() => document.getElementById('statsPage').style.display = 'none', 2000);
+}
+
 function share() {
     var content = generateShareCode();
     if (navigator.share && navigator.canShare({ text: content })) {
-        navigator.share({ text: content });
+        navigator.share({ text: content })
+        .then(() => {
+            document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
+        }).catch(e => {
+            console.log(e);
+            legacyShare();
+        });
     } else {
-        var text = document.createElement("textarea");
-        text.style = "position: fixed;top:0;left:0;width:2px;height:2px;";
-        text.innerHTML = content;
-        document.body.appendChild(text);
-        text.select();
-        document.execCommand("copy");
-        text.style = "display: none";
-        document.getElementById('statsPage').style.display = 'none';
-        showAlert("Copied to clipboard");
+        legacyShare();
     }
 }
 
