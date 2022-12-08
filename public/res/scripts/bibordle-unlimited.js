@@ -157,7 +157,7 @@ function showWordInfo() {
 
 function generateShareCode() {
     var i = 0;
-    var shareResult = "Bibordle #{number} {guesses}/6\n";
+    var shareResult = "Bibordle Unlimited {guesses}/6\n";
     var elements = document.getElementById("gameboard").querySelectorAll("td")
     elements.forEach(el => {
         if (el.classList != "") {
@@ -177,7 +177,7 @@ function generateShareCode() {
     });
     shareResult += "bibordle.web.app";
     var line = currentLetters.join("") != solution ? "X" : lineId + 1;
-    shareResult = shareResult.replace("{number}", number).replace("{guesses}", line);
+    shareResult = shareResult.replace("{guesses}", line);
 
     return shareResult;
 }
