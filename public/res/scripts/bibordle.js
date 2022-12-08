@@ -140,7 +140,8 @@ function showStats(result = (currentLetters.join("") == solution)) {
     var word = solution == localStorage.getItem("solution-daily") ? solution : localStorage.getItem("solution-daily");
     document.getElementById("word").innerText = word.toUpperCase();
     document.getElementById("verse").innerHTML = verse.replace(new RegExp(word, "gi"), (match, index) => {
-        if (!verse[index - 1].match(/[a-z]/i) && !verse[index + match.length + 1].match(/[a-z]/i)) return "<b>" + match + "</b>";
+        if (index-1 >= 0 && index+match.length <= verse.length && !verse[index - 1].match(/[a-z]/i) && !verse[index + match.length].match(/[a-z]/i)) return "<b>" + match + "</b>";
+        else if (!verse[index].match(/[a-z]/i) && !verse[index + match.length].match(/[a-z]/i)) return "<b>" + match + "</b>";
         else return match;
     });
     document.getElementById("reference").innerText = reference;

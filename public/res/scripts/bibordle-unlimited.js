@@ -138,7 +138,8 @@ function showStats(result) {
         // set values
         document.getElementById("word").innerText = solution.toUpperCase();
         document.getElementById("verse").innerHTML = verse.replace(new RegExp(solution, "gi"), (match, index) => {
-            if (!verse[index - 1].match(/[a-z]/i) && !verse[index + match.length + 1].match(/[a-z]/i)) return "<b>" + match + "</b>";
+            if (index-1 >= 0 && index+match.length <= verse.length && !verse[index - 1].match(/[a-z]/i) && !verse[index + match.length].match(/[a-z]/i)) return "<b>" + match + "</b>";
+            else if (!verse[index].match(/[a-z]/i) && !verse[index + match.length].match(/[a-z]/i)) return "<b>" + match + "</b>";
             else return match;
         });
         document.getElementById("reference").innerText = reference;
@@ -200,12 +201,12 @@ function share() {
     var content = generateShareCode();
     if (navigator.share && navigator.canShare({ text: content })) {
         navigator.share({ text: content })
-        .then(() => {
-            document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
-        }).catch(e => {
-            console.log(e);
-            legacyShare();
-        });
+            .then(() => {
+                document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
+            }).catch(e => {
+                console.log(e);
+                legacyShare();
+            });
     } else {
         legacyShare();
     }
