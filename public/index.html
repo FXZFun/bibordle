@@ -205,10 +205,10 @@
         </div>
     </main>
     <script src="/res/scripts/bibordle.min.js" defer></script>
-    <script>if (!localStorage.hasOwnProperty("educated")) { document.getElementById("instructions").style.display = 'block'; localStorage.setItem("educated", true); } navigator.serviceWorker.register('/serviceworker.js?v=01b9527f-60c6-4873-817f-4925062efc7a'); if (!navigator.onLine) showAlert("You're offline", false); if ('serviceWorker' in navigator) {
+    <script>if (!localStorage.hasOwnProperty("educated")) { document.getElementById("instructions").style.display = 'block'; localStorage.setItem("educated", true); } navigator.serviceWorker.register('/serviceworker.js?v=12a18ec0-b470-4b3c-8d6d-ef655712196a'); if (!navigator.onLine) showAlert("You're offline", false); if ('serviceWorker' in navigator) {
             caches.keys().then(function (cacheNames) {
                 cacheNames.forEach(function (cacheName) {
-                    if (cacheName != "01b9527f-60c6-4873-817f-4925062efc7a")
+                    if (cacheName != "12a18ec0-b470-4b3c-8d6d-ef655712196a")
                         caches.delete(cacheName);
                 });
             });

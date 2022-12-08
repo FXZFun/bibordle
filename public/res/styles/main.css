@@ -318,17 +318,29 @@ button i {
         color: #fafafa !important;
         background-color: #212121;
     }
-
-    td {
-        color: #212121;
-    }
-
+    
     .message {
         background-color: #212121;
     }
-
+    
     .alert {
         background-color: #fafafa;
+        color: #212121;
+    }
+    
+    .message a, .message .close {
+        color: #fafafa;
+    }
+    
+    .switchMode {
+        color: #fafafa;
+    }
+    
+    .stats, .message .close{
+        background-color: #212121;
+    }
+
+    td, select.switchMode {
         color: #212121;
     }
 }
@@ -336,10 +348,6 @@ button i {
 body.darkMode {
     color: #fafafa !important;
     background-color: #212121;
-}
-
-body.darkMode td {
-    color: #212121;
 }
 
 body.darkMode .message {
@@ -361,4 +369,8 @@ body.darkMode .switchMode {
 
 body.darkMode .stats, body.darkMode .message .close{
     background-color: #212121;
+}
+
+body.darkMode select.switchMode, body.darkMode td {
+    color: #212121;
 }
