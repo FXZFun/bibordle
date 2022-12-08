@@ -216,6 +216,16 @@ function setTranslation(translation) {
     this.translation = translation;
     localStorage.setItem("bibordle-translation", translation);
     getFromApi();
+    document.querySelectorAll("td").forEach((t) => {
+        t.classList = "";
+        t.innerHTML = "";
+    });
+    document.querySelectorAll(".row button").forEach((t) => {
+        t.classList = "";
+    });
+    lineId = 0;
+    letterId = 0;
+    gameEnabled = true;
 }
 
 // get daily details from api
