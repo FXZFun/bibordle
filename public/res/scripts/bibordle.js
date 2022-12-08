@@ -137,22 +137,14 @@ function showStats(result = (currentLetters.join("") == solution)) {
         document.getElementById("status").classList.add("lose");
     }
 
-    if (solution == localStorage.getItem("solution-daily")) {
-        var matchString = "(?<![\\w\\d])" + solution + "(?![\\w\\d])";
-        document.getElementById("word").innerText = solution.toUpperCase();
-        document.getElementById("verse").innerHTML = verse.replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
-        document.getElementById("reference").innerText = reference;
-        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=" + translation;
-
-        localStorage.setItem("completedOn-daily", localStorage.getItem("loadGame-daily"));
-    } else {
-        var word = localStorage.getItem("solution-daily");
-        var matchString = "(?<![\\w\\d])" + word + "(?![\\w\\d])";
-        document.getElementById("word").innerText = word.toUpperCase();
-        document.getElementById("verse").innerHTML = verse.replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
-        document.getElementById("reference").innerText = reference;
-        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=" + translation;
-    }
+    var word = solution == localStorage.getItem("solution-daily") ? solution : localStorage.getItem("solution-daily");
+    document.getElementById("word").innerText = word.toUpperCase();
+    document.getElementById("verse").innerHTML = verse.replace(new RegExp(word, "gi"), (match, index) => {
+        if (!verse[index - 1].match(/[a-z]/i) && !verse[index + match.length + 1].match(/[a-z]/i)) return "<b>" + match + "</b>";
+        else return match;
+    });
+    document.getElementById("reference").innerText = reference;
+    document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=" + translation;
 
 
     document.getElementById("gameScore").innerText = currentLetters.join("") != solution ? "X" : lineId + 1;
@@ -232,12 +224,12 @@ function share() {
     var content = generateShareCode();
     if (navigator.share && navigator.canShare({ text: content })) {
         navigator.share({ text: content })
-        .then(() => {
-            document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
-        }).catch(e => {
-            console.log(e);
-            legacyShare();
-        });
+            .then(() => {
+                document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
+            }).catch(e => {
+                console.log(e);
+                legacyShare();
+            });
     } else {
         legacyShare();
     }

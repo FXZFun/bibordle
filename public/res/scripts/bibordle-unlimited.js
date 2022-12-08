@@ -51,9 +51,9 @@ function guess() {
     else if (currentGuess.length != 5) showAlert("Not enough letters") // trigger too short
     else {
         guessedWords[lineId] = currentGuess;
-        localStorage.setItem("wordsGuessed-daily", JSON.stringify(guessedWords));
-        localStorage.setItem("loadGame-daily", new Date().getMonth() + 1 + "/" + new Date().getDate() + "/" + new Date().getFullYear());
-        localStorage.setItem("solution-daily", solution);
+        localStorage.setItem("wordsGuessed-practice", JSON.stringify(guessedWords));
+        localStorage.setItem("loadGame-practice", new Date().getMonth() + 1 + "/" + new Date().getDate() + "/" + new Date().getFullYear());
+        localStorage.setItem("solution-practice", solution);
 
         currentLetters.forEach((g, i) => {
             if (g == solution.split("")[i]) {
@@ -135,11 +135,12 @@ function showStats(result) {
     }
 
     if (!gameEnabled) {
-        // getting the verse from kjv
-        var matchString = "(?<![\\w\\d])" + solution + "(?![\\w\\d])";
         // set values
         document.getElementById("word").innerText = solution.toUpperCase();
-        document.getElementById("verse").innerHTML = verse.replaceAll(new RegExp(matchString, "gi"), (match) => "<b>" + match + "</b>");
+        document.getElementById("verse").innerHTML = verse.replace(new RegExp(solution, "gi"), (match, index) => {
+            if (!verse[index - 1].match(/[a-z]/i) && !verse[index + match.length + 1].match(/[a-z]/i)) return "<b>" + match + "</b>";
+            else return match;
+        });
         document.getElementById("reference").innerText = reference;
         document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=" + translation;
 
