@@ -24,15 +24,14 @@ function typeKey(key) {
     if (key == "enter") guess();
     else if (key == "backspace") {
         backspace();
-        document.getElementById("line" + lineId).style = "";
+        document.getElementById("line" + lineId).classList.remove("notAWord");
     } else if (letterId < 5) {
         document.getElementById("line" + lineId).children[letterId].innerText = key.toUpperCase();
         letterId++;
         currentLetters.push(key.toLowerCase());
         var currentGuess = currentLetters.join("");
         if (currentGuess.length == 5 && !words.includes(currentGuess)) {
-            document.getElementById("line" + lineId).style.fontWeight = "bold";
-            document.getElementById("line" + lineId).style.color = "#D32F2F";
+            document.getElementById("line" + lineId).classList.add("notAWord");
         }
     }
 }

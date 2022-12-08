@@ -375,3 +375,8 @@ body.darkMode .stats, body.darkMode .message .close{
 body.darkMode select.switchMode, body.darkMode td {
     color: #212121;
 }
+
+tr.notAWord td {
+    font-weight: bold;
+    color: rgb(211, 47, 47);
+}

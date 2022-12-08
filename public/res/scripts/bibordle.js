@@ -24,15 +24,14 @@ function typeKey(key) {
     if (key == "enter") guess();
     else if (key == "backspace") {
         backspace();
-        document.getElementById("line" + lineId).style = "";
+        document.getElementById("line" + lineId).classList.remove("notAWord");
     } else if (letterId < 5) {
         document.getElementById("line" + lineId).children[letterId].innerText = key.toUpperCase();
         letterId++;
         currentLetters.push(key.toLowerCase());
         var currentGuess = currentLetters.join("");
         if (currentGuess.length == 5 && !words.includes(currentGuess)) {
-            document.getElementById("line" + lineId).style.fontWeight = "bold";
-            document.getElementById("line" + lineId).style.color = "#D32F2F";
+            document.getElementById("line" + lineId).classList.add("notAWord");
         }
     }
 }
@@ -182,7 +181,7 @@ function showWordInfo() {
 
 function generateShareCode() {
     var i = 0;
-    var shareResult = "Bibordle #{number} {guesses}/6\n";
+    var shareResult = "Bibordle #{number} {translation} {guesses}/6\n";
     var elements = document.getElementById("gameboard").querySelectorAll("td")
     elements.forEach(el => {
         if (el.classList != "") {
@@ -202,7 +201,7 @@ function generateShareCode() {
     });
     shareResult += "bibordle.web.app";
     var line = currentLetters.join("") != solution ? "X" : lineId + 1;
-    shareResult = shareResult.replace("{number}", number).replace("{guesses}", line);
+    shareResult = shareResult.replace("{number}", number).replace("{guesses}", line).replace("{translation}", translation);
 
     return shareResult;
 }
