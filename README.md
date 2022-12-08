@@ -2,4 +2,4 @@
 
 The Bible Wordle
 
-Play the wordle with Bible words! All words are taken from the KJV translation of the Bible.
+Play the wordle with Bible words! Play with either EHV or KJV translations of the Bible.
