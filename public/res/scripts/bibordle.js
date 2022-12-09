@@ -136,16 +136,16 @@ function showStats(result = (currentLetters.join("") == solution)) {
         document.getElementById("status").classList.add("lose");
     }
 
-    var word = solution == localStorage.getItem("solution-daily") ? solution : localStorage.getItem("solution-daily");
-    document.getElementById("word").innerText = word.toUpperCase();
-    document.getElementById("verse").innerHTML = verse.replace(new RegExp(word, "gi"), (match, index) => {
-        if (index-1 >= 0 && index+match.length <= verse.length && !verse[index - 1].match(/[a-z]/i) && !verse[index + match.length].match(/[a-z]/i)) return "<b>" + match + "</b>";
-        else if (!verse[index].match(/[a-z]/i) && !verse[index + match.length].match(/[a-z]/i)) return "<b>" + match + "</b>";
-        else return match;
-    });
-    document.getElementById("reference").innerText = reference;
-    document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=" + translation;
-
+    if (solution == localStorage.getItem("solution-daily")) {
+        document.getElementById("word").innerText = solution.toUpperCase();
+        document.getElementById("verse").innerHTML = verse.replace(new RegExp(solution, "gi"), (match, index) => {
+            if (index - 1 > 0 && index + match.length < verse.length && (!verse[index - 1].match(/[a-z]/i)) && (!verse[index + match.length].match(/[a-z]/i))) return "<b>" + match + "</b>";
+            else if (index == 0 || (index == (verse.length - match.length))) return "<b>" + match + "</b>";
+            else return match;
+        });
+        document.getElementById("reference").innerText = reference;
+        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=" + translation;
+    }
 
     document.getElementById("gameScore").innerText = currentLetters.join("") != solution ? "X" : lineId + 1;
     document.getElementById("gamesPlayed").innerText = localStorage.hasOwnProperty("gamesPlayed-daily") ? parseInt(localStorage.getItem("gamesPlayed-daily")) : 0;
@@ -226,6 +226,7 @@ function share() {
         navigator.share({ text: content })
             .then(() => {
                 document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
+                legacyShare();
             }).catch(e => {
                 console.log(e);
                 legacyShare();
@@ -248,6 +249,11 @@ function setTranslation(translation) {
     });
     lineId = 0;
     letterId = 0;
+    currentLetters = [];
+    currentGuess = "";
+    for (var line = 0; line < 5; line++) {
+        document.getElementById("line" + line).classList.add("notActive");
+    }
     gameEnabled = true;
 }
 

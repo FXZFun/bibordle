@@ -8,6 +8,9 @@ body {
 
 main {
     overflow: auto;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 table {
@@ -122,6 +125,10 @@ td {
     padding: 0px;
 }
 
+.header {
+    position: relative;
+}
+
 .switchMode {
     border: none;
     border-radius: 12px;
@@ -233,6 +240,7 @@ td.good {
 
     /* Support for IE. */
     font-feature-settings: 'liga';
+    vertical-align: middle;
 }
 
 @font-face {
@@ -276,6 +284,7 @@ button i {
     right: 0;
     margin: 0;
     background: #fff;
+    cursor: pointer;
 }
 
 .stats div span {
@@ -379,4 +388,24 @@ body.darkMode select.switchMode, body.darkMode td {
 tr.notAWord td {
     font-weight: bold;
     color: rgb(211, 47, 47);
+}
+
+p.bottom-links {
+    bottom: 0;
+    margin: auto;
+    left: 0;
+    right: 0;
+    padding: 5px;
+}
+
+.bottom-links a {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #757575;
+}
+
+.bottom-links a:hover {
+    background-color: #E0E0E0;
 }

@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bibordle - The Bible Wordle</title>
-    <link rel="stylesheet" href="/res/styles/main.min.css" type="text/css">
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/res/raw/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/res/raw/favicons/favicon-32x32.png">
@@ -30,6 +29,69 @@
     <meta property="og:image:url" content="https://bibordle.web.app/res/raw/preview.png" />
     <meta property="twitter:image" content="https://bibordle.web.app/res/raw/preview.png" />
     <style>
+        body {
+            background-color: #fafafa;
+            color: #212121;
+            text-align: center;
+            margin: auto;
+            font-family: 'Maven Pro', 'Open Sans', sans-serif;
+        }
+
+        /* fonts */
+        @font-face {
+            font-family: 'Material Icons';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(/res/fonts/MaterialIcons-Regular.ttf);
+            /* For IE6-8 */
+            src: local('Material Icons'),
+                local('MaterialIcons-Regular'),
+                url(/res/fonts/MaterialIcons-Regular.ttf) format('truetype');
+        }
+
+        .material-icons {
+            font-family: 'Material Icons';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            /* Preferred icon size */
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+
+            /* Support for all WebKit browsers. */
+            -webkit-font-smoothing: antialiased;
+            /* Support for Safari and Chrome. */
+            text-rendering: optimizeLegibility;
+
+            /* Support for Firefox. */
+            -moz-osx-font-smoothing: grayscale;
+
+            /* Support for IE. */
+            font-feature-settings: 'liga';
+            vertical-align: middle;
+        }
+
+        @font-face {
+            font-family: 'Maven Pro';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(/res/fonts/MavenPro-VariableFont_wght.ttf);
+            /* For IE6-8 */
+            src: local('Maven Pro'),
+                url(/res/fonts/MavenPro-VariableFont_wght.ttf) format('truetype');
+        }
+
+        button {
+            font-family: 'Maven Pro', sans-serif;
+        }
+
         h1.offline-icon {
             font-family: 'Material Icons';
             font-size: 6em;

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bibordle - The Bible Wordle</title>
+    <title>Bibordle Unlimited - The Bible Wordle</title>
     <link rel="stylesheet" href="/res/styles/main.min.css" type="text/css">
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/res/raw/favicons/apple-touch-icon.png">
@@ -23,7 +23,7 @@
     <!-- Social -->
     <meta property="og:url" content="https://bibordle.web.app/unlimited" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Bibordle - The Bible Wordle" />
+    <meta property="og:title" content="Bibordle Unlimited - The Bible Wordle" />
     <meta property="og:description" content="Guess the five letter word from the Bible in this new Wordle variant" />
     <meta property="og:image" content="https://bibordle.web.app/res/raw/preview.png" />
     <meta property="og:image:url" content="https://bibordle.web.app/res/raw/preview.png" />
@@ -44,17 +44,19 @@
         <div id="alert" class="alert">
             <p id="alertText"></p>
         </div>
-        <h1 style="margin-bottom: 0;" onclick="toggleDarkMode()" title="Toggle Dark Mode">Bibordle</h1>
-        <p>THE BIBLE WORDLE</p>
-        <a id="daily" class="switchMode left" href="/" title="Daily Mode"><i class="material-icons">home</i></a>
-        <div class="switchMode right">
-            <a id="statsBtn" class="switchMode" href="javascript:showStats()" title="Show Stats"><i
-                    class="material-icons">leaderboard</i></a>
-            <select id="translationBtn" class="switchMode" title="Change Translation"
-                onchange="setTranslation(this.value)">
-                <option>EHV</option>
-                <option>KJV</option>
-            </select>
+        <div class="header">
+            <h1 style="margin-bottom: 0;" onclick="toggleDarkMode()" title="Toggle Dark Mode">Bibordle</h1>
+            <p>UNLIMITED</p>
+            <a id="daily" class="switchMode left" href="/" title="Daily Mode"><i class="material-icons">home</i></a>
+            <div class="switchMode right">
+                <a id="statsBtn" class="switchMode" href="javascript:showStats()" title="Show Stats"><i
+                        class="material-icons">leaderboard</i></a>
+                <select id="translationBtn" class="switchMode" title="Change Translation"
+                    onchange="setTranslation(this.value)">
+                    <option>EHV</option>
+                    <option>KJV</option>
+                </select>
+            </div>
         </div>
         <table id="gameboard">
             <tbody>
@@ -171,9 +173,13 @@
                 </button>
             </div>
         </div>
+        <p class="bottom-links">
+            <a href="mailto:bibordle@fxzfun.com" target="_blank"><i class="material-icons">bug_report</i> Report Bug</a>
+            <a href="https://github.com/FXZFun/bibordle" target="_blank"><i class="material-icons">code</i> GitHub</a>
+        </p>
     </main>
     <script src="/res/scripts/bibordle-unlimited.min.js" defer></script>
-    <script>navigator.serviceWorker.register('/serviceworker.js?v=01b9527f-60c6-4873-817f-4925062efc7a');</script>
+    <script>navigator.serviceWorker.register('/serviceworker.js?v=4ec7f136-95cd-499e-b23c-5e8642f4450f');</script>
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-var webId = "12a18ec0-b470-4b3c-8d6d-ef655712196a";
+var webId = "4ec7f136-95cd-499e-b23c-5e8642f4450f";
 
 self.addEventListener('install', function (e) {
     self.skipWaiting();
@@ -6,7 +6,6 @@ self.addEventListener('install', function (e) {
         caches.open(webId).then(function (cache) {
             return cache.addAll([
                 '/offline.html',
-                "/res/styles/main.min.css",
                 "/res/fonts/MaterialIcons-Regular.ttf",
                 "/res/fonts/MavenPro-VariableFont_wght.ttf"
             ]);

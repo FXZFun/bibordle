@@ -50,18 +50,20 @@
         <div id="alert" class="alert">
             <p id="alertText"></p>
         </div>
-        <h1 style="margin-bottom: 0;" onclick="toggleDarkMode()" title="Toggle Dark Mode">Bibordle</h1>
-        <p style="margin-bottom: 40px;">THE BIBLE WORDLE</p>
-        <a id="unlimited" class="switchMode left" href="/unlimited" title="Unlimited Mode"><i
-                class="material-icons">all_inclusive</i></a>
-        <div class="switchMode right">
-            <a id="statsBtn" class="switchMode" href="javascript:showStats()" title="Show Stats"><i
-                    class="material-icons">leaderboard</i></a>
-            <select id="translationBtn" class="switchMode" title="Change Translation"
-                onchange="setTranslation(this.value)">
-                <option>EHV</option>
-                <option>KJV</option>
-            </select>
+        <div class="header">
+            <h1 style="margin-bottom: 0;" onclick="toggleDarkMode()" title="Toggle Dark Mode">Bibordle</h1>
+            <p style="margin-bottom: 40px;">THE BIBLE WORDLE</p>
+            <a id="unlimited" class="switchMode left" href="/unlimited" title="Unlimited Mode"><i
+                    class="material-icons">all_inclusive</i></a>
+            <div class="switchMode right">
+                <a id="statsBtn" class="switchMode" href="javascript:showStats()" title="Show Stats"><i
+                        class="material-icons">leaderboard</i></a>
+                <select id="translationBtn" class="switchMode" title="Change Translation"
+                    onchange="setTranslation(this.value)">
+                    <option>EHV</option>
+                    <option>KJV</option>
+                </select>
+            </div>
         </div>
         <table id="gameboard">
             <tbody>
@@ -203,13 +205,16 @@
                         class="material-icons">close</i></button>
             </div>
         </div>
+        <p class="bottom-links">
+            <a href="mailto:bibordle@fxzfun.com" target="_blank"><i class="material-icons">bug_report</i> Report Bug</a>
+            <a href="https://github.com/FXZFun/bibordle" target="_blank"><i class="material-icons">code</i> GitHub</a>
+        </p>
     </main>
     <script src="/res/scripts/bibordle.min.js" defer></script>
-    <script>if (!localStorage.hasOwnProperty("educated")) { document.getElementById("instructions").style.display = 'block'; localStorage.setItem("educated", true); } navigator.serviceWorker.register('/serviceworker.js?v=12a18ec0-b470-4b3c-8d6d-ef655712196a'); if (!navigator.onLine) showAlert("You're offline", false); if ('serviceWorker' in navigator) {
+    <script>if (!localStorage.hasOwnProperty("educated")) { document.getElementById("instructions").style.display = 'block'; localStorage.setItem("educated", true); } navigator.serviceWorker.register('/serviceworker.js?v=4ec7f136-95cd-499e-b23c-5e8642f4450f'); if (!navigator.onLine) showAlert("You're offline", false); if ('serviceWorker' in navigator) {
             caches.keys().then(function (cacheNames) {
                 cacheNames.forEach(function (cacheName) {
-                    if (cacheName != "12a18ec0-b470-4b3c-8d6d-ef655712196a")
-                        caches.delete(cacheName);
+                    caches.delete(cacheName);
                 });
             });
         }</script>
