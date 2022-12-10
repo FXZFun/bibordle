@@ -55,6 +55,7 @@ td {
     font-family: 'Maven Pro', 'Open Sans', sans-serif;
     font-weight: bold;
     text-transform: uppercase;
+    touch-action: manipulation;
 }
 
 .keyboard button i {
