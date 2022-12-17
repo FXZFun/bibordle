@@ -4,6 +4,8 @@ var verse = "";
 var reference = "";
 var wordCount = 0;
 var translation = localStorage.hasOwnProperty("bibordle-translation") ? localStorage.getItem("bibordle-translation") : "EHV";
+var hardModeWords;
+var easyModeWords;
 
 var restoringFromLocalStorage = false;
 var lineId = 0;
@@ -257,6 +259,42 @@ function setTranslation(translation) {
     gameEnabled = true;
 }
 
+function toggleEasyMode(state) {
+    document.getElementById("sEasyMode").checked = state;
+    if (state) {
+        if (!easyModeWords) {
+            fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=EASYMODE&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
+                hardModeWords = words;
+                easyModeWords = data;
+                words = words.concat(data);
+            }));
+        } else {
+            words = words.concat(easyModeWords);
+        }
+        localStorage.setItem("bibordle-easyMode", true);
+    } else {
+        words = hardModeWords;
+        localStorage.setItem("bibordle-easyMode", false);
+    }
+}
+
+function toggleSwapControl(state) {
+    document.getElementById("sSwapControl").checked = state;
+    var enterBtn = document.getElementById("keyboard-enter");
+    var backBtn = document.getElementById("keyboard-backspace");
+    var enterCopy = enterBtn.outerHTML;
+    var backCopy = backBtn.outerHTML;
+    if (state) {
+        backBtn.outerHTML = enterCopy;
+        enterBtn.outerHTML = backCopy;
+        localStorage.setItem("bibordle-swapControls", true);
+    } else {
+        enterBtn.outerHTML = backCopy;
+        backBtn.outerHTML = enterCopy;
+        localStorage.setItem("bibordle-swapControls", false);
+    }
+}
+
 // get daily details from api
 function getFromApi() {
     fetch("https://fxzfun.com/api/bibordle/?mode=daily&translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
@@ -271,6 +309,10 @@ function getFromApi() {
     }));
     fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
         words = data;
+        hardModeWords = data;
+        if (localStorage.hasOwnProperty("bibordle-easyMode")) toggleEasyMode(localStorage.getItem("bibordle-easyMode"));
     }));
 }
+
 getFromApi();
+if (localStorage.hasOwnProperty("bibordle-swapControls")) toggleSwapControl(localStorage.getItem("bibordle-swapControls"));

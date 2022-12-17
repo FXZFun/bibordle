@@ -37,6 +37,34 @@
 
         gtag('config', 'G-RR5336TJ96');
     </script>
+    <style>
+        /* temp styles while reloading cached version */
+        #settings input[type=checkbox] {
+            display: none;
+        }
+
+        #settings input[type=checkbox]+label::before {
+            font-family: "Material Icons";
+            content: "toggle_off";
+            font-size: 32px;
+            vertical-align: middle;
+            color: #757575;
+        }
+
+        #settings input[type=checkbox]:checked+label::before {
+            font-family: "Material Icons";
+            content: "toggle_on";
+            font-size: 32px;
+            vertical-align: middle;
+            color: #212121;
+        }
+
+        #settings .message div {
+            width: fit-content;
+            margin: auto;
+            text-align: left;
+        }
+    </style>
 </head>
 
 <body>
@@ -177,6 +205,28 @@
             <a href="mailto:bibordle@fxzfun.com" target="_blank"><i class="material-icons">bug_report</i> Report Bug</a>
             <a href="https://github.com/FXZFun/bibordle" target="_blank"><i class="material-icons">code</i> GitHub</a>
         </p>
+        <!-- Settings Dialog -->
+        <div class="overlay" id="settings">
+            <div class="message">
+                <h2>Settings</h2>
+                <div>
+                    <p>
+                        <input id="sEasyMode" type="checkbox" onchange="toggleEasyMode(this.checked)" />
+                        <label for="sEasyMode"> Easy Mode </label>
+                        <i class="material-icons wordInfo" title="About"
+                            onclick="alert('Enables guessing words not in the Bible')">info</i>
+                    </p>
+                    <p>
+                        <input id="sSwapControl" type="checkbox" onchange="toggleSwapControl(this.checked)" />
+                        <label for="sSwapControl"> Swap Control Keys </label>
+                        <i class="material-icons wordInfo" title="About"
+                            onclick="alert('Flips back and enter keys')">info</i>
+                    </p>
+                    <button onclick="document.getElementById('settings').style.display='none'" class="close"><i
+                            class="material-icons">close</i></button>
+                </div>
+            </div>
+        </div>
     </main>
     <script src="/res/scripts/bibordle-unlimited.min.js" defer></script>
     <script>navigator.serviceWorker.register('/serviceworker.js?v=4ec7f136-95cd-499e-b23c-5e8642f4450f');</script>

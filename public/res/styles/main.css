@@ -173,7 +173,7 @@ td {
     .switchMode.left {
         left: 15%;
     }
-    
+
     .switchMode.right {
         right: 15%;
     }
@@ -183,7 +183,7 @@ td {
     .switchMode.left {
         left: 1%;
     }
-    
+
     .switchMode.right {
         right: 1%;
     }
@@ -329,29 +329,32 @@ button i {
         color: #fafafa !important;
         background-color: #212121;
     }
-    
+
     .message {
         background-color: #212121;
     }
-    
+
     .alert {
         background-color: #fafafa;
         color: #212121;
     }
-    
-    .message a, .message .close {
+
+    .message a,
+    .message .close {
         color: #fafafa;
     }
-    
+
     .switchMode {
         color: #fafafa;
     }
-    
-    .stats, .message .close{
+
+    .stats,
+    .message .close {
         background-color: #212121;
     }
 
-    td, select.switchMode {
+    td,
+    select.switchMode {
         color: #212121;
     }
 }
@@ -370,7 +373,8 @@ body.darkMode .alert {
     color: #212121;
 }
 
-body.darkMode .message a, body.darkMode .message .close {
+body.darkMode .message a,
+body.darkMode .message .close {
     color: #fafafa;
 }
 
@@ -378,11 +382,13 @@ body.darkMode .switchMode {
     color: #fafafa;
 }
 
-body.darkMode .stats, body.darkMode .message .close{
+body.darkMode .stats,
+body.darkMode .message .close {
     background-color: #212121;
 }
 
-body.darkMode select.switchMode, body.darkMode td {
+body.darkMode select.switchMode,
+body.darkMode td {
     color: #212121;
 }
 
@@ -409,4 +415,30 @@ p.bottom-links {
 
 .bottom-links a:hover {
     background-color: #E0E0E0;
+}
+
+#settings input[type=checkbox] {
+    display: none;
+}
+
+#settings input[type=checkbox]+label::before {
+    font-family: "Material Icons";
+    content: "toggle_off";
+    font-size: 32px;
+    vertical-align: middle;
+    color: #757575;
+}
+
+#settings input[type=checkbox]:checked+label::before {
+    font-family: "Material Icons";
+    content: "toggle_on";
+    font-size: 32px;
+    vertical-align: middle;
+    color: #212121;
+}
+
+#settings .message div {
+    width: fit-content;
+    margin: auto;
+    text-align: left;
 }
