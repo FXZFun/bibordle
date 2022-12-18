@@ -101,7 +101,7 @@ function finishGame() {
         var gamesPlayed = localStorage.hasOwnProperty("gamesPlayed-daily") ? parseInt(localStorage.getItem("gamesPlayed-daily")) : 0;
         localStorage.setItem("gamesPlayed-daily", gamesPlayed + 1);
     }
-    showStats(currentLetters.join("") == solution);
+    showStats();
 }
 
 function showAlert(message, hide = true) {
@@ -118,9 +118,11 @@ function toggleDarkMode() {
     if (document.querySelector('body').classList.contains('darkMode')) {
         localStorage.removeItem('darkMode');
         document.querySelector('body').classList.remove('darkMode');
+        document.getElementById("sDarkMode").checked = false;
     } else {
         document.querySelector('body').classList.add('darkMode');
         localStorage.setItem('darkMode', true);
+        document.getElementById("sDarkMode").checked = true;
     }
 }
 
@@ -128,9 +130,9 @@ if (localStorage.hasOwnProperty("darkMode")) {
     toggleDarkMode();
 }
 
-function showStats(result = (currentLetters.join("") == solution)) {
+function showStats() {
     document.getElementById("statsPage").style.display = "block";
-    if (result) {
+    if (currentLetters.join("") == solution) {
         document.getElementById("status").classList.remove("lose");
         document.getElementById("status").classList.add("win");
     } else {
@@ -138,7 +140,7 @@ function showStats(result = (currentLetters.join("") == solution)) {
         document.getElementById("status").classList.add("lose");
     }
 
-    if (solution == localStorage.getItem("solution-daily")) {
+    if (solution == localStorage.getItem("solution-daily") && currentLetters.join("") == solution) {
         document.getElementById("word").innerText = solution.toUpperCase();
         document.getElementById("verse").innerHTML = verse.replace(new RegExp(solution, "gi"), (match, index) => {
             if (index - 1 > 0 && index + match.length < verse.length && (!verse[index - 1].match(/[a-z]/i)) && (!verse[index + match.length].match(/[a-z]/i))) return "<b>" + match + "</b>";
@@ -253,7 +255,7 @@ function setTranslation(translation) {
     letterId = 0;
     currentLetters = [];
     currentGuess = "";
-    for (var line = 0; line < 5; line++) {
+    for (var line = 1; line < 5; line++) {
         document.getElementById("line" + line).classList.add("notActive");
     }
     gameEnabled = true;
@@ -282,15 +284,13 @@ function toggleSwapControl(state) {
     document.getElementById("sSwapControl").checked = state;
     var enterBtn = document.getElementById("keyboard-enter");
     var backBtn = document.getElementById("keyboard-backspace");
-    var enterCopy = enterBtn.outerHTML;
-    var backCopy = backBtn.outerHTML;
     if (state) {
-        backBtn.outerHTML = enterCopy;
-        enterBtn.outerHTML = backCopy;
+        document.getElementById("keyboard-z").insertAdjacentElement("beforebegin", enterBtn);
+        document.getElementById("keyboard-m").insertAdjacentElement("afterend", backBtn);
         localStorage.setItem("bibordle-swapControls", true);
     } else {
-        enterBtn.outerHTML = backCopy;
-        backBtn.outerHTML = enterCopy;
+        document.getElementById("keyboard-z").insertAdjacentElement("beforebegin", backBtn);
+        document.getElementById("keyboard-m").insertAdjacentElement("afterend", enterBtn);
         localStorage.setItem("bibordle-swapControls", false);
     }
 }
@@ -310,9 +310,9 @@ function getFromApi() {
     fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
         words = data;
         hardModeWords = data;
-        if (localStorage.hasOwnProperty("bibordle-easyMode")) toggleEasyMode(localStorage.getItem("bibordle-easyMode"));
+        if (localStorage.hasOwnProperty("bibordle-easyMode")) toggleEasyMode(JSON.parse(localStorage.getItem("bibordle-easyMode")));
     }));
 }
 
 getFromApi();
-if (localStorage.hasOwnProperty("bibordle-swapControls")) toggleSwapControl(localStorage.getItem("bibordle-swapControls"));
+if (localStorage.hasOwnProperty("bibordle-swapControls")) toggleSwapControl(JSON.parse(localStorage.getItem("bibordle-swapControls")));

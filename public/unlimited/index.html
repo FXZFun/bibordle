@@ -64,6 +64,118 @@
             margin: auto;
             text-align: left;
         }
+
+        .header {
+            display: flex;
+            justify-content: space-evenly;
+            width: 50%;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            align-items: center;
+        }
+
+        #translationBtn {
+            margin-top: 0;
+        }
+
+        .header a,
+        .header button,
+        .header select {
+            border: 0;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-family: 'Maven Pro', 'Open Sans', sans-serif;
+            font-size: 1em;
+            text-decoration: none;
+            color: #212121;
+            background: none;
+            cursor: pointer;
+        }
+
+        .header #unlimited,
+        .header #settingsBtn {
+            flex-basis: 24%;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .header p {
+            flex-basis: 100%;
+        }
+
+        .header a i,
+        .header button i {
+            display: block;
+        }
+
+        table {
+            margin: 20px auto;
+        }
+
+        p.bottom-links {
+            margin: 20px auto;
+        }
+
+        @media screen and (max-width: 900px) {
+            .header {
+                width: 60%;
+                justify-content: space-between;
+            }
+        }
+
+        @media screen and (max-width: 700px) {
+            .header {
+                width: 80%;
+            }
+        }
+
+        @media screen and (max-width: 500px) {
+            .header {
+                width: 100%;
+            }
+        }
+
+        #statsBtn {
+            display: block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            width: 80%;
+            margin: auto;
+        }
+
+        @media screen and (prefers-color-scheme: dark) {
+            .message a,
+            .message .close,
+            .header,
+            .header button,
+            .header select,
+            #settings input[type=checkbox]:checked+label::before {
+                color: #fafafa;
+            }
+
+            button.bad,
+            td.bad {
+                background-color: #757575;
+            }
+        }
+
+        body.darkMode .header,
+        body.darkMode .header button,
+        body.darkMode .header select,
+        body.darkMode .message a,
+        body.darkMode .message .close,
+        body.darkMode #settings input[type=checkbox]:checked+label::before {
+            color: #fafafa;
+        }
+
+        body.darkMode button.bad,
+        td.bad {
+            background-color: #757575;
+        }
     </style>
 </head>
 
@@ -73,18 +185,24 @@
             <p id="alertText"></p>
         </div>
         <div class="header">
-            <h1 style="margin-bottom: 0;" onclick="toggleDarkMode()" title="Toggle Dark Mode">Bibordle</h1>
-            <p>UNLIMITED</p>
-            <a id="daily" class="switchMode left" href="/" title="Daily Mode"><i class="material-icons">home</i></a>
-            <div class="switchMode right">
-                <a id="statsBtn" class="switchMode" href="javascript:showStats()" title="Show Stats"><i
-                        class="material-icons">leaderboard</i></a>
-                <select id="translationBtn" class="switchMode" title="Change Translation"
-                    onchange="setTranslation(this.value)">
+            <button id="unlimited" onclick="location.href='/'" title="Daily Mode">
+                <i class="material-icons">today</i>
+                Daily
+            </button>
+            <h1>Bibordle</h1>
+            <button id="settingsBtn" onclick="document.getElementById('settings').style.display='block'"
+                title="Show Settings">
+                <i class="material-icons">settings</i>
+                Settings
+            </button>
+            <p>
+                THE
+                <select id="translationBtn" title="Change Translation" onchange="setTranslation(this.value)">
                     <option>EHV</option>
                     <option>KJV</option>
                 </select>
-            </div>
+                BIBLE WORDLE
+            </p>
         </div>
         <table id="gameboard">
             <tbody>
@@ -157,7 +275,7 @@
                 <button onclick="typeKey('l')" id="keyboard-l">l</button>
             </div>
             <div class="row">
-                <button onclick="typeKey('backspace')"><i class="material-icons">backspace</i></button>
+                <button onclick="typeKey('backspace')" id="keyboard-backspace"><i class="material-icons">backspace</i></button>
                 <button onclick="typeKey('z')" id="keyboard-z">z</button>
                 <button onclick="typeKey('x')" id="keyboard-x">x</button>
                 <button onclick="typeKey('c')" id="keyboard-c">c</button>
@@ -165,7 +283,7 @@
                 <button onclick="typeKey('b')" id="keyboard-b">b</button>
                 <button onclick="typeKey('n')" id="keyboard-n">n</button>
                 <button onclick="typeKey('m')" id="keyboard-m">m</button>
-                <button onclick="guess()"><i class="material-icons" style="font-weight: bold">check</i></button>
+                <button onclick="guess()" id="keyboard-enter"><i class="material-icons" style="font-weight: bold">check</i></button>
             </div>
         </div>
         <div class="overlay" id="statsPage">
@@ -210,6 +328,10 @@
             <div class="message">
                 <h2>Settings</h2>
                 <div>
+                    <p>
+                        <input id="sDarkMode" type="checkbox" onchange="toggleDarkMode()" />
+                        <label for="sDarkMode"> Dark Mode </label>
+                    </p>
                     <p>
                         <input id="sEasyMode" type="checkbox" onchange="toggleEasyMode(this.checked)" />
                         <label for="sEasyMode"> Easy Mode </label>

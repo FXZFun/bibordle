@@ -98,7 +98,7 @@ function finishGame() {
         var gamesPlayed = localStorage.hasOwnProperty("gamesPlayed-practice") ? parseInt(localStorage.getItem("gamesPlayed-practice")) : 0;
         localStorage.setItem("gamesPlayed-practice", gamesPlayed + 1);
     }
-    showStats(currentLetters.join("") == solution);
+    showStats();
 }
 
 function showAlert(message, hide = true) {
@@ -115,9 +115,11 @@ function toggleDarkMode() {
     if (document.querySelector('body').classList.contains('darkMode')) {
         localStorage.removeItem('darkMode');
         document.querySelector('body').classList.remove('darkMode');
+        document.getElementById("sDarkMode").checked = false;
     } else {
         document.querySelector('body').classList.add('darkMode');
         localStorage.setItem('darkMode', true);
+        document.getElementById("sDarkMode").checked = true;
     }
 }
 
@@ -125,9 +127,9 @@ if (localStorage.hasOwnProperty("darkMode")) {
     toggleDarkMode();
 }
 
-function showStats(result) {
+function showStats() {
     document.getElementById("statsPage").style.display = "block";
-    if (result) {
+    if (currentLetters.join("") == solution) {
         document.getElementById("status").classList.remove("lose");
         document.getElementById("status").classList.add("win");
     } else {
@@ -227,8 +229,14 @@ function setTranslation(translation) {
     });
     lineId = 0;
     letterId = 0;
+    currentLetters = [];
+    currentGuess = "";
+    for (var line = 1; line < 5; line++) {
+        document.getElementById("line" + line).classList.add("notActive");
+    }
     gameEnabled = true;
 }
+
 
 function toggleEasyMode(state) {
     document.getElementById("sEasyMode").checked = state;
@@ -253,15 +261,13 @@ function toggleSwapControl(state) {
     document.getElementById("sSwapControl").checked = state;
     var enterBtn = document.getElementById("keyboard-enter");
     var backBtn = document.getElementById("keyboard-backspace");
-    var enterCopy = enterBtn.outerHTML;
-    var backCopy = backBtn.outerHTML;
     if (state) {
-        backBtn.outerHTML = enterCopy;
-        enterBtn.outerHTML = backCopy;
+        document.getElementById("keyboard-z").insertAdjacentElement("beforebegin", enterBtn);
+        document.getElementById("keyboard-m").insertAdjacentElement("afterend", backBtn);
         localStorage.setItem("bibordle-swapControls", true);
     } else {
-        enterBtn.outerHTML = backCopy;
-        backBtn.outerHTML = enterCopy;
+        document.getElementById("keyboard-z").insertAdjacentElement("beforebegin", backBtn);
+        document.getElementById("keyboard-m").insertAdjacentElement("afterend", enterBtn);
         localStorage.setItem("bibordle-swapControls", false);
     }
 }
@@ -280,8 +286,9 @@ function getFromApi() {
             wordCount = data.wordCount;
         }));
         hardModeWords = data;
-        if (localStorage.hasOwnProperty("bibordle-easyMode")) toggleEasyMode(localStorage.getItem("bibordle-easyMode"));
+        if (localStorage.hasOwnProperty("bibordle-easyMode")) toggleEasyMode(JSON.parse(localStorage.getItem("bibordle-easyMode")));
     }));
 }
+
 getFromApi();
-if (localStorage.hasOwnProperty("bibordle-swapControls")) toggleSwapControl(localStorage.getItem("bibordle-swapControls"));
+if (localStorage.hasOwnProperty("bibordle-swapControls")) toggleSwapControl(JSON.parse(localStorage.getItem("bibordle-swapControls")));
