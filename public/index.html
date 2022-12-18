@@ -45,7 +45,143 @@
     <!-- <script src="https://fxzfun.com/trk/bibordle.js"></script> -->
     <style>
         /* temp styles while reloading cached version */
-        .keyboard button { touch-action: manipulation; }
+        #settings input[type=checkbox] {
+            display: none;
+        }
+
+        #settings input[type=checkbox]+label::before {
+            font-family: "Material Icons";
+            content: "toggle_off";
+            font-size: 32px;
+            vertical-align: middle;
+            color: #757575;
+        }
+
+        #settings input[type=checkbox]:checked+label::before {
+            font-family: "Material Icons";
+            content: "toggle_on";
+            font-size: 32px;
+            vertical-align: middle;
+            color: #212121;
+        }
+
+        #settings .message div {
+            width: fit-content;
+            margin: auto;
+            text-align: left;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-evenly;
+            width: 50%;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            align-items: center;
+        }
+
+        #translationBtn {
+            margin-top: 0;
+        }
+
+        .header a,
+        .header button,
+        .header select {
+            border: 0;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-family: 'Maven Pro', 'Open Sans', sans-serif;
+            font-size: 1em;
+            text-decoration: none;
+            color: #212121;
+            background: none;
+            cursor: pointer;
+        }
+
+        .header #unlimited,
+        .header #settingsBtn {
+            flex-basis: 24%;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .header p {
+            flex-basis: 100%;
+        }
+
+        .header a i,
+        .header button i {
+            display: block;
+        }
+
+        table {
+            margin: 20px auto;
+        }
+
+        p.bottom-links {
+            margin: 20px auto;
+        }
+
+        @media screen and (max-width: 900px) {
+            .header {
+                width: 60%;
+                justify-content: space-between;
+            }
+        }
+
+        @media screen and (max-width: 700px) {
+            .header {
+                width: 80%;
+            }
+        }
+
+        @media screen and (max-width: 500px) {
+            .header {
+                width: 100%;
+            }
+        }
+
+        #statsBtn {
+            display: block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            width: 80%;
+            margin: auto;
+        }
+
+        @media screen and (prefers-color-scheme: dark) {
+            .message a,
+            .message .close,
+            .header,
+            .header button,
+            .header select,
+            #settings input[type=checkbox]:checked+label::before {
+                color: #fafafa;
+            }
+
+            button.bad,
+            td.bad {
+                background-color: #757575;
+            }
+        }
+
+        body.darkMode .header,
+        body.darkMode .header button,
+        body.darkMode .header select,
+        body.darkMode .message a,
+        body.darkMode .message .close,
+        body.darkMode #settings input[type=checkbox]:checked+label::before {
+            color: #fafafa;
+        }
+
+        body.darkMode button.bad,
+        td.bad {
+            background-color: #757575;
+        }
     </style>
 </head>
 
@@ -55,19 +191,24 @@
             <p id="alertText"></p>
         </div>
         <div class="header">
-            <h1 style="margin-bottom: 0;" onclick="toggleDarkMode()" title="Toggle Dark Mode">Bibordle</h1>
-            <p style="margin-bottom: 40px;">THE BIBLE WORDLE</p>
-            <a id="unlimited" class="switchMode left" href="/unlimited" title="Unlimited Mode"><i
-                    class="material-icons">all_inclusive</i></a>
-            <div class="switchMode right">
-                <a id="statsBtn" class="switchMode" href="javascript:showStats()" title="Show Stats"><i
-                        class="material-icons">leaderboard</i></a>
-                <select id="translationBtn" class="switchMode" title="Change Translation"
-                    onchange="setTranslation(this.value)">
+            <button id="unlimited" onclick="location.href='/unlimited/'" title="Unlimited Mode">
+                <i class="material-icons">all_inclusive</i>
+                Unlimited
+            </button>
+            <h1>Bibordle</h1>
+            <button id="settingsBtn" onclick="document.getElementById('settings').style.display='block'"
+                title="Show Settings">
+                <i class="material-icons">settings</i>
+                Settings
+            </button>
+            <p>
+                THE
+                <select id="translationBtn" title="Change Translation" onchange="setTranslation(this.value)">
                     <option>EHV</option>
                     <option>KJV</option>
                 </select>
-            </div>
+                BIBLE WORDLE
+            </p>
         </div>
         <table id="gameboard">
             <tbody>
@@ -140,7 +281,8 @@
                 <button onclick="typeKey('l')" id="keyboard-l">l</button>
             </div>
             <div class="row">
-                <button onclick="typeKey('backspace')"><i class="material-icons">backspace</i></button>
+                <button onclick="typeKey('backspace')" id="keyboard-backspace"><i
+                        class="material-icons">backspace</i></button>
                 <button onclick="typeKey('z')" id="keyboard-z">z</button>
                 <button onclick="typeKey('x')" id="keyboard-x">x</button>
                 <button onclick="typeKey('c')" id="keyboard-c">c</button>
@@ -148,7 +290,8 @@
                 <button onclick="typeKey('b')" id="keyboard-b">b</button>
                 <button onclick="typeKey('n')" id="keyboard-n">n</button>
                 <button onclick="typeKey('m')" id="keyboard-m">m</button>
-                <button onclick="guess()"><i class="material-icons" style="font-weight: bold">check</i></button>
+                <button onclick="guess()" id="keyboard-enter"><i class="material-icons"
+                        style="font-weight: bold">check</i></button>
             </div>
         </div>
         <div class="overlay" id="statsPage">
@@ -184,6 +327,11 @@
                 </button>
             </div>
         </div>
+        <p class="bottom-links">
+            <a href="mailto:bibordle@fxzfun.com" target="_blank"><i class="material-icons">bug_report</i> Report Bug</a>
+            <a href="https://github.com/FXZFun/bibordle" target="_blank"><i class="material-icons">code</i> GitHub</a>
+        </p>
+        <!-- How To Play -->
         <div class="overlay" id="instructions">
             <div class="message">
                 <h2>How to Play</h2>
@@ -209,19 +357,51 @@
                         class="material-icons">close</i></button>
             </div>
         </div>
-        <p class="bottom-links">
-            <a href="mailto:bibordle@fxzfun.com" target="_blank"><i class="material-icons">bug_report</i> Report Bug</a>
-            <a href="https://github.com/FXZFun/bibordle" target="_blank"><i class="material-icons">code</i> GitHub</a>
-        </p>
+        <!-- Settings Dialog -->
+        <div class="overlay" id="settings">
+            <div class="message">
+                <h2>Settings</h2>
+                <div>
+                    <p>
+                        <input id="sDarkMode" type="checkbox" onchange="toggleDarkMode()" />
+                        <label for="sDarkMode"> Dark Mode </label>
+                    </p>
+                    <p>
+                        <input id="sEasyMode" type="checkbox" onchange="toggleEasyMode(this.checked)" />
+                        <label for="sEasyMode"> Easy Mode </label>
+                        <i class="material-icons wordInfo" title="About"
+                            onclick="alert('Enables guessing words not in the Bible')">info</i>
+                    </p>
+                    <p>
+                        <input id="sSwapControl" type="checkbox" onchange="toggleSwapControl(this.checked)" />
+                        <label for="sSwapControl"> Swap Control Keys </label>
+                        <i class="material-icons wordInfo" title="About"
+                            onclick="alert('Flips back and enter keys')">info</i>
+                    </p>
+                    <button onclick="document.getElementById('settings').style.display='none'" class="close"><i
+                            class="material-icons">close</i></button>
+                </div>
+                <button id="statsBtn" class="switchMode"
+                    onclick="document.getElementById('settings').style.display='none';showStats()" title="Show Stats"><i
+                        class="material-icons">leaderboard</i> View Stats</button>
+            </div>
+        </div>
     </main>
     <script src="/res/scripts/bibordle.min.js" defer></script>
-    <script>if (!localStorage.hasOwnProperty("educated")) { document.getElementById("instructions").style.display = 'block'; localStorage.setItem("educated", true); } navigator.serviceWorker.register('/serviceworker.js?v=4ec7f136-95cd-499e-b23c-5e8642f4450f'); if (!navigator.onLine) showAlert("You're offline", false); if ('serviceWorker' in navigator) {
+    <script>
+        if (!localStorage.hasOwnProperty("educated")) {
+            document.getElementById("instructions").style.display = 'block';
+            localStorage.setItem("educated", true);
+        }
+        navigator.serviceWorker.register('/serviceworker.js?v=4ec7f136-95cd-499e-b23c-5e8642f4450f');
+        if ('serviceWorker' in navigator) {
             caches.keys().then(function (cacheNames) {
                 cacheNames.forEach(function (cacheName) {
                     caches.delete(cacheName);
                 });
             });
-        }</script>
+        }
+    </script>
 </body>
 
 </html>

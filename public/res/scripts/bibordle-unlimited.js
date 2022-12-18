@@ -4,6 +4,8 @@ var verse = "";
 var reference = "";
 var wordCount = 0;
 var translation = localStorage.hasOwnProperty("bibordle-translation") ? localStorage.getItem("bibordle-translation") : "EHV";
+var hardModeWords;
+var easyModeWords;
 
 var restoringFromLocalStorage = false;
 var lineId = 0;
@@ -96,7 +98,7 @@ function finishGame() {
         var gamesPlayed = localStorage.hasOwnProperty("gamesPlayed-practice") ? parseInt(localStorage.getItem("gamesPlayed-practice")) : 0;
         localStorage.setItem("gamesPlayed-practice", gamesPlayed + 1);
     }
-    showStats(currentLetters.join("") == solution);
+    showStats();
 }
 
 function showAlert(message, hide = true) {
@@ -113,9 +115,11 @@ function toggleDarkMode() {
     if (document.querySelector('body').classList.contains('darkMode')) {
         localStorage.removeItem('darkMode');
         document.querySelector('body').classList.remove('darkMode');
+        document.getElementById("sDarkMode").checked = false;
     } else {
         document.querySelector('body').classList.add('darkMode');
         localStorage.setItem('darkMode', true);
+        document.getElementById("sDarkMode").checked = true;
     }
 }
 
@@ -123,9 +127,9 @@ if (localStorage.hasOwnProperty("darkMode")) {
     toggleDarkMode();
 }
 
-function showStats(result) {
+function showStats() {
     document.getElementById("statsPage").style.display = "block";
-    if (result) {
+    if (currentLetters.join("") == solution) {
         document.getElementById("status").classList.remove("lose");
         document.getElementById("status").classList.add("win");
     } else {
@@ -225,7 +229,47 @@ function setTranslation(translation) {
     });
     lineId = 0;
     letterId = 0;
+    currentLetters = [];
+    currentGuess = "";
+    for (var line = 1; line < 5; line++) {
+        document.getElementById("line" + line).classList.add("notActive");
+    }
     gameEnabled = true;
+}
+
+
+function toggleEasyMode(state) {
+    document.getElementById("sEasyMode").checked = state;
+    if (state) {
+        if (!easyModeWords) {
+            fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=EASYMODE&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
+                hardModeWords = words;
+                easyModeWords = data;
+                words = words.concat(data);
+            }));
+        } else {
+            words = words.concat(easyModeWords);
+        }
+        localStorage.setItem("bibordle-easyMode", true);
+    } else {
+        words = hardModeWords;
+        localStorage.setItem("bibordle-easyMode", false);
+    }
+}
+
+function toggleSwapControl(state) {
+    document.getElementById("sSwapControl").checked = state;
+    var enterBtn = document.getElementById("keyboard-enter");
+    var backBtn = document.getElementById("keyboard-backspace");
+    if (state) {
+        document.getElementById("keyboard-z").insertAdjacentElement("beforebegin", enterBtn);
+        document.getElementById("keyboard-m").insertAdjacentElement("afterend", backBtn);
+        localStorage.setItem("bibordle-swapControls", true);
+    } else {
+        document.getElementById("keyboard-z").insertAdjacentElement("beforebegin", backBtn);
+        document.getElementById("keyboard-m").insertAdjacentElement("afterend", enterBtn);
+        localStorage.setItem("bibordle-swapControls", false);
+    }
 }
 
 // get daily details from api
@@ -241,6 +285,10 @@ function getFromApi() {
             reference = data.reference;
             wordCount = data.wordCount;
         }));
+        hardModeWords = data;
+        if (localStorage.hasOwnProperty("bibordle-easyMode")) toggleEasyMode(JSON.parse(localStorage.getItem("bibordle-easyMode")));
     }));
 }
+
 getFromApi();
+if (localStorage.hasOwnProperty("bibordle-swapControls")) toggleSwapControl(JSON.parse(localStorage.getItem("bibordle-swapControls")));

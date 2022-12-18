@@ -169,23 +169,27 @@ td {
     }
 }
 
-@media screen and (max-width: 1000px) {
-    .switchMode.left {
-        left: 15%;
+@media screen and (max-width: 1200px) {
+    .header {
+        width: 50%;
     }
-    
-    .switchMode.right {
-        right: 15%;
+}
+
+@media screen and (max-width: 900px) {
+    .header {
+        width: 60%;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .header {
+        width: 80%;
     }
 }
 
 @media screen and (max-width: 500px) {
-    .switchMode.left {
-        left: 1%;
-    }
-    
-    .switchMode.right {
-        right: 1%;
+    .header {
+        width: 100%;
     }
 }
 
@@ -329,30 +333,37 @@ button i {
         color: #fafafa !important;
         background-color: #212121;
     }
-    
+
     .message {
         background-color: #212121;
     }
-    
+
     .alert {
         background-color: #fafafa;
         color: #212121;
     }
-    
-    .message a, .message .close {
+
+    .message a,
+    .message .close,
+    .header,
+    .header button,
+    .header select,
+    #settings input[type=checkbox]:checked+label::before {
         color: #fafafa;
     }
-    
-    .switchMode {
-        color: #fafafa;
-    }
-    
-    .stats, .message .close{
+
+    .stats,
+    .message .close {
         background-color: #212121;
     }
 
-    td, select.switchMode {
+    td,
+    select.switchMode {
         color: #212121;
+    }
+    
+    button.bad, td.bad {
+        background-color: #757575;
     }
 }
 
@@ -370,20 +381,26 @@ body.darkMode .alert {
     color: #212121;
 }
 
-body.darkMode .message a, body.darkMode .message .close {
+body.darkMode .header,
+body.darkMode .header button,
+body.darkMode .header select,
+body.darkMode .message a,
+body.darkMode .message .close,
+body.darkMode #settings input[type=checkbox]:checked+label::before {
     color: #fafafa;
 }
 
-body.darkMode .switchMode {
-    color: #fafafa;
-}
-
-body.darkMode .stats, body.darkMode .message .close{
+body.darkMode .stats,
+body.darkMode .message .close {
     background-color: #212121;
 }
 
-body.darkMode select.switchMode, body.darkMode td {
+body.darkMode td {
     color: #212121;
+}
+
+body.darkMode button.bad, td.bad {
+    background-color: #757575;
 }
 
 tr.notAWord td {
@@ -409,4 +426,74 @@ p.bottom-links {
 
 .bottom-links a:hover {
     background-color: #E0E0E0;
+}
+
+#settings input[type=checkbox] {
+    display: none;
+}
+
+#settings input[type=checkbox]+label::before {
+    font-family: "Material Icons";
+    content: "toggle_off";
+    font-size: 32px;
+    vertical-align: middle;
+    color: #757575;
+}
+
+#settings input[type=checkbox]:checked+label::before {
+    font-family: "Material Icons";
+    content: "toggle_on";
+    font-size: 32px;
+    vertical-align: middle;
+    color: #212121;
+}
+
+#settings .message div {
+    width: fit-content;
+    margin: auto;
+    text-align: left;
+}
+
+.header {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    align-items: center;
+}
+
+#translationBtn {
+    margin-top: 0;
+}
+
+.header a,
+.header button,
+.header select {
+    border: 0;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-family: 'Maven Pro', 'Open Sans', sans-serif;
+    text-decoration: none;
+    color: #212121;
+    background-color: none;
+}
+
+.header #unlimited, 
+.header #settingsBtn {
+    flex-basis: 24%;
+}
+
+.header h1 {
+    margin: 0;
+}
+
+.header a i,
+.header button i {
+    display: block;
+}
+
+p.bottom-links {
+    margin: 20px auto;
 }
