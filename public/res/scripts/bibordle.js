@@ -140,7 +140,7 @@ function showStats() {
         document.getElementById("status").classList.add("lose");
     }
 
-    if (solution == localStorage.getItem("solution-daily") && currentLetters.join("") == solution) {
+    if (solution == localStorage.getItem("solution-daily") && (currentLetters.join("") == solution || !gameEnabled)) {
         document.getElementById("word").innerText = solution.toUpperCase();
         document.getElementById("verse").innerHTML = verse.replace(new RegExp(solution, "gi"), (match, index) => {
             if (index - 1 > 0 && index + match.length < verse.length && (!verse[index - 1].match(/[a-z]/i)) && (!verse[index + match.length].match(/[a-z]/i))) return "<b>" + match + "</b>";
