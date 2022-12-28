@@ -39,107 +39,21 @@
     </script>
     <style>
         /* temp styles while reloading cached version */
-        #settings input[type=checkbox] {
-            display: none;
-        }
-
-        #settings input[type=checkbox]+label::before {
-            font-family: "Material Icons";
-            content: "toggle_off";
-            font-size: 32px;
-            vertical-align: middle;
-            color: #757575;
-        }
-
-        #settings input[type=checkbox]:checked+label::before {
-            font-family: "Material Icons";
-            content: "toggle_on";
-            font-size: 32px;
-            vertical-align: middle;
-            color: #212121;
-        }
-
-        #settings .message div {
-            width: fit-content;
-            margin: auto;
-            text-align: left;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-evenly;
-            width: 50%;
-            margin: 0 auto;
-            flex-wrap: wrap;
-            margin-top: 20px;
-            align-items: center;
-        }
-
-        #translationBtn {
-            margin-top: 0;
-        }
-
-        .header a,
-        .header button,
-        .header select {
-            border: 0;
-            border-radius: 12px;
-            padding: 10px 20px;
-            font-family: 'Maven Pro', 'Open Sans', sans-serif;
-            font-size: 1em;
-            text-decoration: none;
-            color: #212121;
-            background: none;
-            cursor: pointer;
-        }
-
-        .header #unlimited,
-        .header #settingsBtn {
-            flex-basis: 24%;
-        }
-
-        .header h1 {
-            margin: 0;
-        }
-
         .header p {
             flex-basis: 100%;
         }
 
-        .header a i,
-        .header button i {
-            display: block;
+        header a,
+        .header button,
+        .header select {
+            background: none;
         }
 
         table {
             margin: 20px auto;
         }
 
-        p.bottom-links {
-            margin: 20px auto;
-        }
-
-        @media screen and (max-width: 900px) {
-            .header {
-                width: 60%;
-                justify-content: space-between;
-            }
-        }
-
-        @media screen and (max-width: 700px) {
-            .header {
-                width: 80%;
-            }
-        }
-
-        @media screen and (max-width: 500px) {
-            .header {
-                width: 100%;
-            }
-        }
-
         #statsBtn {
-            display: block;
             padding: 10px 20px;
             border: none;
             border-radius: 6px;
@@ -147,34 +61,54 @@
             margin: auto;
         }
 
-        @media screen and (prefers-color-scheme: dark) {
-            .message a,
-            .message .close,
-            .header,
-            .header button,
-            .header select,
-            #settings input[type=checkbox]:checked+label::before {
-                color: #fafafa;
+        @media screen and (max-width: 500px) {
+            .header {
+                justify-content: space-between;
             }
+        }
+
+        @media screen and (prefers-color-scheme: dark) {
 
             button.bad,
             td.bad {
                 background-color: #757575;
             }
-        }
 
-        body.darkMode .header,
-        body.darkMode .header button,
-        body.darkMode .header select,
-        body.darkMode .message a,
-        body.darkMode .message .close,
-        body.darkMode #settings input[type=checkbox]:checked+label::before {
-            color: #fafafa;
+            button.bad,
+            td.bad {
+                background-color: #FFD600;
+            }
+
+            button.bad,
+            td.bad {
+                background-color: #4CAF50;
+            }
         }
 
         body.darkMode button.bad,
         td.bad {
             background-color: #757575;
+        }
+
+        body.darkMode button.inword,
+        td.inword {
+            background-color: #FFD600;
+        }
+
+        body.darkMode button.good,
+        td.good {
+            background-color: #4CAF50;
+        }
+
+        .header #unlimited,
+        .header #settingsBtn {
+            flex-basis: 24%;
+        }
+
+        @media screen and (min-width: 1200px) {
+            .header {
+                width: 50%;
+            }
         }
     </style>
 </head>

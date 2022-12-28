@@ -14,7 +14,7 @@ main {
 }
 
 table {
-    margin: auto;
+    margin: 20px auto;
     border-spacing: 5px;
 }
 
@@ -128,6 +128,13 @@ td {
 
 .header {
     position: relative;
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    align-items: center;
 }
 
 .switchMode {
@@ -155,7 +162,11 @@ td {
 
 #statsBtn {
     display: block;
-    padding: 0;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    width: 80%;
+    margin: auto;
 }
 
 #translationBtn {
@@ -178,6 +189,7 @@ td {
 @media screen and (max-width: 900px) {
     .header {
         width: 60%;
+        justify-content: space-between;
     }
 }
 
@@ -361,9 +373,20 @@ button i {
     select.switchMode {
         color: #212121;
     }
-    
-    button.bad, td.bad {
+
+    button.bad,
+    td.bad {
         background-color: #757575;
+    }
+
+    button.bad,
+    td.bad {
+        background-color: #FFD600;
+    }
+
+    button.bad,
+    td.bad {
+        background-color: #4CAF50;
     }
 }
 
@@ -399,8 +422,19 @@ body.darkMode td {
     color: #212121;
 }
 
-body.darkMode button.bad, td.bad {
+body.darkMode button.bad,
+td.bad {
     background-color: #757575;
+}
+
+body.darkMode button.inword,
+td.inword {
+    background-color: #FFD600;
+}
+
+body.darkMode button.good,
+td.good {
+    background-color: #4CAF50;
 }
 
 tr.notAWord td {
@@ -454,18 +488,12 @@ p.bottom-links {
     text-align: left;
 }
 
-.header {
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
-    margin: 0 auto;
-    flex-wrap: wrap;
-    margin-top: 20px;
-    align-items: center;
-}
-
 #translationBtn {
     margin-top: 0;
+}
+
+.header p {
+    flex-basis: 100%;
 }
 
 .header a,
@@ -477,10 +505,10 @@ p.bottom-links {
     font-family: 'Maven Pro', 'Open Sans', sans-serif;
     text-decoration: none;
     color: #212121;
-    background-color: none;
+    background: none;
 }
 
-.header #unlimited, 
+.header #unlimited,
 .header #settingsBtn {
     flex-basis: 24%;
 }
