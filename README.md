@@ -2,4 +2,4 @@
 
 The Bible Wordle
 
-Play the wordle with Bible words! Play with either EHV or KJV translations of the Bible.
+Guess a random word from the Bible in six tries or less
