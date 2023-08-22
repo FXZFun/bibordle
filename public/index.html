@@ -111,6 +111,80 @@
                 width: 50%;
             }
         }
+
+        #snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #212121;
+            color: #fafafa;
+            text-align: center;
+            border-radius: 10px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            box-shadow: 0px 0px 10px #bdbdbd;
+        }
+
+        #snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
+            animation: fadein 0.5s, fadeout 0.5s 4.5s;
+        }
+
+        #snackbar a {
+            color: #fafafa;
+        }
+
+        @-webkit-keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
@@ -315,6 +389,7 @@
                         class="material-icons">leaderboard</i> View Stats</button>
             </div>
         </div>
+        <div id="snackbar"></div>
     </main>
     <script src="/res/scripts/bibordle.min.js" defer></script>
     <script>
@@ -329,6 +404,13 @@
                     caches.delete(cacheName);
                 });
             });
+        }
+
+        try { window.frames.top.document } catch {
+            const snackbar = document.getElementById("snackbar");
+            snackbar.innerHTML = "Playing from <a href='https://bibordle.web.app'>https://bibordle.web.app</a>";
+            snackbar.classList.add("show");
+            setTimeout(() => snackbar.classList.remove("show"), 5000);
         }
     </script>
 </body>
