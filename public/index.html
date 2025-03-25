@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bibordle - The Bible Wordle</title>
-    <link rel="stylesheet" href="/res/styles/main.min.css" type="text/css">
+    <link rel="stylesheet" href="/res/styles/main.css" type="text/css">
     <!-- Fonts -->
     <link rel="preload" href="/res/fonts/MaterialIcons-Regular.ttf" as="font" crossorigin>
     <link rel="font" href="/res/fonts/MaterialIcons-Regular.ttf">
@@ -33,159 +33,6 @@
     <meta property="og:image" content="https://bibordle.web.app/res/raw/preview.png" />
     <meta property="og:image:url" content="https://bibordle.web.app/res/raw/preview.png" />
     <meta property="twitter:image" content="https://bibordle.web.app/res/raw/preview.png" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RR5336TJ96"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-RR5336TJ96');
-    </script>
-    <style>
-        /* temp styles while reloading cached version */
-        .header p {
-            flex-basis: 100%;
-        }
-
-        header a,
-        .header button,
-        .header select {
-            background: none;
-        }
-
-        table {
-            margin: 20px auto;
-        }
-
-        #statsBtn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            width: 80%;
-            margin: auto;
-        }
-
-        @media screen and (max-width: 500px) {
-            .header {
-                justify-content: space-between;
-            }
-        }
-
-        @media screen and (prefers-color-scheme: dark) {
-
-            button.bad,
-            td.bad {
-                background-color: #757575;
-            }
-
-            button.inword,
-            td.inword {
-                background-color: #FFD600;
-            }
-
-            button.good,
-            td.good {
-                background-color: #4CAF50;
-            }
-
-            header a,
-            .header button,
-            .header select {
-                color: #fafafa;
-            }
-        }
-
-        body.darkMode button.bad,
-        body.darkMode td.bad {
-            background-color: #757575;
-        }
-
-        .header #unlimited,
-        .header #settingsBtn {
-            flex-basis: 24%;
-        }
-
-        @media screen and (min-width: 1200px) {
-            .header {
-                width: 50%;
-            }
-        }
-
-        #snackbar {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: #212121;
-            color: #fafafa;
-            text-align: center;
-            border-radius: 10px;
-            padding: 16px;
-            position: fixed;
-            z-index: 1;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            box-shadow: 0px 0px 10px #bdbdbd;
-        }
-
-        #snackbar.show {
-            visibility: visible;
-            -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
-            animation: fadein 0.5s, fadeout 0.5s 4.5s;
-        }
-
-        #snackbar a {
-            color: #fafafa;
-        }
-
-        @-webkit-keyframes fadein {
-            from {
-                bottom: 0;
-                opacity: 0;
-            }
-
-            to {
-                bottom: 30px;
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadein {
-            from {
-                bottom: 0;
-                opacity: 0;
-            }
-
-            to {
-                bottom: 30px;
-                opacity: 1;
-            }
-        }
-
-        @-webkit-keyframes fadeout {
-            from {
-                bottom: 30px;
-                opacity: 1;
-            }
-
-            to {
-                bottom: 0;
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeout {
-            from {
-                bottom: 30px;
-                opacity: 1;
-            }
-
-            to {
-                bottom: 0;
-                opacity: 0;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -391,7 +238,7 @@
         </div>
         <div id="snackbar"></div>
     </main>
-    <script src="/res/scripts/bibordle.min.js" defer></script>
+    <script src="/res/scripts/bibordle.js" defer></script>
     <script>
         if (!localStorage.hasOwnProperty("educated")) {
             document.getElementById("instructions").style.display = 'block';

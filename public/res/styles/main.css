@@ -589,3 +589,57 @@ p.bottom-links {
         opacity: 0;
     }
 }
+
+header a,
+.header button,
+.header select {
+    background: none;
+}
+
+table {
+    margin: 20px auto;
+}
+
+#statsBtn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    width: 80%;
+    margin: auto;
+}
+
+@media screen and (max-width: 500px) {
+    .header {
+        justify-content: space-between;
+    }
+}
+
+@media screen and (prefers-color-scheme: dark) {
+
+    button.bad,
+    td.bad {
+        background-color: #757575;
+    }
+
+    button.inword,
+    td.inword {
+        background-color: #FFD600;
+    }
+
+    button.good,
+    td.good {
+        background-color: #4CAF50;
+    }
+
+    header a,
+    .header button,
+    .header select {
+        color: #fafafa;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .header {
+        width: 50%;
+    }
+}
