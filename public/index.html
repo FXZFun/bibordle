@@ -36,30 +36,20 @@
 </head>
 
 <body>
+    <header>
+        <h1>Bibordle</h1>
+        <select id="translationBtn" title="Change Translation" onchange="setTranslation(this.value)">
+            <option>EHV</option>
+            <option>KJV</option>
+        </select>
+        <a id="statsBtn" title="Show Stats" href="#statsPage">
+            <i class="material-icons">leaderboard</i>
+        </a>
+        <a id="settingsBtn" title="Show Settings" href="#settings">
+            <i class="material-icons">settings</i>
+        </a>
+    </header>
     <main>
-        <div id="alert" class="alert">
-            <p id="alertText"></p>
-        </div>
-        <div class="header">
-            <button id="unlimited" onclick="location.href='/unlimited/'" title="Unlimited Mode">
-                <i class="material-icons">all_inclusive</i>
-                Unlimited
-            </button>
-            <h1>Bibordle</h1>
-            <button id="settingsBtn" onclick="document.getElementById('settings').style.display='block'"
-                title="Show Settings">
-                <i class="material-icons">settings</i>
-                Settings
-            </button>
-            <p>
-                THE
-                <select id="translationBtn" title="Change Translation" onchange="setTranslation(this.value)">
-                    <option>EHV</option>
-                    <option>KJV</option>
-                </select>
-                BIBLE WORDLE
-            </p>
-        </div>
         <table id="gameboard">
             <tbody>
                 <tr id="line0">
@@ -131,8 +121,9 @@
                 <button onclick="typeKey('l')" id="keyboard-l">l</button>
             </div>
             <div class="row">
-                <button onclick="typeKey('backspace')" id="keyboard-backspace"><i
-                        class="material-icons">backspace</i></button>
+                <button onclick="typeKey('backspace')" id="keyboard-backspace">
+                    <i class="material-icons">backspace</i>
+                </button>
                 <button onclick="typeKey('z')" id="keyboard-z">z</button>
                 <button onclick="typeKey('x')" id="keyboard-x">x</button>
                 <button onclick="typeKey('c')" id="keyboard-c">c</button>
@@ -140,15 +131,17 @@
                 <button onclick="typeKey('b')" id="keyboard-b">b</button>
                 <button onclick="typeKey('n')" id="keyboard-n">n</button>
                 <button onclick="typeKey('m')" id="keyboard-m">m</button>
-                <button onclick="guess()" id="keyboard-enter"><i class="material-icons"
-                        style="font-weight: bold">check</i></button>
+                <button onclick="guess()" id="keyboard-enter">
+                    <i class="material-icons" style="font-weight: bold">check</i>
+                </button>
             </div>
         </div>
+        <!-- Statistics Dialog -->
         <div class="overlay" id="statsPage">
             <div class="message">
-                <button onclick="document.getElementById('statsPage').style.display='none'" class="close">
+                <a href="#" class="close">
                     <i class="material-icons">close</i>
-                </button>
+                </a>
                 <h2 id="status"></h2>
                 <p>
                     The word was <span id="word">_____</span>
@@ -156,19 +149,22 @@
                 </p>
                 <p>
                     <span id="verse"></span>
-                    <a id="reference" target="_blank" href="/search"></a>
+                    <a id="reference" target="_blank" href="https://wartburgproject.org/read"></a>
                 </p>
                 <div class="stats">
                     <div>
-                        <span id="gameScore">X</span>
-                        <p>out of 6</p>
+                        <p>
+                            <span id="gameScore">X</span>
+                            <sub>/6</sub>
+                        </p>
+                        <p>guesses</p>
                     </div>
                     <div>
-                        <span id="gamesPlayed">0</span>
+                        <p id="gamesPlayed">0</p>
                         <p>played</p>
                     </div>
                     <div>
-                        <span id="successRate">--%</span>
+                        <p id="successRate">--%</p>
                         <p>success</p>
                     </div>
                 </div>
@@ -177,10 +173,6 @@
                 </button>
             </div>
         </div>
-        <p class="bottom-links">
-            <a href="mailto:bibordle@fxzfun.com" target="_blank"><i class="material-icons">bug_report</i> Report Bug</a>
-            <a href="https://github.com/FXZFun/bibordle" target="_blank"><i class="material-icons">code</i> GitHub</a>
-        </p>
         <!-- How To Play -->
         <div class="overlay" id="instructions">
             <div class="message">
@@ -228,12 +220,10 @@
                         <i class="material-icons wordInfo" title="About"
                             onclick="alert('Flips back and enter keys')">info</i>
                     </p>
-                    <button onclick="document.getElementById('settings').style.display='none'" class="close"><i
-                            class="material-icons">close</i></button>
+                    <a href="#" class="close">
+                        <i class="material-icons">close</i>
+                    </a>
                 </div>
-                <button id="statsBtn" class="switchMode"
-                    onclick="document.getElementById('settings').style.display='none';showStats()" title="Show Stats"><i
-                        class="material-icons">leaderboard</i> View Stats</button>
             </div>
         </div>
         <div id="snackbar"></div>
@@ -243,14 +233,6 @@
         if (!localStorage.hasOwnProperty("educated")) {
             document.getElementById("instructions").style.display = 'block';
             localStorage.setItem("educated", true);
-        }
-        navigator.serviceWorker.register('/serviceworker.js?v=4ec7f136-95cd-499e-b23c-5e8642f4450f');
-        if ('serviceWorker' in navigator) {
-            caches.keys().then(function (cacheNames) {
-                cacheNames.forEach(function (cacheName) {
-                    caches.delete(cacheName);
-                });
-            });
         }
 
         try { window.frames.top.document } catch {

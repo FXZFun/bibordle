@@ -1,16 +1,69 @@
+:root {
+    --correct-color: #4CAF50;
+    --inword-color: #FFD600;
+    --incorrect-color: #757575;
+    --primary-text-color: #212121;
+    --background-color: #fafafa;
+    --gap-xsmall: 5px;
+    --gap-small: 10px;
+    --gap-regular: 20px;
+    --gap-medium: 30px;
+    --gap-large: 40px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: #fafafa;
-    color: #212121;
+    background-color: var(--background-color);
+    color: var(--primary-text-color);
     text-align: center;
     margin: auto;
     font-family: 'Maven Pro', 'Open Sans', sans-serif;
 }
 
-main {
-    overflow: auto;
+header {
     display: flex;
-    flex-direction: column;
-    height: 100vh;
+    align-items: baseline;
+    margin: var(--gap-regular) auto;
+    gap: var(--gap-regular);
+}
+
+@media screen and (min-width: 500px) {
+    header {
+        max-width: 50%;
+    }
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+header select {
+    border: 0;
+    padding: var(--gap-xsmall) var(--gap-small);
+    font-family: 'Maven Pro', 'Open Sans', sans-serif;
+    font-size: 1em;
+    background: none;
+}
+
+header a {
+    border: 0;
+    border-radius: var(--gap-regular);
+    padding: var(--gap-xsmall) var(--gap-small);
+    font-family: 'Maven Pro', 'Open Sans', sans-serif;
+    color: var(--primary-text-color);
+    background: none;
+}
+
+#statsBtn {
+    margin-left: auto;
+}
+
+.overlay:target {
+    display: block;
 }
 
 table {
@@ -126,17 +179,6 @@ td {
     padding: 0px;
 }
 
-.header {
-    position: relative;
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
-    margin: 0 auto;
-    flex-wrap: wrap;
-    margin-top: 20px;
-    align-items: center;
-}
-
 .switchMode {
     border: none;
     border-radius: 12px;
@@ -158,20 +200,6 @@ td {
     position: absolute;
     top: 20px;
     right: 33%;
-}
-
-#statsBtn {
-    display: block;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    width: 80%;
-    margin: auto;
-}
-
-#translationBtn {
-    padding: 0;
-    margin-top: 18px;
 }
 
 @media screen and (min-width: 500px) {
@@ -304,16 +332,9 @@ button i {
     cursor: pointer;
 }
 
-.stats div span {
-    display: block;
-    margin: 5px;
-}
-
-#gamesPlayed,
-#gameScore,
-#successRate {
+.stats div p:first-child {
     font-weight: bold;
-    font-size: 1.25em;
+    font-size: 1.5em;
 }
 
 .wordInfo {
@@ -478,10 +499,6 @@ p.bottom-links {
     text-align: left;
 }
 
-#translationBtn {
-    margin-top: 0;
-}
-
 .header p {
     flex-basis: 100%;
 }
@@ -590,7 +607,7 @@ p.bottom-links {
     }
 }
 
-header a,
+/* header a,
 .header button,
 .header select {
     background: none;
@@ -598,15 +615,15 @@ header a,
 
 table {
     margin: 20px auto;
-}
+} */
 
-#statsBtn {
+/* #statsBtn {
     padding: 10px 20px;
     border: none;
     border-radius: 6px;
     width: 80%;
     margin: auto;
-}
+} */
 
 @media screen and (max-width: 500px) {
     .header {
