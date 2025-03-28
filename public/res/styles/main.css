@@ -105,6 +105,44 @@ header a {
     opacity: 0.7;
 }
 
+/* KEYBOARD */
+.keyboard {
+    max-width: 600px;
+    margin: auto;
+}
+
+.keyboard .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    margin: var(--gap-xsmall);
+    gap: var(--gap-xsmall);
+}
+
+.keyboard button {
+    background-color: var(--default-color);
+    border: none;
+    border-radius: var(--gap-xsmall);
+    padding: var(--gap-regular) 0;
+    width: 100%;
+    font-family: 'Maven Pro', 'Open Sans', sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    touch-action: manipulation;
+}
+
+.keyboard button i {
+    font-size: 1em;
+}
+
+@media screen and (min-width: 500px) {
+    .keyboard button {
+        font-size: 1.1em;
+    }
+}
+
 /* POPUPS */
 .overlay {
     background-color: var(--overlay-background);
@@ -167,44 +205,6 @@ header a {
 @keyframes zipout {
     from { top: var(--gap-small) }
     to { top: -100vh; }
-}
-
-/* KEYBOARD */
-.keyboard {
-    max-width: 600px;
-    margin: auto;
-}
-
-.keyboard .row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    margin: var(--gap-xsmall);
-    gap: var(--gap-xsmall);
-}
-
-.keyboard button {
-    background-color: var(--default-color);
-    border: none;
-    border-radius: var(--gap-xsmall);
-    padding: var(--gap-regular) 0;
-    width: 100%;
-    font-family: 'Maven Pro', 'Open Sans', sans-serif;
-    font-weight: bold;
-    text-transform: uppercase;
-    touch-action: manipulation;
-}
-
-.keyboard button i {
-    font-size: 1em;
-}
-
-@media screen and (min-width: 500px) {
-    .keyboard button {
-        font-size: 1.1em;
-    }
 }
 
 /* STATS POPUP */
