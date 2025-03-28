@@ -59,35 +59,35 @@
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line1" class="notActive">
+                <tr id="line1" class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line2" class="notActive">
+                <tr id="line2" class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line3" class="notActive">
+                <tr id="line3" class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line4" class="notActive">
+                <tr id="line4" class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line5" class="notActive">
+                <tr id="line5" class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
@@ -235,12 +235,8 @@
             localStorage.setItem("educated", true);
         }
 
-        try { window.frames.top.document } catch {
-            const snackbar = document.getElementById("snackbar");
-            snackbar.innerHTML = "Playing from <a href='https://bibordle.web.app'>https://bibordle.web.app</a>";
-            snackbar.classList.add("show");
-            setTimeout(() => snackbar.classList.remove("show"), 5000);
-        }
+        const snackbar = document.getElementById("snackbar");
+        snackbar.addEventListener('animationend', () => snackbar.classList.remove('show'));
     </script>
 </body>
 

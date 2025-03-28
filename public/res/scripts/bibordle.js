@@ -78,7 +78,7 @@ function guess() {
             lineId++;
             letterId = 0;
             currentGuess = "";
-            document.getElementById("line" + lineId).classList.remove("notActive");
+            document.getElementById("line" + lineId).classList.remove("dimmed");
         }
     }
 }
@@ -256,7 +256,7 @@ function setTranslation(translation) {
     currentLetters = [];
     currentGuess = "";
     for (var line = 1; line < 5; line++) {
-        document.getElementById("line" + line).classList.add("notActive");
+        document.getElementById("line" + line).classList.add("dimmed");
     }
     gameEnabled = true;
 }
