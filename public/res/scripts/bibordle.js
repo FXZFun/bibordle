@@ -59,7 +59,7 @@ function guess() {
         currentLetters.forEach((g, i) => {
             if (g == solution.split("")[i]) {
                 lettersNeeded.splice(lettersNeeded.indexOf(g), 1);
-                updateLetterClass(g, i, "good");
+                updateLetterClass(g, i, "correct");
             }
         });
 
@@ -68,7 +68,7 @@ function guess() {
                 lettersNeeded.splice(lettersNeeded.indexOf(g), 1);
                 updateLetterClass(g, i, "inword");
             } else if (g != solution.split("")[i]) {
-                updateLetterClass(g, i, "bad");
+                updateLetterClass(g, i, "incorrect");
             }
         });
 
@@ -189,11 +189,11 @@ function generateShareCode() {
     var elements = document.getElementById("gameboard").querySelectorAll("td")
     elements.forEach(el => {
         if (el.classList != "") {
-            if (el.classList == "good") {
+            if (el.classList == "correct") {
                 shareResult += "🟩";
             } else if (el.classList == "inword") {
                 shareResult += "🟨";
-            } else if (el.classList == "bad") {
+            } else if (el.classList == "incorrect") {
                 shareResult += "⬜";
             }
         }

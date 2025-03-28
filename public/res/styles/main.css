@@ -1,7 +1,9 @@
 :root {
     --correct-color: #4CAF50;
     --inword-color: #FFD600;
-    --incorrect-color: #757575;
+    --incorrect-color: #9E9E9E;
+    --default-color: #D3D3D3;
+    --not-word-color: #D32F2F;
     --primary-text-color: #212121;
     --background-color: #fafafa;
     --overlay-background: #808080a4;
@@ -58,6 +60,10 @@ header a {
     margin-left: auto;
 }
 
+.material-symbols-rounded {
+    vertical-align: sub;
+}
+
 @media screen and (min-width: 500px) {
     header {
         max-width: 50%;
@@ -76,8 +82,23 @@ header a {
     width: 2em;
     font-size: 2em;
     text-align: center;
-    background-color: lightgray;
+    background-color: var(--default-color);
     border-radius: 10px;
+}
+
+#gameboard td.incorrect,
+.keyboard button.incorrect {
+    background-color: var(--incorrect-color);
+}
+
+#gameboard td.inword,
+.keyboard button.inword {
+    background-color: var(--inword-color);
+}
+
+#gameboard td.correct,
+.keyboard button.correct {
+    background-color: var(--correct-color);
 }
 
 .dimmed {
@@ -85,7 +106,6 @@ header a {
 }
 
 /* POPUPS */
-
 .overlay {
     background-color: var(--overlay-background);
     position: fixed;
@@ -151,25 +171,26 @@ header a {
 
 /* KEYBOARD */
 .keyboard {
-    margin-top: 20px;
+    max-width: 600px;
+    margin: auto;
 }
 
-.row {
+.keyboard .row {
     display: flex;
     justify-content: center;
     align-items: center;
-    align-content: center;
     flex-wrap: nowrap;
     flex-direction: row;
-    margin: 5px;
+    margin: var(--gap-xsmall);
+    gap: var(--gap-xsmall);
 }
 
 .keyboard button {
-    background-color: #E0E0E0;
+    background-color: var(--default-color);
     border: none;
-    border-radius: 10px;
-    padding: 1em;
-    margin: 1px;
+    border-radius: var(--gap-xsmall);
+    padding: var(--gap-regular) 0;
+    width: 100%;
     font-family: 'Maven Pro', 'Open Sans', sans-serif;
     font-weight: bold;
     text-transform: uppercase;
@@ -180,9 +201,16 @@ header a {
     font-size: 1em;
 }
 
+@media screen and (min-width: 500px) {
+    .keyboard button {
+        font-size: 1.1em;
+    }
+}
+
+/* STATS POPUP */
 #status.win::before {
     content: "check_circle ";
-    font-family: 'Material Icons';
+    font-family: 'Material Icons Round';
     vertical-align: middle;
     color: #2E7D32;
 }
@@ -193,7 +221,7 @@ header a {
 
 #status.lose::before {
     content: "cancel ";
-    font-family: 'Material Icons';
+    font-family: 'Material Icons Round';
     vertical-align: middle;
     color: #C62828;
 }
@@ -202,22 +230,7 @@ header a {
     content: "You Lost";
 }
 
-.alert {
-    background-color: #212121;
-    color: #fafafa;
-    border-radius: 5px;
-    padding: 10px;
-    display: none;
-    position: fixed;
-    width: 30%;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-#btnRow {
-    padding: 0px;
-}
-
+/* SETTINGS POPUP */
 .switchMode {
     border: none;
     border-radius: 12px;
@@ -239,111 +252,6 @@ header a {
     position: absolute;
     top: 20px;
     right: 33%;
-}
-
-@media screen and (min-width: 500px) {
-    .keyboard button {
-        font-size: 1.1em;
-    }
-}
-
-@media screen and (max-width: 1200px) {
-    .header {
-        width: 50%;
-    }
-}
-
-@media screen and (max-width: 900px) {
-    .header {
-        width: 60%;
-        justify-content: space-between;
-    }
-}
-
-@media screen and (max-width: 700px) {
-    .header {
-        width: 80%;
-    }
-}
-
-@media screen and (max-width: 500px) {
-    .header {
-        width: 100%;
-    }
-}
-
-button.bad,
-td.bad {
-    background-color: #9E9E9E;
-}
-
-button.inword,
-td.inword {
-    background-color: #FFD600;
-}
-
-button.good,
-td.good {
-    background-color: #4CAF50;
-}
-
-/* fonts */
-@font-face {
-    font-family: 'Material Icons';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(/res/fonts/MaterialIcons-Regular.ttf);
-    /* For IE6-8 */
-    src: local('Material Icons'),
-        local('MaterialIcons-Regular'),
-        url(/res/fonts/MaterialIcons-Regular.ttf) format('truetype');
-}
-
-.material-icons {
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    /* Preferred icon size */
-    display: inline-block;
-    line-height: 1;
-    text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
-    white-space: nowrap;
-    direction: ltr;
-
-    /* Support for all WebKit browsers. */
-    -webkit-font-smoothing: antialiased;
-    /* Support for Safari and Chrome. */
-    text-rendering: optimizeLegibility;
-
-    /* Support for Firefox. */
-    -moz-osx-font-smoothing: grayscale;
-
-    /* Support for IE. */
-    font-feature-settings: 'liga';
-    vertical-align: middle;
-}
-
-@font-face {
-    font-family: 'Maven Pro';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(/res/fonts/MavenPro-VariableFont_wght.ttf);
-    /* For IE6-8 */
-    src: local('Maven Pro'),
-        url(/res/fonts/MavenPro-VariableFont_wght.ttf) format('truetype');
-}
-
-button {
-    font-family: 'Maven Pro', sans-serif;
-}
-
-button i {
-    vertical-align: middle;
 }
 
 .stats {
@@ -384,124 +292,12 @@ button i {
     cursor: pointer;
 }
 
-@media screen and (prefers-color-scheme: dark) {
-    body {
-        color: #fafafa !important;
-        background-color: #212121;
-    }
-
-    .message {
-        background-color: #212121;
-    }
-
-    .alert {
-        background-color: #fafafa;
-        color: #212121;
-    }
-
-    .message a,
-    .message .close,
-    .header,
-    .header button,
-    .header select,
-    #settings input[type=checkbox]:checked+label::before {
-        color: #fafafa;
-    }
-
-    .stats,
-    .message .close {
-        background-color: #212121;
-    }
-
-    td,
-    select.switchMode {
-        color: #212121;
-    }
-
-    button.bad,
-    td.bad {
-        background-color: #757575;
-    }
-
-    button.inword,
-    td.inword {
-        background-color: #FFD600;
-    }
-
-    button.good,
-    td.good {
-        background-color: #4CAF50;
-    }
-}
-
-body.darkMode {
-    color: #fafafa !important;
-    background-color: #212121;
-}
-
-body.darkMode .message {
-    background-color: #212121;
-}
-
-body.darkMode .alert {
-    background-color: #fafafa;
-    color: #212121;
-}
-
-body.darkMode .header,
-body.darkMode .header button,
-body.darkMode .header select,
-body.darkMode .message a,
-body.darkMode .message .close,
-body.darkMode #settings input[type=checkbox]:checked+label::before {
-    color: #fafafa;
-}
-
-body.darkMode .stats,
-body.darkMode .message .close {
-    background-color: #212121;
-}
-
-body.darkMode td {
-    color: #212121;
-}
-
-body.darkMode button.bad,
-body.darkMode td.bad {
-    background-color: #757575;
-}
-
-tr.notAWord td {
-    font-weight: bold;
-    color: rgb(211, 47, 47);
-}
-
-p.bottom-links {
-    bottom: 0;
-    margin: auto;
-    left: 0;
-    right: 0;
-    padding: 5px;
-}
-
-.bottom-links a {
-    padding: 10px 25px;
-    border: none;
-    border-radius: 12px;
-    text-decoration: none;
-    color: #757575;
-}
-
-.bottom-links a:hover {
-    background-color: #E0E0E0;
-}
-
 #settings input[type=checkbox] {
     display: none;
 }
 
 #settings input[type=checkbox]+label::before {
-    font-family: "Material Icons";
+    font-family: "Material Icons Round";
     content: "toggle_off";
     font-size: 32px;
     vertical-align: middle;
@@ -509,40 +305,9 @@ p.bottom-links {
 }
 
 #settings input[type=checkbox]:checked+label::before {
-    font-family: "Material Icons";
+    font-family: "Material Icons Round";
     content: "toggle_on";
     font-size: 32px;
     vertical-align: middle;
     color: #212121;
-}
-
-
-@media screen and (max-width: 500px) {
-    .header {
-        justify-content: space-between;
-    }
-}
-
-@media screen and (prefers-color-scheme: dark) {
-
-    button.bad,
-    td.bad {
-        background-color: #757575;
-    }
-
-    button.inword,
-    td.inword {
-        background-color: #FFD600;
-    }
-
-    button.good,
-    td.good {
-        background-color: #4CAF50;
-    }
-}
-
-@media screen and (min-width: 1200px) {
-    .header {
-        width: 50%;
-    }
 }
