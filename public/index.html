@@ -10,7 +10,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400&family=Material+Icons&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400&family=Material+Icons+Round&display=swap" rel="stylesheet">
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/res/raw/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/res/raw/favicons/favicon-32x32.png">
@@ -42,10 +42,10 @@
             <option>KJV</option>
         </select>
         <a id="statsBtn" title="Show Stats" href="#statsPage">
-            <i class="material-icons">leaderboard</i>
+            <i class="material-icons-round">leaderboard</i>
         </a>
         <a id="settingsBtn" title="Show Settings" href="#settings">
-            <i class="material-icons">settings</i>
+            <i class="material-icons-round">settings</i>
         </a>
     </header>
     <main>
@@ -121,7 +121,7 @@
             </div>
             <div class="row">
                 <button onclick="typeKey('backspace')" id="keyboard-backspace">
-                    <i class="material-icons">backspace</i>
+                    <i class="material-icons-round">backspace</i>
                 </button>
                 <button onclick="typeKey('z')" id="keyboard-z">z</button>
                 <button onclick="typeKey('x')" id="keyboard-x">x</button>
@@ -131,7 +131,7 @@
                 <button onclick="typeKey('n')" id="keyboard-n">n</button>
                 <button onclick="typeKey('m')" id="keyboard-m">m</button>
                 <button onclick="guess()" id="keyboard-enter">
-                    <i class="material-icons" style="font-weight: bold">check</i>
+                    <i class="material-icons-round" style="font-weight: bold">check</i>
                 </button>
             </div>
         </div>
@@ -139,12 +139,12 @@
         <div class="overlay" id="statsPage">
             <div class="message">
                 <a href="#" class="close">
-                    <i class="material-icons">close</i>
+                    <i class="material-icons-round">close</i>
                 </a>
                 <h2 id="status"></h2>
                 <p>
                     The word was <span id="word">_____</span>
-                    <i class="material-icons wordInfo" title="Word Stats" onclick="showWordInfo()">info</i>
+                    <i class="material-icons-round wordInfo" title="Word Stats" onclick="showWordInfo()">info</i>
                 </p>
                 <p>
                     <span id="verse"></span>
@@ -168,7 +168,7 @@
                     </div>
                 </div>
                 <button onclick="share()" class="shareBtn">
-                    <i class="material-icons" style="vertical-align: middle;">share</i> Share
+                    <i class="material-icons-round" style="vertical-align: middle;">share</i> Share
                 </button>
             </div>
         </div>
@@ -194,8 +194,9 @@
                 <p>The letter <b>E</b> is in the word but in the wrong spot</p>
                 <p>The letter <b>J</b> is not in the word</p>
 
-                <button onclick="document.getElementById('instructions').style.display='none'" class="close"><i
-                        class="material-icons">close</i></button>
+                <a href="#" class="close">
+                    <i class="material-icons-round">close</i>
+                </a>
             </div>
         </div>
         <!-- Settings Dialog -->
@@ -210,17 +211,17 @@
                     <p>
                         <input id="sEasyMode" type="checkbox" onchange="toggleEasyMode(this.checked)" />
                         <label for="sEasyMode"> Easy Mode </label>
-                        <i class="material-icons wordInfo" title="About"
+                        <i class="material-icons-round wordInfo" title="About"
                             onclick="alert('Enables guessing words not in the Bible')">info</i>
                     </p>
                     <p>
                         <input id="sSwapControl" type="checkbox" onchange="toggleSwapControl(this.checked)" />
                         <label for="sSwapControl"> Swap Control Keys </label>
-                        <i class="material-icons wordInfo" title="About"
+                        <i class="material-icons-round wordInfo" title="About"
                             onclick="alert('Flips back and enter keys')">info</i>
                     </p>
                     <a href="#" class="close">
-                        <i class="material-icons">close</i>
+                        <i class="material-icons-round">close</i>
                     </a>
                 </div>
             </div>
