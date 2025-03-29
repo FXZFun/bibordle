@@ -1,9 +1,9 @@
 :root {
-    --correct-color: #4CAF50;
-    --inword-color: #FFD600;
-    --incorrect-color: #9E9E9E;
-    --default-color: #D3D3D3;
-    --not-word-color: #D32F2F;
+    --correct-color: #4caf50;
+    --inword-color: #ffd600;
+    --incorrect-color: #9e9e9e;
+    --default-color: #d3d3d3;
+    --not-word-color: #d32f2f;
     --primary-text-color: #212121;
     --secondary-text-color: #616161;
     --background-color: #fafafa;
@@ -16,8 +16,29 @@
     --theme-font: 'Maven Pro', 'Open Sans', sans-serif;
 }
 
+@media screen and (prefers-color-scheme: dark) {
+    :root {
+        --correct-color: #478549;
+        --inword-color: #b59f3b;
+        --primary-text-color: #fafafa;
+        --secondary-text-color: #b0bec5;
+        --background-color: #292929;
+        --overlay-background: #363636a4;
+        --incorrect-color: #403f3f;
+        --default-color: #696969;
+    }
+
+    div#snackbar {
+        background-color: #494949;
+    }
+}
+
 * {
     box-sizing: border-box;
+}
+
+html {
+    color-scheme: dark light;
 }
 
 body {
@@ -33,7 +54,9 @@ header {
     display: flex;
     align-items: baseline;
     margin: var(--gap-regular) auto;
+    padding: 0 var(--gap-small);
     gap: var(--gap-regular);
+    max-width: 600px;
 }
 
 header h1 {
@@ -46,7 +69,7 @@ header select {
     padding: var(--gap-xsmall) var(--gap-small);
     font-family: var(--theme-font);
     font-size: 1em;
-    background: none;
+    background: var(--background-color);
 }
 
 header a {
@@ -66,12 +89,6 @@ header a {
     vertical-align: sub;
 }
 
-@media screen and (min-width: 500px) {
-    header {
-        max-width: 50%;
-    }
-}
-
 /* GAMEBOARD */
 #gameboard {
     margin: 20px auto;
@@ -83,6 +100,7 @@ header a {
     height: 2em;
     width: 2em;
     font-size: 2em;
+    font-weight: bold;
     text-align: center;
     background-color: var(--default-color);
     border-radius: 10px;
@@ -186,8 +204,8 @@ header a {
 
 #snackbar {
     min-width: 250px;
-    background-color: var(--primary-text-color);
-    color: var(--background-color);
+    background-color: #212121;
+    color: #fafafa;
     text-align: center;
     border-radius: var(--gap-small);
     padding: var(--gap-regular);
@@ -195,7 +213,7 @@ header a {
     top: -100vh;
     left: 50%;
     transform: translateX(-50%);
-    box-shadow: 0px 0px 10px var(--secondary-text-color);
+    box-shadow: 0px 0px 10px #1c1c1cad;
     transition: 0.25s;
 }
 
@@ -211,25 +229,25 @@ header a {
 
 /* STATS POPUP */
 #status.win::before {
-    content: "check_circle ";
+    content: "check_circle";
     font-family: 'Material Symbols Rounded';
     vertical-align: middle;
     color: var(--correct-color);
 }
 
 #status.win::after {
-    content: "You Won";
+    content: " You Won";
 }
 
 #status.lose::before {
-    content: "cancel ";
+    content: "cancel";
     font-family: 'Material Symbols Rounded';
     vertical-align: middle;
     color: var(--not-word-color);
 }
 
 #status.lose::after {
-    content: "You Lost";
+    content: " You Lost";
 }
 
 .stats {
