@@ -1,3 +1,88 @@
+class State {
+    educated = false;
+    gameNumber = 0;
+    gameEnabled = true;
+    currentLetters = [];
+    lineId = 0;
+    letterId = 0;
+    guessedWords = [];
+    solution = "";
+
+    constructor(translation) {
+        const savedState = localStorage.getItem("bibordle-state")?.[translation];
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            this.educated = state.educated || false;
+            this.gameNumber = state.gameNumber || 0;
+            this.guessedWords = state.guessedWords || [];
+        }
+    }
+
+    save() {
+        localStorage.setItem("bibordle-state", JSON.stringify({
+            educated: this.educated,
+            gameNumber: this.gameNumber,
+            guessedWords: this.guessedWords
+        }));
+    }
+}
+
+class Settings {
+    translation = "EHV";
+    easyMode = false;
+    swapControls = false;
+
+    constructor() {
+        const storedSettings = localStorage.getItem("bibordle-settings");
+        if (storedSettings) {
+            const settings = JSON.parse(storedSettings);
+            this.translation = settings.translation || this.translation;
+            this.easyMode = settings.easyMode || this.easyMode;
+            this.swapControls = settings.swapControls || this.swapControls;
+        }
+    }
+
+    save() {
+        localStorage.setItem("bibordle-settings", JSON.stringify(this));
+    }
+
+    setTranslation(translation) {
+        this.translation = translation;
+        this.save(); // Save the updated settings to local storage
+    }
+
+    toggleEasyMode() {
+        this.easyMode = !this.easyMode; // Toggle the easy mode setting
+        this.save(); // Save the updated settings to local storage
+        toggleEasyMode(this.easyMode); // Call the function to update the game mode
+    }
+
+    toggleSwapControls() {
+        this.swapControls = !this.swapControls; // Toggle the swap controls setting
+        this.save(); // Save the updated settings to local storage
+        toggleSwapControl(this.swapControls); // Call the function to update the keyboard controls
+    }
+
+    migrateSettings() {
+        // Migrate settings from local storage if they exist
+        if (localStorage.hasOwnProperty("bibordle-translation")) {
+            this.translation = localStorage.getItem("bibordle-translation");
+            localStorage.removeItem("bibordle-translation"); // Remove the old setting to avoid conflicts
+        }
+        if (localStorage.hasOwnProperty("bibordle-easyMode")) {
+            this.easyMode = JSON.parse(localStorage.getItem("bibordle-easyMode"));
+            localStorage.removeItem("bibordle-easyMode"); // Remove the old setting to avoid conflicts
+        }
+        if (localStorage.hasOwnProperty("bibordle-swapControls")) {
+            this.swapControls = JSON.parse(localStorage.getItem("bibordle-swapControls"));
+            localStorage.removeItem("bibordle-swapControls"); // Remove the old setting to avoid conflicts
+        }
+        this.save(); // Save the migrated settings
+    }
+}
+
+
+
 var number = "-";
 var solution = "";
 var verse = "";
@@ -13,43 +98,61 @@ var letterId = 0;
 var currentLetters = [];
 var guessedWords = ["", "", "", "", "", ""];
 var gameEnabled = true;
-var validLetters = "qwertyuiopasdfghjklzxcvbnmenterbackspace";
 
-document.addEventListener("keyup", event => {
-    var key = event.key.toLowerCase();
-    if (validLetters.includes(key)) typeKey(key);
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => e.target == o && (location.href = '#')));
+document.getElementById("translationSelector").addEventListener("change", (e) => {
+    settings.setTranslation(e.target.value);
+    location.reload();
 });
 
-function typeKey(key) {
-    if (!gameEnabled && !restoringFromLocalStorage) return;
+document.addEventListener("keyup", e => {
+    if (!gameEnabled) return;
+    else if (e.key === 'Backspace') backspace();
+    else if (e.key === 'Enter') guess();
+    else if ((e.code === `Key${e.key.toUpperCase()}`) && !e.ctrlKey && !e.altKey) typeKey(e.key.toLowerCase());
+});
 
-    if (key == "enter") guess();
-    else if (key == "backspace") {
-        backspace();
-        document.getElementById("line" + lineId).classList.remove("notAWord");
-    } else if (letterId < 5) {
-        document.getElementById("line" + lineId).children[letterId].innerText = key.toUpperCase();
-        letterId++;
-        currentLetters.push(key.toLowerCase());
-        var currentGuess = currentLetters.join("");
+const settings = new Settings();
+const state = new State(settings.translation);
+const lineElements = document.querySelectorAll("#gameboard tr");
+
+class Game {
+    static getCurrentLine() {
+        return lineElements[state.lineId];
+    }
+
+    static getCurrentLetter() {
+        return this.getCurrentLine().children[state.letterId];
+    }
+}
+
+function typeKey(key) {
+    if (!gameEnabled) return;
+
+    if (state.letterId < 5) {
+        Game.getCurrentLetter().innerText = key;
+        state.letterId++;
+        state.currentLetters.push(key);
+        const currentGuess = state.currentLetters.join("");
         if (currentGuess.length == 5 && !words.includes(currentGuess)) {
-            document.getElementById("line" + lineId).classList.add("notAWord");
+            Game.getCurrentLine().classList = "notAWord";
         }
     }
 }
 
 function backspace() {
     currentLetters.pop();
-    if (letterId != 0) letterId--;
-    document.getElementById("line" + lineId).children[letterId].innerText = "";
+    if (state.letterId != 0) state.letterId--;
+    Game.getCurrentLetter().innerText = "";
+    Game.getCurrentLine().classList.remove("notAWord");
 }
 
 function guess() {
-    var currentGuess = currentLetters.join("");
-    var lettersNeeded = solution.split("");
+    var currentGuess = state.currentLetters.join("");
+    var lettersNeeded = state.solution.split("");
 
     if (currentGuess.length == 5 && !words.includes(currentGuess)) showAlert("Not in word list") //trigger not in word list
-    else if (currentGuess.length != 5) showAlert("Not enough letters") // trigger too short
+    else if (currentGuess.length != 5) showAlert("🤣 Too short!") // trigger too short
     else {
         guessedWords[lineId] = currentGuess;
         localStorage.setItem("wordsGuessed-daily", JSON.stringify(guessedWords));
@@ -78,24 +181,23 @@ function guess() {
             lineId++;
             letterId = 0;
             currentGuess = "";
-            document.getElementById("line" + lineId).classList.remove("dimmed");
+            lineElements[lineId].classList.remove("dimmed");
         }
     }
 }
 
 function updateLetterClass(letter, index, colorClass) {
-    document.getElementById(`line${lineId}`).children[index].classList = colorClass;
+    Game.getCurrentLine().children[index].classList = colorClass;
     document.getElementById(`keyboard-${letter}`).classList.add(colorClass);
 }
 
 function finishGame() {
-    gameEnabled = false;
+    state.gameEnabled = false;
 
     if (!restoringFromLocalStorage) {
         if (currentLetters.join("") == solution) {
             var gamesWon = localStorage.hasOwnProperty("gamesWon-daily") ? parseInt(localStorage.getItem("gamesWon-daily")) : 0;
             localStorage.setItem("gamesWon-daily", gamesWon + 1);
-            gtag('send', 'event', { eventCategory: 'Game End', eventAction: 'Win' });
         }
         else gtag('send', 'event', { eventCategory: 'Game End', eventAction: 'Lose' });
         var gamesPlayed = localStorage.hasOwnProperty("gamesPlayed-daily") ? parseInt(localStorage.getItem("gamesPlayed-daily")) : 0;
@@ -104,43 +206,18 @@ function finishGame() {
     showStats();
 }
 
-function showAlert(message, hide = true) {
-    document.getElementById("alertText").innerText = message;
-    document.getElementById("alert").style.display = "block";
-    if (hide) {
-        setTimeout(function () {
-            document.getElementById("alert").style.display = "none";
-        }, 3000);
-    }
-}
-
-function toggleDarkMode() {
-    if (document.querySelector('body').classList.contains('darkMode')) {
-        localStorage.removeItem('darkMode');
-        document.querySelector('body').classList.remove('darkMode');
-        document.getElementById("sDarkMode").checked = false;
-    } else {
-        document.querySelector('body').classList.add('darkMode');
-        localStorage.setItem('darkMode', true);
-        document.getElementById("sDarkMode").checked = true;
-    }
-}
-
-if (localStorage.hasOwnProperty("darkMode")) {
-    toggleDarkMode();
+function showAlert(message) {
+    const snackbar = document.getElementById("snackbar");
+    snackbar.innerText = message;
+    snackbar.classList.add("show");
 }
 
 function showStats() {
-    document.getElementById("statsPage").style.display = "block";
-    if (currentLetters.join("") == solution) {
-        document.getElementById("status").classList.remove("lose");
-        document.getElementById("status").classList.add("win");
-    } else {
-        document.getElementById("status").classList.remove("win");
-        document.getElementById("status").classList.add("lose");
-    }
+    location.href = "#statsPage";
+    const gameWon = currentLetters.join("") == solution;
+    document.getElementById("status").classList = gameWon ? "win" : "lose";
 
-    if (solution == localStorage.getItem("solution-daily") && (currentLetters.join("") == solution || !gameEnabled)) {
+    if (solution == localStorage.getItem("solution-daily") && (gameWon || !gameEnabled)) {
         document.getElementById("word").innerText = solution.toUpperCase();
         document.getElementById("verse").innerHTML = verse.replace(new RegExp(solution, "gi"), (match, index) => {
             if (index - 1 > 0 && index + match.length < verse.length && (!verse[index - 1].match(/[a-z]/i)) && (!verse[index + match.length].match(/[a-z]/i))) return "<b>" + match + "</b>";

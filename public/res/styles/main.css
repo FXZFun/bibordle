@@ -20,6 +20,7 @@
     :root {
         --correct-color: #478549;
         --inword-color: #b59f3b;
+        --not-word-color: #7a1f1f;
         --primary-text-color: #fafafa;
         --secondary-text-color: #b0bec5;
         --background-color: #292929;
@@ -103,7 +104,12 @@ header a {
     font-weight: bold;
     text-align: center;
     background-color: var(--default-color);
-    border-radius: 10px;
+    border-radius: var(--gap-small);
+    text-transform: uppercase;
+}
+
+.gameboard tr.notAWord {
+    color: var(--not-word-color);
 }
 
 .gameboard td.incorrect,
@@ -143,6 +149,7 @@ header a {
 
 .keyboard button {
     background-color: var(--default-color);
+    color: var(--primary-text-color);
     border: none;
     border-radius: var(--gap-xsmall);
     padding: var(--gap-regular) 0;

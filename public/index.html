@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bibordle - The Bible Wordle</title>
     <link rel="stylesheet" href="/res/styles/main.css" type="text/css">
+    <link rel="stylesheet" href="/res/styles/animate.min.css" type="text/css">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,7 +39,7 @@
 <body>
     <header>
         <h1>Bibordle</h1>
-        <select id="translationBtn" title="Change Translation" onchange="setTranslation(this.value)">
+        <select id="translationSelector" title="Change Translation">
             <option>EHV</option>
             <option>KJV</option>
         </select>
@@ -52,42 +53,42 @@
     <main>
         <table id="gameboard" class="gameboard">
             <tbody>
-                <tr id="line0">
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line1" class="dimmed">
+                <tr class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line2" class="dimmed">
+                <tr class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line3" class="dimmed">
+                <tr class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line4" class="dimmed">
+                <tr class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line5" class="dimmed">
+                <tr class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
@@ -206,10 +207,6 @@
                 <h2>Settings</h2>
                 <div>
                     <p>
-                        <input id="sDarkMode" type="checkbox" onchange="toggleDarkMode()" />
-                        <label for="sDarkMode"> Dark Mode </label>
-                    </p>
-                    <p>
                         <input id="sEasyMode" type="checkbox" onchange="toggleEasyMode(this.checked)" />
                         <label for="sEasyMode"> Easy Mode </label>
                         <i class="material-symbols-rounded wordInfo" title="About"
@@ -232,7 +229,7 @@
     <script src="/res/scripts/bibordle.js" defer></script>
     <script>
         if (!localStorage.hasOwnProperty("educated")) {
-            document.getElementById("instructions").style.display = 'block';
+            location.href = '#instructions';
             localStorage.setItem("educated", true);
         }
 
