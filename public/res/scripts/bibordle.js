@@ -220,7 +220,7 @@ function legacyShare() {
     document.execCommand("copy");
     text.style = "display: none";
     showAlert("Copied to clipboard");
-    document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
+    document.querySelector(".shareBtn").innerHTML = `<i class="material-symbols-rounded" style="vertical-align: middle;">check</i> Shared!`;
     setTimeout(() => document.getElementById('statsPage').style.display = 'none', 2000);
 }
 
@@ -229,7 +229,7 @@ function share() {
     if (navigator.share && navigator.canShare({ text: content })) {
         navigator.share({ text: content })
             .then(() => {
-                document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
+                document.querySelector(".shareBtn").innerHTML = `<i class="material-symbols-rounded" style="vertical-align: middle;">check</i> Shared!`;
                 legacyShare();
             }).catch(e => {
                 console.log(e);
