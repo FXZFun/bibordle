@@ -272,6 +272,14 @@ header a {
     font-size: small;
 }
 
+#statsPage a {
+    color: var(--primary-text-color);
+}
+
+#solutionDisplay {
+    display: none;
+}
+
 .wordInfo {
     vertical-align: middle;
     font-size: 1.25em;

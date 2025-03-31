@@ -144,9 +144,9 @@
                     <i class="material-symbols-rounded">close</i>
                 </a>
                 <h2 id="status"></h2>
-                <p>
+                <p id="solutionDisplay">
                     The word was <span id="word">_____</span>
-                    <i class="material-symbols-rounded wordInfo" title="Word Stats" onclick="showWordInfo()">info</i>
+                    <i class="material-symbols-rounded wordInfo" title="Word Stats" id="wordInfoBtn">info</i>
                 </p>
                 <p>
                     <span id="verse"></span>
@@ -207,16 +207,14 @@
                 <h2>Settings</h2>
                 <div>
                     <p>
-                        <input id="sEasyMode" type="checkbox" onchange="toggleEasyMode(this.checked)" />
+                        <input id="sEasyMode" type="checkbox" />
                         <label for="sEasyMode"> Easy Mode </label>
-                        <i class="material-symbols-rounded wordInfo" title="About"
-                            onclick="alert('Enables guessing words not in the Bible')">info</i>
+                        <i class="material-symbols-rounded wordInfo" title="About" id="easyModeInfoBtn">info</i>
                     </p>
                     <p>
-                        <input id="sSwapControl" type="checkbox" onchange="toggleSwapControl(this.checked)" />
+                        <input id="sSwapControl" type="checkbox" />
                         <label for="sSwapControl"> Swap Control Keys </label>
-                        <i class="material-symbols-rounded wordInfo" title="About"
-                            onclick="alert('Flips back and enter keys')">info</i>
+                        <i class="material-symbols-rounded wordInfo" title="About" id="swapCtrlInfoBtn">info</i>
                     </p>
                     <a href="#" class="close">
                         <i class="material-symbols-rounded">close</i>
@@ -226,7 +224,7 @@
         </div>
         <div id="snackbar"></div>
     </main>
-    <script src="/res/scripts/bibordle.js" defer></script>
+    <script src="/res/scripts/bibordle.js" defer type="module"></script>
 </body>
 
 </html>

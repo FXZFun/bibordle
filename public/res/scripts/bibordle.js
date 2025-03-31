@@ -11,6 +11,9 @@ class State {
     verse = "";
     wordCount = 0;
     translation = "";
+    easyModeWords = [];
+    hardModeWords = [];
+    words = [];
 
     constructor(translation) {
         this.translation = translation;
@@ -83,34 +86,45 @@ class Settings {
 
     setTranslation(translation) {
         this.translation = translation;
-        this.save(); // Save the updated settings to local storage
+        this.save();
     }
 
     toggleEasyMode() {
-        this.easyMode = !this.easyMode; // Toggle the easy mode setting
-        this.save(); // Save the updated settings to local storage
-        toggleEasyMode(this.easyMode); // Call the function to update the game mode
+        this.easyMode = !this.easyMode;
+        this.save();
     }
 
     toggleSwapControls() {
-        this.swapControls = !this.swapControls; // Toggle the swap controls setting
-        this.save(); // Save the updated settings to local storage
-        toggleSwapControl(this.swapControls); // Call the function to update the keyboard controls
+        this.swapControls = !this.swapControls;
+        this.save();
     }
 
     migrateSettings() {
-        // Migrate settings from local storage if they exist
         if (localStorage.hasOwnProperty("bibordle-translation")) {
             this.translation = localStorage.getItem("bibordle-translation");
-            localStorage.removeItem("bibordle-translation"); // Remove the old setting to avoid conflicts
+            localStorage.removeItem("bibordle-translation");
+        }
+        if (localStorage.hasOwnProperty("gamesPlayed-daily")) {
+            this.totalGames = localStorage.getItem("gamesPlayed-daily");
+            localStorage.setItem("bibordle-classic-gamesPlayed", )
+            localStorage.removeItem("gamesPlayed-daily");
+        }
+        if (localStorage.hasOwnProperty("gamesWon-daily")) {
+            this.totalWins = localStorage.getItem("gamesWon-daily");
+            localStorage.setItem("bibordle-classic-gamesWon", )
+            localStorage.removeItem("gamesWon-daily");
+        }
+        if (localStorage.hasOwnProperty("bibordle-translation")) {
+            this.translation = localStorage.getItem("bibordle-translation");
+            localStorage.removeItem("bibordle-translation");
         }
         if (localStorage.hasOwnProperty("bibordle-easyMode")) {
             this.easyMode = JSON.parse(localStorage.getItem("bibordle-easyMode"));
-            localStorage.removeItem("bibordle-easyMode"); // Remove the old setting to avoid conflicts
+            localStorage.removeItem("bibordle-easyMode");
         }
         if (localStorage.hasOwnProperty("bibordle-swapControls")) {
             this.swapControls = JSON.parse(localStorage.getItem("bibordle-swapControls"));
-            localStorage.removeItem("bibordle-swapControls"); // Remove the old setting to avoid conflicts
+            localStorage.removeItem("bibordle-swapControls");
         }
         this.save(); // Save the migrated settings
     }
@@ -137,8 +151,9 @@ class Game {
 const settings = new Settings();
 const state = new State(settings.translation);
 const statistics = new Statistics(settings.translation);
-
 const lineElements = document.querySelectorAll("#gameboard tr");
+
+settings.migrateSettings(); // Migrate old settings if necessary
 
 if (!settings.educated) {
     location.href = '#instructions';
@@ -146,14 +161,23 @@ if (!settings.educated) {
     settings.save();
 }
 
+/* INITIALIZATION */
 document.getElementById("translationSelector").value = settings.translation;
+await getFromApi();
+toggleEasyMode(settings.easyMode);
+toggleSwapControl(settings.swapControls);
 
-// add event listeners
+/* EVENT LISTENERS */
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => e.target == o && (location.href = '#')));
 document.getElementById("translationSelector").addEventListener("change", (e) => {
     settings.setTranslation(e.target.value);
     location.reload();
 });
+document.getElementById("wordInfoBtn").addEventListener("click", () => showAlert("This word appears a total of " + state.wordCount + " times"));
+document.getElementById("swapCtrlInfoBtn").addEventListener("click", () => showAlert('Flips back and enter keys'));
+document.getElementById("easyModeInfoBtn").addEventListener("click", () => showAlert('Enables guessing words not in the Bible'));
+document.getElementById("sEasyMode").addEventListener("change", e => toggleEasyMode(e.target.checked));
+document.getElementById("sSwapControl").addEventListener("change", e => toggleSwapControl(e.target.checked));
 
 document.addEventListener("keyup", e => {
     if (!state.gameEnabled) return;
@@ -173,7 +197,7 @@ function typeKey(key) {
         state.letterId++;
         state.currentLetters.push(key);
         const currentGuess = state.currentLetters.join("");
-        if (currentGuess.length == 5 && !words.includes(currentGuess)) {
+        if (currentGuess.length == 5 && !state.words.includes(currentGuess)) {
             Game.getCurrentLine().classList = "notAWord";
         }
     }
@@ -191,7 +215,7 @@ function guess(restoring = false) {
     var splitSolution = state.solution.split("");
     var lettersNeeded = [...splitSolution];
 
-    if (currentGuess.length == 5 && !words.includes(currentGuess)) showAlert("Not in word list") //trigger not in word list
+    if (currentGuess.length == 5 && !state.words.includes(currentGuess)) showAlert("Not in word list") //trigger not in word list
     else if (currentGuess.length != 5) showAlert("🤣 Too short!") // trigger too short
     else {
         state.guessedWords[state.lineId] = currentGuess;
@@ -213,9 +237,8 @@ function guess(restoring = false) {
             }
         });
 
-        Game.resetLine();
-        if (restoring) return;
-        if (currentGuess === state.solution || state.lineId === 5) finishGame();
+        if (restoring) return Game.resetLine();
+        (currentGuess === state.solution || state.lineId === 5) ? finishGame() : Game.resetLine();;
     }
 }
 
@@ -265,12 +288,15 @@ function showStats() {
         });
         const reference = document.getElementById("reference");
         reference.innerText = state.reference;
-        reference.href = "https://www.biblegateway.com/passage/?search=" + state.reference + "&version=" + settings.translation;
+        reference.href = (settings.translation === "EHV") ?
+            "https://wartburgproject.org/read?q=" + state.reference :
+            "https://www.biblegateway.com/passage/?search=" + state.reference + "&version=" + settings.translation;
     }
 
     document.getElementById("gameScore").innerText = gameWon ? state.lineId + 1 : "X";
     document.getElementById("gamesPlayed").innerText = statistics.totalGames;
     document.getElementById("successRate").innerText = (statistics.totalWins / statistics.totalGames * 100) + "%";
+    document.getElementById("solutionDisplay").style.display = "block";
 }
 
 
@@ -284,7 +310,7 @@ function restoreLastGame() {
             for (var letter of word) {
                 typeKey(letter);
             }
-            guess(restoring = true);
+            guess(true);
         }
     });
 
@@ -293,10 +319,6 @@ function restoreLastGame() {
         state.gameEnabled = false;
         showStats();
     }
-}
-
-function showWordInfo() {
-    alert("This word appears a total of " + wordCount + " times");
 }
 
 function generateShareCode() {
@@ -329,7 +351,7 @@ function generateShareCode() {
 async function share() {
     const shareCode = generateShareCode();
     const content = { text: shareCode };
-    
+
     if (!navigator.clipboard) {
         showAlert("Copying not supported 🙁");
     } else {
@@ -344,58 +366,52 @@ async function share() {
     document.querySelector(".shareBtn").innerHTML = `<i class="material-symbols-rounded" style="vertical-align: middle;">check</i> Shared!`;
 }
 
-async function toggleEasyMode(state) {
-    document.getElementById("sEasyMode").checked = state;
-    if (state) {
-        if (!easyModeWords) {
+async function toggleEasyMode(isEasy) {
+    settings.toggleEasyMode();
+    document.getElementById("sEasyMode").checked = isEasy;
+    if (isEasy) {
+        if (state.easyModeWords.length === 0) {
             const request = await fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=EASYMODE&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff");
             const data = await request.json();
-            hardModeWords = words;
-            easyModeWords = data;
-            words = words.concat(data);
+            state.hardModeWords = state.words;
+            state.easyModeWords = data;
+            state.words = state.words.concat(data);
         } else {
-            words = words.concat(easyModeWords);
+            state.words = state.words.concat(state.easyModeWords);
         }
-        localStorage.setItem("bibordle-easyMode", true);
     } else {
-        words = hardModeWords;
-        localStorage.setItem("bibordle-easyMode", false);
+        state.words = state.hardModeWords;
     }
 }
 
-function toggleSwapControl(state) {
-    document.getElementById("sSwapControl").checked = state;
+function toggleSwapControl(isSwapped) {
+    document.getElementById("sSwapControl").checked = isSwapped;
     var enterBtn = document.getElementById("keyboard-enter");
     var backBtn = document.getElementById("keyboard-backspace");
-    if (state) {
+    if (isSwapped) {
         document.getElementById("keyboard-z").insertAdjacentElement("beforebegin", enterBtn);
         document.getElementById("keyboard-m").insertAdjacentElement("afterend", backBtn);
-        localStorage.setItem("bibordle-swapControls", true);
     } else {
         document.getElementById("keyboard-z").insertAdjacentElement("beforebegin", backBtn);
         document.getElementById("keyboard-m").insertAdjacentElement("afterend", enterBtn);
-        localStorage.setItem("bibordle-swapControls", false);
     }
 }
 
-// get daily details from api
-function getFromApi() {
-    fetch("https://fxzfun.com/api/bibordle/?mode=daily&translation=" + settings.translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
-        state.gameNumber = data.dailyNumber;
-        state.solution = data.word;
-        state.verse = data.verse;
-        state.reference = data.reference;
-        state.wordCount = data.wordCount;
-        if (state.lastGameNumber === state.gameNumber) {
-            restoreLastGame();
-        }
-    }));
-    fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=" + settings.translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
-        words = data;
-        hardModeWords = data;
-        if (localStorage.hasOwnProperty("bibordle-easyMode")) toggleEasyMode(JSON.parse(localStorage.getItem("bibordle-easyMode")));
-    }));
-}
+async function getFromApi() {
+    const dailyRequest = await fetch("https://fxzfun.com/api/bibordle/?mode=daily&translation=" + settings.translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff");
+    const dailyResponse = await dailyRequest.json();
+    state.gameNumber = dailyResponse.dailyNumber;
+    state.solution = dailyResponse.word;
+    state.verse = dailyResponse.verse;
+    state.reference = dailyResponse.reference;
+    state.wordCount = dailyResponse.wordCount;
 
-getFromApi();
-if (localStorage.hasOwnProperty("bibordle-swapControls")) toggleSwapControl(JSON.parse(localStorage.getItem("bibordle-swapControls")));
+    const wordsRequest = await fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=" + settings.translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff");
+    const wordsResponse = await wordsRequest.json();
+    state.words = wordsResponse;
+    state.hardModeWords = wordsResponse;
+    
+    if (state.lastGameNumber === state.gameNumber) {
+        restoreLastGame();
+    }
+}
