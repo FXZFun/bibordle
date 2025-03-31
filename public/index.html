@@ -227,15 +227,6 @@
         <div id="snackbar"></div>
     </main>
     <script src="/res/scripts/bibordle.js" defer></script>
-    <script>
-        if (!localStorage.hasOwnProperty("educated")) {
-            location.href = '#instructions';
-            localStorage.setItem("educated", true);
-        }
-
-        const snackbar = document.getElementById("snackbar");
-        snackbar.addEventListener('animationend', () => snackbar.classList.remove('show'));
-    </script>
 </body>
 
 </html>
