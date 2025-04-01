@@ -140,9 +140,9 @@ if (!settings.educated) {
 
 /* INITIALIZATION */
 document.getElementById("translationSelector").value = settings.translation;
+setSwapControls(settings.swapControls);
 await getFromApi();
 setEasyMode(settings.easyMode);
-setSwapControls(settings.swapControls);
 
 /* EVENT LISTENERS */
 document.querySelectorAll('.keyboard button').forEach(b => b.addEventListener('click', e => typeKey(e.target.innerText)));
@@ -270,9 +270,9 @@ function showStats() {
         });
         const reference = document.getElementById("reference");
         reference.innerText = state.reference;
-        reference.href = (settings.translation === "EHV") ?
-            "https://wartburgproject.org/read?q=" + state.reference :
-            "https://www.biblegateway.com/passage/?search=" + state.reference + "&version=" + settings.translation;
+        reference.href = settings.translation === "EHV"
+            ? `https://wartburgproject.org/read?q=${state.reference}`
+            : `https://www.biblegateway.com/passage/?search=${state.reference}&version=${settings.translation}`;
     }
 
     document.getElementById("gameScore").innerText = gameWon ? state.lineId + 1 : "X";
@@ -304,30 +304,17 @@ function restoreLastGame() {
 }
 
 function generateShareCode() {
-    var i = 0;
-    var shareResult = "#Bibordle {number} {translation} {guesses}/6\n";
-    var elements = document.getElementById("gameboard").querySelectorAll("td")
-    elements.forEach(el => {
-        if (el.classList != "") {
-            if (el.classList == "correct") {
-                shareResult += "🟩";
-            } else if (el.classList == "inword") {
-                shareResult += "🟨";
-            } else if (el.classList == "incorrect") {
-                shareResult += "⬜";
-            }
-        }
-        i++;
-        if (i == 5) {
-            shareResult += "\n";
-            i = 0;
-        }
-    });
-    shareResult += "bibordle.web.app";
-    var line = state.guessedWords.slice(-1)[0] != state.solution ? "X" : state.lineId + 1;
-    shareResult = shareResult.replace("{number}", state.gameNumber).replace("{guesses}", line).replace("{translation}", settings.translation);
+    const rows = Array.from(lineElements).slice(0, state.lineId + 1);
+    const shareResult = rows.map(row => {
+        return Array.from(row.children).map(cell => {
+            if (cell.classList.contains("correct")) return "🟩";
+            if (cell.classList.contains("inword")) return "🟨";
+            return "⬜";
+        }).join("");
+    }).join("\n");
 
-    return shareResult;
+    const guesses = state.guessedWords.slice(-1)[0] !== state.solution ? "X" : state.lineId + 1;
+    return `#Bibordle ${state.gameNumber} ${settings.translation} ${guesses}/6\n${shareResult}\nbibordle.web.app`;
 }
 
 async function share() {
@@ -345,7 +332,7 @@ async function share() {
         await navigator.share(content);
     }
 
-    document.querySelector(".shareBtn").innerHTML = `<i class="material-symbols-rounded" style="vertical-align: middle;">check</i> Shared!`;
+    document.getElementById("shareBtn").innerHTML = `<i class="material-symbols-rounded" style="vertical-align: middle;">check</i> Shared!`;
 }
 
 async function setEasyMode(isEasy) {
@@ -368,6 +355,8 @@ async function setEasyMode(isEasy) {
 }
 
 function setSwapControls(isSwapped) {
+    settings.swapControls = isSwapped;
+    settings.save();
     document.getElementById("sSwapControl").checked = isSwapped;
     var enterBtn = document.getElementById("keyboard-enter");
     var backBtn = document.getElementById("keyboard-backspace");
