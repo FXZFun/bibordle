@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bibordle - The Bible Wordle</title>
     <link rel="stylesheet" href="/res/styles/main.css" type="text/css">
-    <link rel="stylesheet" href="/res/styles/animate.min.css" type="text/css">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,41 +98,41 @@
         </table>
         <div class="keyboard">
             <div class="row">
-                <button onclick="typeKey('q')" id="keyboard-q">q</button>
-                <button onclick="typeKey('w')" id="keyboard-w">w</button>
-                <button onclick="typeKey('e')" id="keyboard-e">e</button>
-                <button onclick="typeKey('r')" id="keyboard-r">r</button>
-                <button onclick="typeKey('t')" id="keyboard-t">t</button>
-                <button onclick="typeKey('y')" id="keyboard-y">y</button>
-                <button onclick="typeKey('u')" id="keyboard-u">u</button>
-                <button onclick="typeKey('i')" id="keyboard-i">i</button>
-                <button onclick="typeKey('o')" id="keyboard-o">o</button>
-                <button onclick="typeKey('p')" id="keyboard-p">p</button>
+                <button id="keyboard-q">q</button>
+                <button id="keyboard-w">w</button>
+                <button id="keyboard-e">e</button>
+                <button id="keyboard-r">r</button>
+                <button id="keyboard-t">t</button>
+                <button id="keyboard-y">y</button>
+                <button id="keyboard-u">u</button>
+                <button id="keyboard-i">i</button>
+                <button id="keyboard-o">o</button>
+                <button id="keyboard-p">p</button>
             </div>
             <div class="row">
-                <button onclick="typeKey('a')" id="keyboard-a">a</button>
-                <button onclick="typeKey('s')" id="keyboard-s">s</button>
-                <button onclick="typeKey('d')" id="keyboard-d">d</button>
-                <button onclick="typeKey('f')" id="keyboard-f">f</button>
-                <button onclick="typeKey('g')" id="keyboard-g">g</button>
-                <button onclick="typeKey('h')" id="keyboard-h">h</button>
-                <button onclick="typeKey('j')" id="keyboard-j">j</button>
-                <button onclick="typeKey('k')" id="keyboard-k">k</button>
-                <button onclick="typeKey('l')" id="keyboard-l">l</button>
+                <button id="keyboard-a">a</button>
+                <button id="keyboard-s">s</button>
+                <button id="keyboard-d">d</button>
+                <button id="keyboard-f">f</button>
+                <button id="keyboard-g">g</button>
+                <button id="keyboard-h">h</button>
+                <button id="keyboard-j">j</button>
+                <button id="keyboard-k">k</button>
+                <button id="keyboard-l">l</button>
             </div>
             <div class="row">
-                <button onclick="typeKey('backspace')" id="keyboard-backspace">
+                <button id="keyboard-backspace">
                     <i class="material-symbols-rounded">backspace</i>
                 </button>
-                <button onclick="typeKey('z')" id="keyboard-z">z</button>
-                <button onclick="typeKey('x')" id="keyboard-x">x</button>
-                <button onclick="typeKey('c')" id="keyboard-c">c</button>
-                <button onclick="typeKey('v')" id="keyboard-v">v</button>
-                <button onclick="typeKey('b')" id="keyboard-b">b</button>
-                <button onclick="typeKey('n')" id="keyboard-n">n</button>
-                <button onclick="typeKey('m')" id="keyboard-m">m</button>
-                <button onclick="guess()" id="keyboard-enter">
-                    <i class="material-symbols-rounded" style="font-weight: bold">check</i>
+                <button id="keyboard-z">z</button>
+                <button id="keyboard-x">x</button>
+                <button id="keyboard-c">c</button>
+                <button id="keyboard-v">v</button>
+                <button id="keyboard-b">b</button>
+                <button id="keyboard-n">n</button>
+                <button id="keyboard-m">m</button>
+                <button id="keyboard-enter">
+                    <i class="material-symbols-rounded">check</i>
                 </button>
             </div>
         </div>
@@ -169,7 +168,7 @@
                         <p>success</p>
                     </div>
                 </div>
-                <button onclick="share()" class="shareBtn">
+                <button id="shareBtn">
                     <i class="material-symbols-rounded" style="vertical-align: middle;">share</i> Share
                 </button>
             </div>

@@ -1,18 +1,18 @@
 class State {
-    lastGameNumber = 0;
-    gameNumber = 0;
-    gameEnabled = true;
     currentLetters = [];
-    lineId = 0;
-    letterId = 0;
+    easyModeWords = [];
+    gameEnabled = true;
+    gameNumber = 0;
     guessedWords = [];
-    solution = "";
+    hardModeWords = [];
+    lastGameNumber = 0;
+    letterId = 0;
+    lineId = 0;
     reference = "";
+    solution = "";
+    translation = "";
     verse = "";
     wordCount = 0;
-    translation = "";
-    easyModeWords = [];
-    hardModeWords = [];
     words = [];
 
     constructor(translation) {
@@ -37,46 +37,44 @@ class State {
 }
 
 class Statistics {
+    longestWinStreak = 0;
     totalGames = 0;
     totalWins = 0;
     winStreak = 0;
-    longestWinStreak = 0;
-    translation = "";
 
     constructor(translation) {
-        this.translation = translation;
         const savedStats = localStorage.getItem("bibordle-stats");
         if (savedStats) {
             const stats = JSON.parse(savedStats)?.[translation];
+            this.longestWinStreak = stats?.longestWinStreak || 0;
             this.totalGames = stats?.totalGames || 0;
             this.totalWins = stats?.totalWins || 0;
             this.winStreak = stats?.winStreak || 0;
-            this.longestWinStreak = stats?.longestWinStreak || 0;
         }
     }
 
-    save() {
+    save(translation) {
         const allStats = localStorage.getItem("bibordle-stats");
         let statsObj = allStats ? JSON.parse(allStats) : {};
-        statsObj[this.translation] = this;
+        statsObj[translation] = this;
         localStorage.setItem("bibordle-stats", JSON.stringify(statsObj));
     }
 }
 
 class Settings {
-    translation = "EHV";
-    educated = false;
     easyMode = false;
+    educated = false;
     swapControls = false;
+    translation = "EHV";
 
     constructor() {
         const storedSettings = localStorage.getItem("bibordle-settings");
         if (storedSettings) {
             const settings = JSON.parse(storedSettings);
-            this.translation = settings?.translation || this.translation;
             this.easyMode = settings?.easyMode || this.easyMode;
             this.educated = settings?.educated || this.educated;
             this.swapControls = settings?.swapControls || this.swapControls;
+            this.translation = settings?.translation || this.translation;
         }
     }
 
@@ -84,35 +82,10 @@ class Settings {
         localStorage.setItem("bibordle-settings", JSON.stringify(this));
     }
 
-    setTranslation(translation) {
-        this.translation = translation;
-        this.save();
-    }
-
-    toggleEasyMode() {
-        this.easyMode = !this.easyMode;
-        this.save();
-    }
-
-    toggleSwapControls() {
-        this.swapControls = !this.swapControls;
-        this.save();
-    }
-
     migrateSettings() {
-        if (localStorage.hasOwnProperty("bibordle-translation")) {
-            this.translation = localStorage.getItem("bibordle-translation");
-            localStorage.removeItem("bibordle-translation");
-        }
-        if (localStorage.hasOwnProperty("gamesPlayed-daily")) {
-            this.totalGames = localStorage.getItem("gamesPlayed-daily");
-            localStorage.setItem("bibordle-classic-gamesPlayed", )
-            localStorage.removeItem("gamesPlayed-daily");
-        }
-        if (localStorage.hasOwnProperty("gamesWon-daily")) {
-            this.totalWins = localStorage.getItem("gamesWon-daily");
-            localStorage.setItem("bibordle-classic-gamesWon", )
-            localStorage.removeItem("gamesWon-daily");
+        if (localStorage.hasOwnProperty("educated")) {
+            this.educated = localStorage.getItem("educated");
+            localStorage.removeItem("educated");
         }
         if (localStorage.hasOwnProperty("bibordle-translation")) {
             this.translation = localStorage.getItem("bibordle-translation");
@@ -126,7 +99,13 @@ class Settings {
             this.swapControls = JSON.parse(localStorage.getItem("bibordle-swapControls"));
             localStorage.removeItem("bibordle-swapControls");
         }
-        this.save(); // Save the migrated settings
+        this.save();
+        return this;
+    }
+
+    setTranslation(translation) {
+        this.translation = translation;
+        this.save();
     }
 }
 
@@ -148,12 +127,10 @@ class Game {
     }
 }
 
-const settings = new Settings();
+const settings = new Settings().migrateSettings();
 const state = new State(settings.translation);
 const statistics = new Statistics(settings.translation);
 const lineElements = document.querySelectorAll("#gameboard tr");
-
-settings.migrateSettings(); // Migrate old settings if necessary
 
 if (!settings.educated) {
     location.href = '#instructions';
@@ -164,10 +141,11 @@ if (!settings.educated) {
 /* INITIALIZATION */
 document.getElementById("translationSelector").value = settings.translation;
 await getFromApi();
-toggleEasyMode(settings.easyMode);
-toggleSwapControl(settings.swapControls);
+setEasyMode(settings.easyMode);
+setSwapControls(settings.swapControls);
 
 /* EVENT LISTENERS */
+document.querySelectorAll('.keyboard button').forEach(b => b.addEventListener('click', e => typeKey(e.target.innerText)));
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => e.target == o && (location.href = '#')));
 document.getElementById("translationSelector").addEventListener("change", (e) => {
     settings.setTranslation(e.target.value);
@@ -176,8 +154,9 @@ document.getElementById("translationSelector").addEventListener("change", (e) =>
 document.getElementById("wordInfoBtn").addEventListener("click", () => showAlert("This word appears a total of " + state.wordCount + " times"));
 document.getElementById("swapCtrlInfoBtn").addEventListener("click", () => showAlert('Flips back and enter keys'));
 document.getElementById("easyModeInfoBtn").addEventListener("click", () => showAlert('Enables guessing words not in the Bible'));
-document.getElementById("sEasyMode").addEventListener("change", e => toggleEasyMode(e.target.checked));
-document.getElementById("sSwapControl").addEventListener("change", e => toggleSwapControl(e.target.checked));
+document.getElementById("sEasyMode").addEventListener("change", e => setEasyMode(e.target.checked));
+document.getElementById("sSwapControl").addEventListener("change", e => setSwapControls(e.target.checked));
+document.getElementById("shareBtn").addEventListener("click", () => share());
 
 document.addEventListener("keyup", e => {
     if (!state.gameEnabled) return;
@@ -189,8 +168,11 @@ document.addEventListener("keyup", e => {
 const snackbar = document.getElementById("snackbar");
 snackbar.addEventListener('animationend', () => snackbar.classList.remove('show'));
 
+/* GAME LOGIC */
 function typeKey(key) {
     if (!state.gameEnabled) return;
+    if (key === "backspace") return backspace();
+    if (key === "enter") return guess();
 
     if (state.letterId < 5) {
         Game.getCurrentLetter().innerText = key;
@@ -262,7 +244,7 @@ function finishGame() {
         statistics.winStreak = 0;
     }
 
-    statistics.save();
+    statistics.save(settings.translation);
     showStats();
 }
 
@@ -366,8 +348,9 @@ async function share() {
     document.querySelector(".shareBtn").innerHTML = `<i class="material-symbols-rounded" style="vertical-align: middle;">check</i> Shared!`;
 }
 
-async function toggleEasyMode(isEasy) {
-    settings.toggleEasyMode();
+async function setEasyMode(isEasy) {
+    settings.easyMode = isEasy;
+    settings.save();
     document.getElementById("sEasyMode").checked = isEasy;
     if (isEasy) {
         if (state.easyModeWords.length === 0) {
@@ -384,7 +367,7 @@ async function toggleEasyMode(isEasy) {
     }
 }
 
-function toggleSwapControl(isSwapped) {
+function setSwapControls(isSwapped) {
     document.getElementById("sSwapControl").checked = isSwapped;
     var enterBtn = document.getElementById("keyboard-enter");
     var backBtn = document.getElementById("keyboard-backspace");

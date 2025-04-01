@@ -287,7 +287,7 @@ header a {
     cursor: pointer;
 }
 
-.shareBtn {
+#shareBtn {
     font-family: var(--theme-font);
     font-weight: bold;
     border: none;
