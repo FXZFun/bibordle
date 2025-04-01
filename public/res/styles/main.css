@@ -195,6 +195,10 @@ header a {
     max-height: 90vh;
 }
 
+.message a {
+    color: var(--secondary-text-color);
+}
+
 .message .close {
     padding: var(--gap-regular);
     border-radius: var(--gap-small);
