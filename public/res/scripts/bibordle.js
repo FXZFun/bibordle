@@ -64,6 +64,7 @@ class Statistics {
 class Settings {
     easyMode = false;
     educated = false;
+    optOutAnalytics = false;
     swapControls = false;
     translation = "EHV";
 
@@ -73,6 +74,7 @@ class Settings {
             const settings = JSON.parse(storedSettings);
             this.easyMode = settings?.easyMode || this.easyMode;
             this.educated = settings?.educated || this.educated;
+            this.optOutAnalytics = settings?.optOutAnalytics || this.optOutAnalytics;
             this.swapControls = settings?.swapControls || this.swapControls;
             this.translation = settings?.translation || this.translation;
         }
@@ -143,6 +145,8 @@ document.getElementById("translationSelector").value = settings.translation;
 setSwapControls(settings.swapControls);
 await getFromApi();
 setEasyMode(settings.easyMode);
+setOptOutAnalytics(settings.optOutAnalytics);
+logAction("load");
 
 /* EVENT LISTENERS */
 document.querySelectorAll('.keyboard button').forEach(b => b.addEventListener('click', e => typeKey(e.target.innerText)));
@@ -156,6 +160,7 @@ document.getElementById("swapCtrlInfoBtn").addEventListener("click", () => showA
 document.getElementById("easyModeInfoBtn").addEventListener("click", () => showAlert('Enables guessing words not in the Bible'));
 document.getElementById("sEasyMode").addEventListener("change", e => setEasyMode(e.target.checked));
 document.getElementById("sSwapControl").addEventListener("change", e => setSwapControls(e.target.checked));
+document.getElementById("sOptOutAnalytics").addEventListener("change", e => setOptOutAnalytics(e.target.checked));
 document.getElementById("shareBtn").addEventListener("click", () => share());
 
 document.addEventListener("keyup", e => {
@@ -239,9 +244,11 @@ function finishGame() {
         if (statistics.winStreak > statistics.longestWinStreak) {
             statistics.longestWinStreak = statistics.winStreak;
         }
+        logAction("gameWin");
     }
     else {
         statistics.winStreak = 0;
+        logAction("gameLose");
     }
 
     statistics.save(settings.translation);
@@ -369,6 +376,14 @@ function setSwapControls(isSwapped) {
     }
 }
 
+function setOptOutAnalytics(enabled) {
+    const originalValue = settings.optOutAnalytics;
+    settings.optOutAnalytics = enabled;
+    settings.save();
+    document.getElementById("sOptOutAnalytics").checked = enabled;
+    if (originalValue !== enabled) location.reload();
+}
+
 async function getFromApi() {
     const dailyRequest = await fetch("https://fxzfun.com/api/bibordle/?mode=daily&translation=" + settings.translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff");
     const dailyResponse = await dailyRequest.json();
@@ -385,5 +400,32 @@ async function getFromApi() {
     
     if (state.lastGameNumber === state.gameNumber) {
         restoreLastGame();
+    }
+}
+
+function logAction(action) {
+    if (settings.optOutAnalytics) return;
+    if (action === "load") {
+        const script = document.createElement('script');
+        script.src = "https://www.googletagmanager.com/gtag/js?id=G-RR5336TJ96";
+        script.async = true;
+        document.head.appendChild(script);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { dataLayer.push(arguments); };
+        gtag('js', new Date());
+        gtag('config', 'G-RR5336TJ96');
+    } else if (action === "gameWin") {
+        gtag('event', 'game_win', {
+            event_category: 'game',
+            event_label: settings.translation,
+            value: state.guessedWords
+        });
+    }
+    else if (action === "gameLose") {
+        gtag('event', 'game_lose', {
+            event_category: 'game',
+            event_label: settings.translation,
+            value: state.guessedWords
+        });
     }
 }
