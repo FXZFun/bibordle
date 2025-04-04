@@ -64,6 +64,7 @@ class Statistics {
 class Settings {
     easyMode = false;
     educated = false;
+    highContrast = false;
     optOutAnalytics = false;
     swapControls = false;
     translation = "EHV";
@@ -74,6 +75,7 @@ class Settings {
             const settings = JSON.parse(storedSettings);
             this.easyMode = settings?.easyMode || this.easyMode;
             this.educated = settings?.educated || this.educated;
+            this.highContrast = settings?.highContrast || this.highContrast;
             this.optOutAnalytics = settings?.optOutAnalytics || this.optOutAnalytics;
             this.swapControls = settings?.swapControls || this.swapControls;
             this.translation = settings?.translation || this.translation;
@@ -146,6 +148,7 @@ setSwapControls(settings.swapControls);
 await getFromApi();
 setEasyMode(settings.easyMode);
 setOptOutAnalytics(settings.optOutAnalytics);
+setHighContrast(settings.highContrast);
 logAction("load");
 
 /* EVENT LISTENERS */
@@ -160,6 +163,7 @@ document.getElementById("swapCtrlInfoBtn").addEventListener("click", () => showA
 document.getElementById("easyModeInfoBtn").addEventListener("click", () => showAlert('Enables guessing words not in the Bible'));
 document.getElementById("sEasyMode").addEventListener("change", e => setEasyMode(e.target.checked));
 document.getElementById("sSwapControl").addEventListener("change", e => setSwapControls(e.target.checked));
+document.getElementById("sHighContrast").addEventListener("change", e => setHighContrast(e.target.checked));
 document.getElementById("sOptOutAnalytics").addEventListener("change", e => setOptOutAnalytics(e.target.checked));
 document.getElementById("shareBtn").addEventListener("click", () => share());
 
@@ -382,6 +386,19 @@ function setOptOutAnalytics(enabled) {
     settings.save();
     document.getElementById("sOptOutAnalytics").checked = enabled;
     if (originalValue !== enabled) location.reload();
+}
+
+function setHighContrast(enabled) {
+    settings.highContrast = enabled;
+    settings.save();
+    document.getElementById("sHighContrast").checked = enabled;
+    const root = document.querySelector(":root");
+    if (enabled) {
+        root.style.setProperty('--correct-color', 'var(--highcontrast-correct-color)');
+        root.style.setProperty('--inword-color', 'var(--highcontrast-inword-color)');
+    } else {
+        root.style = "";
+    }
 }
 
 async function getFromApi() {

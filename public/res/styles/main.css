@@ -4,6 +4,8 @@
     --incorrect-color: #9e9e9e;
     --default-color: #d3d3d3;
     --not-word-color: #d32f2f;
+    --highcontrast-correct-color: #ff8a3c;
+    --highcontrast-inword-color: #88bcff;
     --primary-text-color: #212121;
     --secondary-text-color: #616161;
     --background-color: #fafafa;
@@ -21,6 +23,7 @@
         --correct-color: #478549;
         --inword-color: #b59f3b;
         --not-word-color: #7a1f1f;
+        --highcontrast-inword-color: #4077bf;
         --primary-text-color: #fafafa;
         --secondary-text-color: #b0bec5;
         --background-color: #292929;
