@@ -1,318 +1,448 @@
-var number = "-";
-var solution = "";
-var verse = "";
-var reference = "";
-var wordCount = 0;
-var translation = localStorage.hasOwnProperty("bibordle-translation") ? localStorage.getItem("bibordle-translation") : "EHV";
-var hardModeWords;
-var easyModeWords;
+class State {
+    currentLetters = [];
+    easyModeWords = [];
+    gameEnabled = true;
+    gameNumber = 0;
+    guessedWords = [];
+    hardModeWords = [];
+    lastGameNumber = 0;
+    letterId = 0;
+    lineId = 0;
+    reference = "";
+    solution = "";
+    translation = "";
+    verse = "";
+    wordCount = 0;
+    words = [];
 
-var restoringFromLocalStorage = false;
-var lineId = 0;
-var letterId = 0;
-var currentLetters = [];
-var guessedWords = ["", "", "", "", "", ""];
-var gameEnabled = true;
-var validLetters = "qwertyuiopasdfghjklzxcvbnmenterbackspace";
+    constructor(translation) {
+        this.translation = translation;
+        const savedState = localStorage.getItem("bibordle-state");
+        if (savedState) {
+            const state = JSON.parse(savedState)?.[translation];
+            this.lastGameNumber = state?.lastGameNumber || 0;
+            this.guessedWords = state?.guessedWords || [];
+        }
+    }
 
-document.addEventListener("keyup", event => {
-    var key = event.key.toLowerCase();
-    if (validLetters.includes(key)) typeKey(key);
+    save() {
+        const allState = localStorage.getItem("bibordle-state");
+        let stateObj = allState ? JSON.parse(allState) : {};
+        stateObj[this.translation] = {
+            lastGameNumber: this.gameNumber,
+            guessedWords: this.guessedWords
+        };
+        localStorage.setItem("bibordle-state", JSON.stringify(stateObj));
+    }
+}
+
+class Statistics {
+    longestWinStreak = 0;
+    totalGames = 0;
+    totalWins = 0;
+    winStreak = 0;
+
+    constructor(translation) {
+        const savedStats = localStorage.getItem("bibordle-stats");
+        if (savedStats) {
+            const stats = JSON.parse(savedStats)?.[translation];
+            this.longestWinStreak = stats?.longestWinStreak || 0;
+            this.totalGames = stats?.totalGames || 0;
+            this.totalWins = stats?.totalWins || 0;
+            this.winStreak = stats?.winStreak || 0;
+        }
+    }
+
+    save(translation) {
+        const allStats = localStorage.getItem("bibordle-stats");
+        let statsObj = allStats ? JSON.parse(allStats) : {};
+        statsObj[translation] = this;
+        localStorage.setItem("bibordle-stats", JSON.stringify(statsObj));
+    }
+}
+
+class Settings {
+    easyMode = false;
+    educated = false;
+    highContrast = false;
+    optOutAnalytics = false;
+    swapControls = false;
+    translation = "EHV";
+
+    constructor() {
+        const storedSettings = localStorage.getItem("bibordle-settings");
+        if (storedSettings) {
+            const settings = JSON.parse(storedSettings);
+            this.easyMode = settings?.easyMode || this.easyMode;
+            this.educated = settings?.educated || this.educated;
+            this.highContrast = settings?.highContrast || this.highContrast;
+            this.optOutAnalytics = settings?.optOutAnalytics || this.optOutAnalytics;
+            this.swapControls = settings?.swapControls || this.swapControls;
+            this.translation = settings?.translation || this.translation;
+        }
+    }
+
+    save() {
+        localStorage.setItem("bibordle-settings", JSON.stringify(this));
+    }
+
+    migrateSettings() {
+        if (localStorage.hasOwnProperty("educated")) {
+            this.educated = localStorage.getItem("educated");
+            localStorage.removeItem("educated");
+        }
+        if (localStorage.hasOwnProperty("bibordle-translation")) {
+            this.translation = localStorage.getItem("bibordle-translation");
+            localStorage.removeItem("bibordle-translation");
+        }
+        if (localStorage.hasOwnProperty("bibordle-easyMode")) {
+            this.easyMode = JSON.parse(localStorage.getItem("bibordle-easyMode"));
+            localStorage.removeItem("bibordle-easyMode");
+        }
+        if (localStorage.hasOwnProperty("bibordle-swapControls")) {
+            this.swapControls = JSON.parse(localStorage.getItem("bibordle-swapControls"));
+            localStorage.removeItem("bibordle-swapControls");
+        }
+        this.save();
+        return this;
+    }
+
+    setTranslation(translation) {
+        this.translation = translation;
+        this.save();
+    }
+}
+
+class Game {
+    static getCurrentLine() {
+        return lineElements[state.lineId];
+    }
+
+    static getCurrentLetter() {
+        return this.getCurrentLine().children[state.letterId];
+    }
+
+    static resetLine() {
+        state.currentLetters = [];
+        state.lineId++;
+        state.letterId = 0;
+        state.currentGuess = "";
+        this.getCurrentLine().classList.remove("dimmed");
+    }
+}
+
+const settings = new Settings().migrateSettings();
+const state = new State(settings.translation);
+const statistics = new Statistics(settings.translation);
+const lineElements = document.querySelectorAll("#gameboard tr");
+
+if (!settings.educated) {
+    location.href = '#instructions';
+    settings.educated = true;
+    settings.save();
+}
+
+/* INITIALIZATION */
+document.getElementById("translationSelector").value = settings.translation;
+setSwapControls(settings.swapControls);
+await getFromApi();
+setEasyMode(settings.easyMode);
+setOptOutAnalytics(settings.optOutAnalytics);
+setHighContrast(settings.highContrast);
+logAction("load");
+
+/* EVENT LISTENERS */
+document.querySelectorAll('.keyboard button').forEach(b => b.addEventListener('click', e => typeKey(e.target.innerText)));
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => e.target == o && (location.href = '#')));
+document.getElementById("translationSelector").addEventListener("change", (e) => {
+    settings.setTranslation(e.target.value);
+    location.reload();
+});
+document.getElementById("wordInfoBtn").addEventListener("click", () => showAlert("This word appears a total of " + state.wordCount + " times"));
+document.getElementById("swapCtrlInfoBtn").addEventListener("click", () => showAlert('Flips back and enter keys'));
+document.getElementById("easyModeInfoBtn").addEventListener("click", () => showAlert('Enables guessing words not in the Bible'));
+document.getElementById("sEasyMode").addEventListener("change", e => setEasyMode(e.target.checked));
+document.getElementById("sSwapControl").addEventListener("change", e => setSwapControls(e.target.checked));
+document.getElementById("sHighContrast").addEventListener("change", e => setHighContrast(e.target.checked));
+document.getElementById("sOptOutAnalytics").addEventListener("change", e => setOptOutAnalytics(e.target.checked));
+document.getElementById("shareBtn").addEventListener("click", () => share());
+
+document.addEventListener("keyup", e => {
+    if (!state.gameEnabled) return;
+    else if (e.key === 'Backspace') backspace();
+    else if (e.key === 'Enter') guess();
+    else if ((e.code === `Key${e.key.toUpperCase()}`) && !e.ctrlKey && !e.altKey) typeKey(e.key.toLowerCase());
 });
 
-function typeKey(key) {
-    if (!gameEnabled && !restoringFromLocalStorage) return;
+const snackbar = document.getElementById("snackbar");
+snackbar.addEventListener('animationend', () => snackbar.classList.remove('show'));
 
-    if (key == "enter") guess();
-    else if (key == "backspace") {
-        backspace();
-        document.getElementById("line" + lineId).classList.remove("notAWord");
-    } else if (letterId < 5) {
-        document.getElementById("line" + lineId).children[letterId].innerText = key.toUpperCase();
-        letterId++;
-        currentLetters.push(key.toLowerCase());
-        var currentGuess = currentLetters.join("");
-        if (currentGuess.length == 5 && !words.includes(currentGuess)) {
-            document.getElementById("line" + lineId).classList.add("notAWord");
+/* GAME LOGIC */
+function typeKey(key) {
+    if (!state.gameEnabled) return;
+    if (key === "backspace") return backspace();
+    if (key === "enter") return guess();
+
+    if (state.letterId < 5) {
+        Game.getCurrentLetter().innerText = key;
+        state.letterId++;
+        state.currentLetters.push(key);
+        const currentGuess = state.currentLetters.join("");
+        if (currentGuess.length == 5 && !state.words.includes(currentGuess)) {
+            Game.getCurrentLine().classList = "notAWord";
         }
     }
 }
 
 function backspace() {
-    currentLetters.pop();
-    if (letterId != 0) letterId--;
-    document.getElementById("line" + lineId).children[letterId].innerText = "";
+    state.currentLetters.pop();
+    if (state.letterId != 0) state.letterId--;
+    Game.getCurrentLetter().innerText = "";
+    Game.getCurrentLine().classList.remove("notAWord");
 }
 
-function guess() {
-    var currentGuess = currentLetters.join("");
-    var lettersNeeded = solution.split("");
+function guess(restoring = false) {
+    var currentGuess = state.currentLetters.join("");
+    var splitSolution = state.solution.split("");
+    var lettersNeeded = [...splitSolution];
 
-    if (currentGuess.length == 5 && !words.includes(currentGuess)) showAlert("Not in word list") //trigger not in word list
-    else if (currentGuess.length != 5) showAlert("Not enough letters") // trigger too short
+    if (currentGuess.length == 5 && !state.words.includes(currentGuess)) showAlert("Not in word list") //trigger not in word list
+    else if (currentGuess.length != 5) showAlert("🤣 Too short!") // trigger too short
     else {
-        guessedWords[lineId] = currentGuess;
-        localStorage.setItem("wordsGuessed-daily", JSON.stringify(guessedWords));
-        localStorage.setItem("loadGame-daily", new Date().getMonth() + 1 + "/" + new Date().getDate() + "/" + new Date().getFullYear());
-        localStorage.setItem("solution-daily", solution);
+        state.guessedWords[state.lineId] = currentGuess;
+        state.save();
 
-        currentLetters.forEach((g, i) => {
-            if (g == solution.split("")[i]) {
-                lettersNeeded.splice(lettersNeeded.indexOf(g), 1);
-                updateLetterClass(g, i, "good");
+        state.currentLetters.forEach((letter, i) => {
+            if (letter == splitSolution[i]) {
+                lettersNeeded.splice(lettersNeeded.indexOf(letter), 1);
+                updateLetterClass(letter, i, "correct");
             }
         });
 
-        currentLetters.forEach((g, i) => {
-            if (solution.includes(g) && lettersNeeded.includes(g) && g != solution.split("")[i]) {
-                lettersNeeded.splice(lettersNeeded.indexOf(g), 1);
-                updateLetterClass(g, i, "inword");
-            } else if (g != solution.split("")[i]) {
-                updateLetterClass(g, i, "bad");
+        state.currentLetters.forEach((letter, i) => {
+            if (state.solution.includes(letter) && lettersNeeded.includes(letter) && letter != splitSolution[i]) {
+                lettersNeeded.splice(lettersNeeded.indexOf(letter), 1);
+                updateLetterClass(letter, i, "inword");
+            } else if (letter != splitSolution[i]) {
+                updateLetterClass(letter, i, "incorrect");
             }
         });
 
-        if (currentGuess == solution || lineId == 5) finishGame();
-        else {
-            currentLetters = [];
-            lineId++;
-            letterId = 0;
-            currentGuess = "";
-            document.getElementById("line" + lineId).classList.remove("notActive");
-        }
+        if (restoring) return Game.resetLine();
+        (currentGuess === state.solution || state.lineId === 5) ? finishGame() : Game.resetLine();;
     }
 }
 
 function updateLetterClass(letter, index, colorClass) {
-    document.getElementById(`line${lineId}`).children[index].classList = colorClass;
+    Game.getCurrentLine().children[index].classList = colorClass;
     document.getElementById(`keyboard-${letter}`).classList.add(colorClass);
 }
 
 function finishGame() {
-    gameEnabled = false;
+    state.gameEnabled = false;
+    statistics.totalGames++;
 
-    if (!restoringFromLocalStorage) {
-        if (currentLetters.join("") == solution) {
-            var gamesWon = localStorage.hasOwnProperty("gamesWon-daily") ? parseInt(localStorage.getItem("gamesWon-daily")) : 0;
-            localStorage.setItem("gamesWon-daily", gamesWon + 1);
-            gtag('send', 'event', { eventCategory: 'Game End', eventAction: 'Win' });
+    if (state.guessedWords.slice(-1)[0] == state.solution) {
+        statistics.totalWins++;
+        statistics.winStreak++;
+        if (statistics.winStreak > statistics.longestWinStreak) {
+            statistics.longestWinStreak = statistics.winStreak;
         }
-        else gtag('send', 'event', { eventCategory: 'Game End', eventAction: 'Lose' });
-        var gamesPlayed = localStorage.hasOwnProperty("gamesPlayed-daily") ? parseInt(localStorage.getItem("gamesPlayed-daily")) : 0;
-        localStorage.setItem("gamesPlayed-daily", gamesPlayed + 1);
+        logAction("gameWin");
     }
+    else {
+        statistics.winStreak = 0;
+        logAction("gameLose");
+    }
+
+    statistics.save(settings.translation);
     showStats();
 }
 
-function showAlert(message, hide = true) {
-    document.getElementById("alertText").innerText = message;
-    document.getElementById("alert").style.display = "block";
-    if (hide) {
-        setTimeout(function () {
-            document.getElementById("alert").style.display = "none";
-        }, 3000);
-    }
-}
-
-function toggleDarkMode() {
-    if (document.querySelector('body').classList.contains('darkMode')) {
-        localStorage.removeItem('darkMode');
-        document.querySelector('body').classList.remove('darkMode');
-        document.getElementById("sDarkMode").checked = false;
-    } else {
-        document.querySelector('body').classList.add('darkMode');
-        localStorage.setItem('darkMode', true);
-        document.getElementById("sDarkMode").checked = true;
-    }
-}
-
-if (localStorage.hasOwnProperty("darkMode")) {
-    toggleDarkMode();
+function showAlert(message) {
+    const snackbar = document.getElementById("snackbar");
+    snackbar.innerText = message;
+    snackbar.classList.add("show");
 }
 
 function showStats() {
-    document.getElementById("statsPage").style.display = "block";
-    if (currentLetters.join("") == solution) {
-        document.getElementById("status").classList.remove("lose");
-        document.getElementById("status").classList.add("win");
-    } else {
-        document.getElementById("status").classList.remove("win");
-        document.getElementById("status").classList.add("lose");
-    }
+    location.href = "#statsPage";
+    const gameWon = state.guessedWords.slice(-1)[0] == state.solution;
+    document.getElementById("status").classList = gameWon ? "win" : "lose";
 
-    if (solution == localStorage.getItem("solution-daily") && (currentLetters.join("") == solution || !gameEnabled)) {
-        document.getElementById("word").innerText = solution.toUpperCase();
-        document.getElementById("verse").innerHTML = verse.replace(new RegExp(solution, "gi"), (match, index) => {
+    const verse = state.verse;
+
+    if (gameWon || !state.gameEnabled) {
+        document.getElementById("word").innerText = state.solution.toUpperCase();
+        document.getElementById("verse").innerHTML = verse.replace(new RegExp(state.solution, "gi"), (match, index) => {
             if (index - 1 > 0 && index + match.length < verse.length && (!verse[index - 1].match(/[a-z]/i)) && (!verse[index + match.length].match(/[a-z]/i))) return "<b>" + match + "</b>";
             else if (index == 0 || (index == (verse.length - match.length))) return "<b>" + match + "</b>";
             else return match;
         });
-        document.getElementById("reference").innerText = reference;
-        document.getElementById("reference").href = "https://www.biblegateway.com/passage/?search=" + reference + "&version=" + translation;
+        const reference = document.getElementById("reference");
+        reference.innerText = state.reference;
+        reference.href = settings.translation === "EHV"
+            ? `https://wartburgproject.org/read?q=${state.reference}`
+            : `https://www.biblegateway.com/passage/?search=${state.reference}&version=${settings.translation}`;
     }
 
-    document.getElementById("gameScore").innerText = currentLetters.join("") != solution ? "X" : lineId + 1;
-    document.getElementById("gamesPlayed").innerText = localStorage.hasOwnProperty("gamesPlayed-daily") ? parseInt(localStorage.getItem("gamesPlayed-daily")) : 0;
-    document.getElementById("successRate").innerText = localStorage.hasOwnProperty("gamesWon-daily") ? parseInt(parseInt(localStorage.getItem("gamesWon-daily")) / parseInt(localStorage.getItem("gamesPlayed-daily")) * 100) + "%" : 0 + "%";
+    document.getElementById("gameScore").innerText = gameWon ? state.lineId + 1 : "X";
+    document.getElementById("gamesPlayed").innerText = statistics.totalGames;
+    document.getElementById("successRate").innerText = (statistics.totalWins / statistics.totalGames * 100) + "%";
+    document.getElementById("solutionDisplay").style.display = "block";
 }
 
 
 function restoreLastGame() {
-    if (localStorage.getItem("solution-daily") == solution) {
-        gameEnabled = false;
-        restoringFromLocalStorage = true;
-        var lastGuesses = JSON.parse(localStorage.getItem("wordsGuessed-daily"));
-        lastGuesses.forEach(lastGuess => {
-            if (lastGuess != "") {
-                for (var letter of lastGuess) {
-                    typeKey(letter);
-                };
-                guess();
-            }
-        });
-        fetch("https://fxzfun.com/api/bibordle/?mode=unlimited&translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff&word=" + solution).then(r => r.json().then(data => {
-            verse = data.verse;
-            reference = data.reference;
-            wordCount = data.wordCount;
-        }));
-    }
-    document.getElementById("translationBtn").value = localStorage.hasOwnProperty("bibordle-translation") ? localStorage.getItem("bibordle-translation") : "EHV";
-}
+    state.currentLetters = [];
+    state.lineId = 0;
+    state.letterId = 0;
 
-function showWordInfo() {
-    alert("This word appears a total of " + wordCount + " times");
+    state.guessedWords.forEach(word => {
+        if (word != "") {
+            for (var letter of word) {
+                typeKey(letter);
+            }
+            guess(true);
+        }
+    });
+
+    if (state.guessedWords.length === 5 || state.guessedWords.includes(state.solution)) {
+        state.lineId--;
+        state.gameEnabled = false;
+        showStats();
+    }
 }
 
 function generateShareCode() {
-    var i = 0;
-    var shareResult = "Bibordle #{number} {translation} {guesses}/6\n";
-    var elements = document.getElementById("gameboard").querySelectorAll("td")
-    elements.forEach(el => {
-        if (el.classList != "") {
-            if (el.classList == "good") {
-                shareResult += "🟩";
-            } else if (el.classList == "inword") {
-                shareResult += "🟨";
-            } else if (el.classList == "bad") {
-                shareResult += "⬜";
-            }
-        }
-        i++;
-        if (i == 5) {
-            shareResult += "\n";
-            i = 0;
-        }
-    });
-    shareResult += "bibordle.web.app";
-    var line = currentLetters.join("") != solution ? "X" : lineId + 1;
-    shareResult = shareResult.replace("{number}", number).replace("{guesses}", line).replace("{translation}", translation);
+    const rows = Array.from(lineElements).slice(0, state.lineId + 1);
+    const shareResult = rows.map(row => {
+        return Array.from(row.children).map(cell => {
+            if (cell.classList.contains("correct")) return "🟩";
+            if (cell.classList.contains("inword")) return "🟨";
+            return "⬜";
+        }).join("");
+    }).join("\n");
 
-    return shareResult;
+    const guesses = state.guessedWords.slice(-1)[0] !== state.solution ? "X" : state.lineId + 1;
+    return `#Bibordle ${state.gameNumber} ${settings.translation} ${guesses}/6\n${shareResult}\nbibordle.web.app`;
 }
 
-function legacyShare() {
-    var content = generateShareCode();
-    var text = document.createElement("textarea");
-    text.style = "position: fixed;top:0;left:0;width:2px;height:2px;";
-    text.innerHTML = content;
-    document.body.appendChild(text);
-    text.select();
-    document.execCommand("copy");
-    text.style = "display: none";
-    showAlert("Copied to clipboard");
-    document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
-    setTimeout(() => document.getElementById('statsPage').style.display = 'none', 2000);
-}
+async function share() {
+    const shareCode = generateShareCode();
+    const content = { text: shareCode };
 
-function share() {
-    var content = generateShareCode();
-    if (navigator.share && navigator.canShare({ text: content })) {
-        navigator.share({ text: content })
-            .then(() => {
-                document.querySelector(".shareBtn").innerHTML = `<i class="material-icons" style="vertical-align: middle;">check</i> Shared!`;
-                legacyShare();
-            }).catch(e => {
-                console.log(e);
-                legacyShare();
-            });
+    if (!navigator.clipboard) {
+        showAlert("Copying not supported 🙁");
     } else {
-        legacyShare();
+        await navigator.clipboard.writeText(shareCode);
+        showAlert("Copied to clipboard!");
     }
+
+    if (navigator.share && navigator.canShare(content)) {
+        await navigator.share(content);
+    }
+
+    document.getElementById("shareBtn").innerHTML = `<i class="material-symbols-rounded" style="vertical-align: middle;">check</i> Shared!`;
 }
 
-function setTranslation(translation) {
-    this.translation = translation;
-    localStorage.setItem("bibordle-translation", translation);
-    getFromApi();
-    document.querySelectorAll("td").forEach((t) => {
-        t.classList = "";
-        t.innerHTML = "";
-    });
-    document.querySelectorAll(".row button").forEach((t) => {
-        t.classList = "";
-    });
-    lineId = 0;
-    letterId = 0;
-    currentLetters = [];
-    currentGuess = "";
-    for (var line = 1; line < 5; line++) {
-        document.getElementById("line" + line).classList.add("notActive");
-    }
-    gameEnabled = true;
-}
-
-function toggleEasyMode(state) {
-    document.getElementById("sEasyMode").checked = state;
-    if (state) {
-        if (!easyModeWords) {
-            fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=EASYMODE&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
-                hardModeWords = words;
-                easyModeWords = data;
-                words = words.concat(data);
-            }));
+async function setEasyMode(isEasy) {
+    settings.easyMode = isEasy;
+    settings.save();
+    document.getElementById("sEasyMode").checked = isEasy;
+    if (isEasy) {
+        if (state.easyModeWords.length === 0) {
+            const request = await fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=EASYMODE&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff");
+            const data = await request.json();
+            state.hardModeWords = state.words;
+            state.easyModeWords = data;
+            state.words = state.words.concat(data);
         } else {
-            words = words.concat(easyModeWords);
+            state.words = state.words.concat(state.easyModeWords);
         }
-        localStorage.setItem("bibordle-easyMode", true);
     } else {
-        words = hardModeWords;
-        localStorage.setItem("bibordle-easyMode", false);
+        state.words = state.hardModeWords;
     }
 }
 
-function toggleSwapControl(state) {
-    document.getElementById("sSwapControl").checked = state;
+function setSwapControls(isSwapped) {
+    settings.swapControls = isSwapped;
+    settings.save();
+    document.getElementById("sSwapControl").checked = isSwapped;
     var enterBtn = document.getElementById("keyboard-enter");
     var backBtn = document.getElementById("keyboard-backspace");
-    if (state) {
+    if (isSwapped) {
         document.getElementById("keyboard-z").insertAdjacentElement("beforebegin", enterBtn);
         document.getElementById("keyboard-m").insertAdjacentElement("afterend", backBtn);
-        localStorage.setItem("bibordle-swapControls", true);
     } else {
         document.getElementById("keyboard-z").insertAdjacentElement("beforebegin", backBtn);
         document.getElementById("keyboard-m").insertAdjacentElement("afterend", enterBtn);
-        localStorage.setItem("bibordle-swapControls", false);
     }
 }
 
-// get daily details from api
-function getFromApi() {
-    fetch("https://fxzfun.com/api/bibordle/?mode=daily&translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
-        number = data.dailyNumber;
-        solution = data.word;
-        verse = data.verse;
-        reference = data.reference;
-        wordCount = data.wordCount;
-        if (localStorage.getItem("loadGame-daily") != null) {
-            restoreLastGame();
-        }
-    }));
-    fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=" + translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff").then(r => r.json().then(data => {
-        words = data;
-        hardModeWords = data;
-        if (localStorage.hasOwnProperty("bibordle-easyMode")) toggleEasyMode(JSON.parse(localStorage.getItem("bibordle-easyMode")));
-    }));
+function setOptOutAnalytics(enabled) {
+    const originalValue = settings.optOutAnalytics;
+    settings.optOutAnalytics = enabled;
+    settings.save();
+    document.getElementById("sOptOutAnalytics").checked = enabled;
+    if (originalValue !== enabled) location.reload();
 }
 
-getFromApi();
-if (localStorage.hasOwnProperty("bibordle-swapControls")) toggleSwapControl(JSON.parse(localStorage.getItem("bibordle-swapControls")));
+function setHighContrast(enabled) {
+    settings.highContrast = enabled;
+    settings.save();
+    document.getElementById("sHighContrast").checked = enabled;
+    const root = document.querySelector(":root");
+    if (enabled) {
+        root.style.setProperty('--correct-color', 'var(--highcontrast-correct-color)');
+        root.style.setProperty('--inword-color', 'var(--highcontrast-inword-color)');
+    } else {
+        root.style = "";
+    }
+}
+
+async function getFromApi() {
+    const dailyRequest = await fetch("https://fxzfun.com/api/bibordle/?mode=daily&translation=" + settings.translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff");
+    const dailyResponse = await dailyRequest.json();
+    state.gameNumber = dailyResponse.dailyNumber;
+    state.solution = dailyResponse.word;
+    state.verse = dailyResponse.verse;
+    state.reference = dailyResponse.reference;
+    state.wordCount = dailyResponse.wordCount;
+
+    const wordsRequest = await fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=" + settings.translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff");
+    const wordsResponse = await wordsRequest.json();
+    state.words = wordsResponse;
+    state.hardModeWords = wordsResponse;
+    
+    if (state.lastGameNumber === state.gameNumber) {
+        restoreLastGame();
+    }
+}
+
+function logAction(action) {
+    if (settings.optOutAnalytics) return;
+    if (action === "load") {
+        const script = document.createElement('script');
+        script.src = "https://www.googletagmanager.com/gtag/js?id=G-RR5336TJ96";
+        script.async = true;
+        document.head.appendChild(script);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { dataLayer.push(arguments); };
+        gtag('js', new Date());
+        gtag('config', 'G-RR5336TJ96');
+    } else if (action === "gameWin") {
+        gtag('event', 'game_win', {
+            event_category: 'game',
+            event_label: settings.translation,
+            value: state.guessedWords
+        });
+    }
+    else if (action === "gameLose") {
+        gtag('event', 'game_lose', {
+            event_category: 'game',
+            event_label: settings.translation,
+            value: state.guessedWords
+        });
+    }
+}

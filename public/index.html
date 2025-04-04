@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bibordle - The Bible Wordle</title>
-    <link rel="stylesheet" href="/res/styles/main.min.css" type="text/css">
+    <link rel="stylesheet" href="/res/styles/main.css" type="text/css">
     <!-- Fonts -->
-    <link rel="preload" href="/res/fonts/MaterialIcons-Regular.ttf" as="font" crossorigin>
-    <link rel="font" href="/res/fonts/MaterialIcons-Regular.ttf">
-    <link rel="preload" href="/res/fonts/MavenPro-Regular.ttf" as="font" crossorigin>
-    <link rel="font" href="/res/fonts/MavenPro-Regular.ttf">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=backspace,cancel,check,check_circle,close,help,info,leaderboard,settings,share,toggle_off,toggle_on" rel="stylesheet">
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/res/raw/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/res/raw/favicons/favicon-32x32.png">
@@ -33,224 +33,64 @@
     <meta property="og:image" content="https://bibordle.web.app/res/raw/preview.png" />
     <meta property="og:image:url" content="https://bibordle.web.app/res/raw/preview.png" />
     <meta property="twitter:image" content="https://bibordle.web.app/res/raw/preview.png" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RR5336TJ96"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-RR5336TJ96');
-    </script>
-    <style>
-        /* temp styles while reloading cached version */
-        .header p {
-            flex-basis: 100%;
-        }
-
-        header a,
-        .header button,
-        .header select {
-            background: none;
-        }
-
-        table {
-            margin: 20px auto;
-        }
-
-        #statsBtn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            width: 80%;
-            margin: auto;
-        }
-
-        @media screen and (max-width: 500px) {
-            .header {
-                justify-content: space-between;
-            }
-        }
-
-        @media screen and (prefers-color-scheme: dark) {
-
-            button.bad,
-            td.bad {
-                background-color: #757575;
-            }
-
-            button.inword,
-            td.inword {
-                background-color: #FFD600;
-            }
-
-            button.good,
-            td.good {
-                background-color: #4CAF50;
-            }
-
-            header a,
-            .header button,
-            .header select {
-                color: #fafafa;
-            }
-        }
-
-        body.darkMode button.bad,
-        body.darkMode td.bad {
-            background-color: #757575;
-        }
-
-        .header #unlimited,
-        .header #settingsBtn {
-            flex-basis: 24%;
-        }
-
-        @media screen and (min-width: 1200px) {
-            .header {
-                width: 50%;
-            }
-        }
-
-        #snackbar {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: #212121;
-            color: #fafafa;
-            text-align: center;
-            border-radius: 10px;
-            padding: 16px;
-            position: fixed;
-            z-index: 1;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            box-shadow: 0px 0px 10px #bdbdbd;
-        }
-
-        #snackbar.show {
-            visibility: visible;
-            -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
-            animation: fadein 0.5s, fadeout 0.5s 4.5s;
-        }
-
-        #snackbar a {
-            color: #fafafa;
-        }
-
-        @-webkit-keyframes fadein {
-            from {
-                bottom: 0;
-                opacity: 0;
-            }
-
-            to {
-                bottom: 30px;
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadein {
-            from {
-                bottom: 0;
-                opacity: 0;
-            }
-
-            to {
-                bottom: 30px;
-                opacity: 1;
-            }
-        }
-
-        @-webkit-keyframes fadeout {
-            from {
-                bottom: 30px;
-                opacity: 1;
-            }
-
-            to {
-                bottom: 0;
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeout {
-            from {
-                bottom: 30px;
-                opacity: 1;
-            }
-
-            to {
-                bottom: 0;
-                opacity: 0;
-            }
-        }
-    </style>
 </head>
 
 <body>
+    <header>
+        <h1>Bibordle</h1>
+        <select id="translationSelector" title="Change Translation">
+            <option>EHV</option>
+            <option>KJV</option>
+        </select>
+        <a id="instructionsBtn" title="Show Help" href="#instructions">
+            <i class="material-symbols-rounded">help</i>
+        </a>
+        <a id="statsBtn" title="Show Stats" href="#statsPage">
+            <i class="material-symbols-rounded">leaderboard</i>
+        </a>
+        <a id="settingsBtn" title="Show Settings" href="#settings">
+            <i class="material-symbols-rounded">settings</i>
+        </a>
+    </header>
     <main>
-        <div id="alert" class="alert">
-            <p id="alertText"></p>
-        </div>
-        <div class="header">
-            <button id="unlimited" onclick="location.href='/unlimited/'" title="Unlimited Mode">
-                <i class="material-icons">all_inclusive</i>
-                Unlimited
-            </button>
-            <h1>Bibordle</h1>
-            <button id="settingsBtn" onclick="document.getElementById('settings').style.display='block'"
-                title="Show Settings">
-                <i class="material-icons">settings</i>
-                Settings
-            </button>
-            <p>
-                THE
-                <select id="translationBtn" title="Change Translation" onchange="setTranslation(this.value)">
-                    <option>EHV</option>
-                    <option>KJV</option>
-                </select>
-                BIBLE WORDLE
-            </p>
-        </div>
-        <table id="gameboard">
+        <table id="gameboard" class="gameboard">
             <tbody>
-                <tr id="line0">
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line1" class="notActive">
+                <tr class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line2" class="notActive">
+                <tr class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line3" class="notActive">
+                <tr class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line4" class="notActive">
+                <tr class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr id="line5" class="notActive">
+                <tr class="dimmed">
                     <td></td>
                     <td></td>
                     <td></td>
@@ -261,94 +101,96 @@
         </table>
         <div class="keyboard">
             <div class="row">
-                <button onclick="typeKey('q')" id="keyboard-q">q</button>
-                <button onclick="typeKey('w')" id="keyboard-w">w</button>
-                <button onclick="typeKey('e')" id="keyboard-e">e</button>
-                <button onclick="typeKey('r')" id="keyboard-r">r</button>
-                <button onclick="typeKey('t')" id="keyboard-t">t</button>
-                <button onclick="typeKey('y')" id="keyboard-y">y</button>
-                <button onclick="typeKey('u')" id="keyboard-u">u</button>
-                <button onclick="typeKey('i')" id="keyboard-i">i</button>
-                <button onclick="typeKey('o')" id="keyboard-o">o</button>
-                <button onclick="typeKey('p')" id="keyboard-p">p</button>
+                <button id="keyboard-q">q</button>
+                <button id="keyboard-w">w</button>
+                <button id="keyboard-e">e</button>
+                <button id="keyboard-r">r</button>
+                <button id="keyboard-t">t</button>
+                <button id="keyboard-y">y</button>
+                <button id="keyboard-u">u</button>
+                <button id="keyboard-i">i</button>
+                <button id="keyboard-o">o</button>
+                <button id="keyboard-p">p</button>
             </div>
             <div class="row">
-                <button onclick="typeKey('a')" id="keyboard-a">a</button>
-                <button onclick="typeKey('s')" id="keyboard-s">s</button>
-                <button onclick="typeKey('d')" id="keyboard-d">d</button>
-                <button onclick="typeKey('f')" id="keyboard-f">f</button>
-                <button onclick="typeKey('g')" id="keyboard-g">g</button>
-                <button onclick="typeKey('h')" id="keyboard-h">h</button>
-                <button onclick="typeKey('j')" id="keyboard-j">j</button>
-                <button onclick="typeKey('k')" id="keyboard-k">k</button>
-                <button onclick="typeKey('l')" id="keyboard-l">l</button>
+                <button id="keyboard-a">a</button>
+                <button id="keyboard-s">s</button>
+                <button id="keyboard-d">d</button>
+                <button id="keyboard-f">f</button>
+                <button id="keyboard-g">g</button>
+                <button id="keyboard-h">h</button>
+                <button id="keyboard-j">j</button>
+                <button id="keyboard-k">k</button>
+                <button id="keyboard-l">l</button>
             </div>
             <div class="row">
-                <button onclick="typeKey('backspace')" id="keyboard-backspace"><i
-                        class="material-icons">backspace</i></button>
-                <button onclick="typeKey('z')" id="keyboard-z">z</button>
-                <button onclick="typeKey('x')" id="keyboard-x">x</button>
-                <button onclick="typeKey('c')" id="keyboard-c">c</button>
-                <button onclick="typeKey('v')" id="keyboard-v">v</button>
-                <button onclick="typeKey('b')" id="keyboard-b">b</button>
-                <button onclick="typeKey('n')" id="keyboard-n">n</button>
-                <button onclick="typeKey('m')" id="keyboard-m">m</button>
-                <button onclick="guess()" id="keyboard-enter"><i class="material-icons"
-                        style="font-weight: bold">check</i></button>
+                <button id="keyboard-backspace">
+                    <i class="material-symbols-rounded">backspace</i>
+                </button>
+                <button id="keyboard-z">z</button>
+                <button id="keyboard-x">x</button>
+                <button id="keyboard-c">c</button>
+                <button id="keyboard-v">v</button>
+                <button id="keyboard-b">b</button>
+                <button id="keyboard-n">n</button>
+                <button id="keyboard-m">m</button>
+                <button id="keyboard-enter">
+                    <i class="material-symbols-rounded">check</i>
+                </button>
             </div>
         </div>
+        <!-- Statistics Dialog -->
         <div class="overlay" id="statsPage">
             <div class="message">
-                <button onclick="document.getElementById('statsPage').style.display='none'" class="close">
-                    <i class="material-icons">close</i>
-                </button>
+                <a href="#" class="close">
+                    <i class="material-symbols-rounded">close</i>
+                </a>
                 <h2 id="status"></h2>
-                <p>
+                <p id="solutionDisplay">
                     The word was <span id="word">_____</span>
-                    <i class="material-icons wordInfo" title="Word Stats" onclick="showWordInfo()">info</i>
+                    <i class="material-symbols-rounded wordInfo" title="Word Stats" id="wordInfoBtn">info</i>
                 </p>
                 <p>
                     <span id="verse"></span>
-                    <a id="reference" target="_blank" href="/search"></a>
+                    <a id="reference" target="_blank" href="https://wartburgproject.org/read"></a>
                 </p>
                 <div class="stats">
                     <div>
-                        <span id="gameScore">X</span>
-                        <p>out of 6</p>
+                        <p>
+                            <span id="gameScore">X</span>
+                            <sub>/6</sub>
+                        </p>
+                        <p>guesses</p>
                     </div>
                     <div>
-                        <span id="gamesPlayed">0</span>
+                        <p id="gamesPlayed">0</p>
                         <p>played</p>
                     </div>
                     <div>
-                        <span id="successRate">--%</span>
+                        <p id="successRate">--%</p>
                         <p>success</p>
                     </div>
                 </div>
-                <button onclick="share()" class="shareBtn">
-                    <i class="material-icons" style="vertical-align: middle;">share</i> Share
+                <button id="shareBtn">
+                    <i class="material-symbols-rounded" style="vertical-align: middle;">share</i> Share
                 </button>
             </div>
         </div>
-        <p class="bottom-links">
-            <a href="mailto:bibordle@fxzfun.com" target="_blank"><i class="material-icons">bug_report</i> Report Bug</a>
-            <a href="https://github.com/FXZFun/bibordle" target="_blank"><i class="material-icons">code</i> GitHub</a>
-        </p>
         <!-- How To Play -->
         <div class="overlay" id="instructions">
             <div class="message">
                 <h2>How to Play</h2>
                 <p>Guess the word from the Bible in six tries</p>
-                <p>Each guess must be a valid five-letter word from the EHV.</p>
+                <p>Each guess must be a valid five-letter word from the Bible.</p>
                 <p>After each guess, the tiles will change colors to show how close your guess was to the word.</p>
                 <hr>
                 <h2>Examples</h2>
-                <table>
+                <table class="gameboard">
                     <tr>
-                        <td class="bad">J</td>
+                        <td class="incorrect">J</td>
                         <td class="inword">E</td>
                         <td>S</td>
-                        <td class="good">U</td>
+                        <td class="correct">U</td>
                         <td>S</td>
                     </tr>
                 </table>
@@ -356,8 +198,9 @@
                 <p>The letter <b>E</b> is in the word but in the wrong spot</p>
                 <p>The letter <b>J</b> is not in the word</p>
 
-                <button onclick="document.getElementById('instructions').style.display='none'" class="close"><i
-                        class="material-icons">close</i></button>
+                <a href="#" class="close">
+                    <i class="material-symbols-rounded">close</i>
+                </a>
             </div>
         </div>
         <!-- Settings Dialog -->
@@ -366,53 +209,34 @@
                 <h2>Settings</h2>
                 <div>
                     <p>
-                        <input id="sDarkMode" type="checkbox" onchange="toggleDarkMode()" />
-                        <label for="sDarkMode"> Dark Mode </label>
-                    </p>
-                    <p>
-                        <input id="sEasyMode" type="checkbox" onchange="toggleEasyMode(this.checked)" />
+                        <input id="sEasyMode" type="checkbox" />
                         <label for="sEasyMode"> Easy Mode </label>
-                        <i class="material-icons wordInfo" title="About"
-                            onclick="alert('Enables guessing words not in the Bible')">info</i>
+                        <i class="material-symbols-rounded wordInfo" title="About" id="easyModeInfoBtn">info</i>
                     </p>
                     <p>
-                        <input id="sSwapControl" type="checkbox" onchange="toggleSwapControl(this.checked)" />
+                        <input id="sSwapControl" type="checkbox" />
                         <label for="sSwapControl"> Swap Control Keys </label>
-                        <i class="material-icons wordInfo" title="About"
-                            onclick="alert('Flips back and enter keys')">info</i>
+                        <i class="material-symbols-rounded wordInfo" title="About" id="swapCtrlInfoBtn">info</i>
                     </p>
-                    <button onclick="document.getElementById('settings').style.display='none'" class="close"><i
-                            class="material-icons">close</i></button>
+                    <p>
+                        <input id="sHighContrast" type="checkbox" />
+                        <label for="sHighContrast"> High Contrast Mode </label>
+                    </p>
+                    <p>
+                        <input id="sOptOutAnalytics" type="checkbox" />
+                        <label for="sOptOutAnalytics"> Opt Out of Analytics </label>
+                    </p>
+                    <p><a href="mailto:bibordle@fxzfun.com" target="_blank">Report a bug</a></p>
+                    <p><a href="https://github.com/FXZFun/bibordle" target="_blank">Open source on GitHub</a></p>
+                    <a href="#" class="close">
+                        <i class="material-symbols-rounded">close</i>
+                    </a>
                 </div>
-                <button id="statsBtn" class="switchMode"
-                    onclick="document.getElementById('settings').style.display='none';showStats()" title="Show Stats"><i
-                        class="material-icons">leaderboard</i> View Stats</button>
             </div>
         </div>
         <div id="snackbar"></div>
     </main>
-    <script src="/res/scripts/bibordle.min.js" defer></script>
-    <script>
-        if (!localStorage.hasOwnProperty("educated")) {
-            document.getElementById("instructions").style.display = 'block';
-            localStorage.setItem("educated", true);
-        }
-        navigator.serviceWorker.register('/serviceworker.js?v=4ec7f136-95cd-499e-b23c-5e8642f4450f');
-        if ('serviceWorker' in navigator) {
-            caches.keys().then(function (cacheNames) {
-                cacheNames.forEach(function (cacheName) {
-                    caches.delete(cacheName);
-                });
-            });
-        }
-
-        try { window.frames.top.document } catch {
-            const snackbar = document.getElementById("snackbar");
-            snackbar.innerHTML = "Playing from <a href='https://bibordle.web.app'>https://bibordle.web.app</a>";
-            snackbar.classList.add("show");
-            setTimeout(() => snackbar.classList.remove("show"), 5000);
-        }
-    </script>
+    <script src="/res/scripts/bibordle.js" defer type="module"></script>
 </body>
 
 </html>
