@@ -288,7 +288,7 @@ function showStats() {
 
     document.getElementById("gameScore").innerText = gameWon ? state.lineId + 1 : "X";
     document.getElementById("gamesPlayed").innerText = statistics.totalGames;
-    document.getElementById("successRate").innerText = (statistics.totalWins / statistics.totalGames * 100) + "%";
+    document.getElementById("successRate").innerText = Math.round(statistics.totalWins / statistics.totalGames * 100) + "%";
     document.getElementById("solutionDisplay").style.display = "block";
 }
 
