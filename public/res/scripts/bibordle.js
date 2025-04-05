@@ -417,6 +417,8 @@ async function getFromApi() {
     
     if (state.lastGameNumber === state.gameNumber) {
         restoreLastGame();
+    } else {
+        state.guessedWords = [];
     }
 }
 
