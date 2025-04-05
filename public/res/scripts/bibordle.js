@@ -207,7 +207,7 @@ function guess(restoring = false) {
     var lettersNeeded = [...splitSolution];
 
     if (currentGuess.length == 5 && !state.words.includes(currentGuess)) showAlert("Not in word list") //trigger not in word list
-    else if (currentGuess.length != 5) showAlert("🤣 Too short!") // trigger too short
+    else if (currentGuess.length != 5) showAlert("Must be five letters long") // trigger too short
     else {
         state.guessedWords[state.lineId] = currentGuess;
         state.save();
