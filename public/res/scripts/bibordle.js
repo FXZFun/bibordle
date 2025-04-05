@@ -152,7 +152,7 @@ setHighContrast(settings.highContrast);
 logAction("load");
 
 /* EVENT LISTENERS */
-document.querySelectorAll('.keyboard button').forEach(b => b.addEventListener('click', e => typeKey(e.target.innerText)));
+document.querySelectorAll('.keyboard button').forEach(b => b.addEventListener('click', e => typeKey(e.target.innerText.toLowerCase())));
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => e.target == o && (location.href = '#')));
 document.getElementById("translationSelector").addEventListener("change", (e) => {
     settings.setTranslation(e.target.value);
@@ -181,7 +181,7 @@ snackbar.addEventListener('animationend', () => snackbar.classList.remove('show'
 function typeKey(key) {
     if (!state.gameEnabled) return;
     if (key === "backspace") return backspace();
-    if (key === "enter") return guess();
+    if (key === "enter" || key === "check") return guess();
 
     if (state.letterId < 5) {
         Game.getCurrentLetter().innerText = key;
