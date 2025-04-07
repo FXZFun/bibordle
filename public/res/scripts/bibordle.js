@@ -127,7 +127,7 @@ class Game {
         state.lineId++;
         state.letterId = 0;
         state.currentGuess = "";
-        this.getCurrentLine().classList.remove("dimmed");
+        this.getCurrentLine()?.classList.remove("dimmed");
     }
 }
 
@@ -307,7 +307,7 @@ function restoreLastGame() {
         }
     });
 
-    if (state.guessedWords.length === 5 || state.guessedWords.includes(state.solution)) {
+    if (state.guessedWords.length === 6 || state.guessedWords.includes(state.solution)) {
         state.lineId--;
         state.gameEnabled = false;
         showStats();
