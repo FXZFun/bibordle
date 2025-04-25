@@ -294,7 +294,14 @@ header a {
     cursor: pointer;
 }
 
-#shareBtn {
+.statsBtns {
+    display: none;
+    justify-content: space-between;
+    gap: var(--gap-small);
+    flex-direction: row;
+}
+
+.statsBtns button {
     font-family: var(--theme-font);
     font-weight: bold;
     border: none;
@@ -306,6 +313,11 @@ header a {
     font-size: 1em;
     margin-top: var(--gap-small);
     cursor: pointer;
+}
+
+#shareBtn {
+    background: var(--default-color);
+    width: fit-content;
 }
 
 /* SETTINGS POPUP */

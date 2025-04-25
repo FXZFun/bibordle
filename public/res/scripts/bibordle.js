@@ -144,6 +144,7 @@ if (!settings.educated) {
 
 /* INITIALIZATION */
 document.getElementById("translationSelector").value = settings.translation;
+document.getElementById("otherTranslationText").innerText = settings.translation === "EHV" ? "KJV" : "EHV";
 setSwapControls(settings.swapControls);
 await getFromApi();
 setEasyMode(settings.easyMode);
@@ -166,6 +167,11 @@ document.getElementById("sSwapControl").addEventListener("change", e => setSwapC
 document.getElementById("sHighContrast").addEventListener("change", e => setHighContrast(e.target.checked));
 document.getElementById("sOptOutAnalytics").addEventListener("change", e => setOptOutAnalytics(e.target.checked));
 document.getElementById("shareBtn").addEventListener("click", () => share());
+document.getElementById("playOtherTranslationBtn").addEventListener("click", () => {
+    settings.setTranslation(settings.translation === "EHV" ? "KJV" : "EHV");
+    location.href = "#";
+    location.reload();
+});
 
 document.addEventListener("keyup", e => {
     if (!state.gameEnabled) return;
@@ -269,6 +275,7 @@ function showStats() {
     location.href = "#statsPage";
     const gameWon = state.guessedWords.slice(-1)[0] == state.solution;
     document.getElementById("status").classList = gameWon ? "win" : "lose";
+    document.querySelector(".statsBtns").style.display = "flex";
 
     const verse = state.verse;
 
@@ -342,8 +349,6 @@ async function share() {
     if (navigator.share && navigator.canShare(content)) {
         await navigator.share(content);
     }
-
-    document.getElementById("shareBtn").innerHTML = `<i class="material-symbols-rounded" style="vertical-align: middle;">check</i> Shared!`;
 }
 
 async function setEasyMode(isEasy) {
