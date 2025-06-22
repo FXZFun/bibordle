@@ -358,8 +358,7 @@ async function setEasyMode(isEasy) {
     document.getElementById("sEasyMode").checked = isEasy;
     if (isEasy) {
         if (state.easyModeWords.length === 0) {
-            const request = await fetch("https://raw.githubusercontent.com/FXZFun/bibordle-api/refs/heads/main/easymode/words.json");
-            const data = await request.json();
+            const data = await request("https://raw.githubusercontent.com/FXZFun/bibordle-api/refs/heads/main/easymode/words.json");
             state.hardModeWords = state.words;
             state.easyModeWords = data;
             state.words = state.words.concat(data);
@@ -412,19 +411,17 @@ async function getFromApi() {
     const today = new Date();
     const dailyNumber = Math.floor((today - firstGameDate) / (1000 * 60 * 60 * 24));
 
-    const dailyRequest = await fetch(`https://raw.githubusercontent.com/FXZFun/bibordle-api/refs/heads/main/${settings.translation.toLowerCase()}/${dailyNumber}.json`, {cache: "no-cache"});
-    const dailyResponse = await dailyRequest.json();
+    const dailyResponse = await request(`https://raw.githubusercontent.com/FXZFun/bibordle-api/refs/heads/main/${settings.translation.toLowerCase()}/${dailyNumber}.json`, true);
     state.gameNumber = dailyResponse.dailyNumber;
     state.solution = dailyResponse.word;
     state.verse = dailyResponse.verse;
     state.reference = dailyResponse.reference;
     state.wordCount = dailyResponse.wordCount;
 
-    const wordsRequest = await fetch(`https://raw.githubusercontent.com/FXZFun/bibordle-api/refs/heads/main/${settings.translation.toLowerCase()}/words.json`);
-    const wordsResponse = await wordsRequest.json();
+    const wordsResponse = await request(`https://raw.githubusercontent.com/FXZFun/bibordle-api/refs/heads/main/${settings.translation.toLowerCase()}/words.json`);
     state.words = wordsResponse;
     state.hardModeWords = wordsResponse;
-    
+
     if (state.lastGameNumber === state.gameNumber) {
         restoreLastGame();
     } else {
@@ -461,5 +458,23 @@ function logAction(action) {
             event_label: settings.translation,
             value: state.currentLetters.join("")
         });
+    }
+}
+
+async function request(url, noCache = false) {
+    let loadingAlert = setTimeout(() => showAlert('Loading game...', true), 2 * 1000);
+
+    try {
+        const options = noCache ? { cache: "no-cache" } : {};
+        const response = await fetch(url, options);
+        if (!response.ok) { throw new Error(`Error fetching data. Status: ${response.status}, ${response.statusText}`); }
+        clearTimeout(loadingAlert);
+        document.getElementById("snackbar").classList.remove("showPersistent");
+
+        return response.json();
+    } catch (error) {
+        clearTimeout(loadingAlert);
+        showAlert("Error loading game, please try again later.", true);
+        console.error("Request error:", error);
     }
 }
