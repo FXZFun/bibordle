@@ -235,7 +235,8 @@ function guess(restoring = false) {
         });
 
         if (restoring) return Game.resetLine();
-        (currentGuess === state.solution || state.lineId === 5) ? finishGame() : Game.resetLine();;
+        (currentGuess === state.solution || state.lineId === 5) ? finishGame() : Game.resetLine();
+        logAction("guess");
     }
 }
 
@@ -448,12 +449,17 @@ function logAction(action) {
             event_label: settings.translation,
             value: state.guessedWords
         });
-    }
-    else if (action === "gameLose") {
+    } else if (action === "gameLose") {
         gtag('event', 'game_lose', {
             event_category: 'game',
             event_label: settings.translation,
             value: state.guessedWords
+        });
+    } else if (action === "guess") {
+        gtag('event', 'game_guess', {
+            event_category: 'game',
+            event_label: settings.translation,
+            value: state.currentLetters.join("")
         });
     }
 }
