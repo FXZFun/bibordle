@@ -266,10 +266,10 @@ function finishGame() {
     showStats();
 }
 
-function showAlert(message) {
+function showAlert(message, persistent = false) {
     const snackbar = document.getElementById("snackbar");
     snackbar.innerText = message;
-    snackbar.classList.add("show");
+    snackbar.classList.add(persistent ? "showPersistent" : "show");
 }
 
 function showStats() {

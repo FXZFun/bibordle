@@ -236,6 +236,10 @@ header a {
     animation: zipout 0.25s 4.5s forwards;
 }
 
+#snackbar.showPersistent {
+    top: var(--gap-small);
+}
+
 @keyframes zipout {
     from { top: var(--gap-small) }
     to { top: -100vh; }
