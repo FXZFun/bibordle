@@ -357,7 +357,7 @@ async function setEasyMode(isEasy) {
     document.getElementById("sEasyMode").checked = isEasy;
     if (isEasy) {
         if (state.easyModeWords.length === 0) {
-            const request = await fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=EASYMODE&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff");
+            const request = await fetch("https://raw.githubusercontent.com/FXZFun/bibordle-api/refs/heads/main/easymode/words.json");
             const data = await request.json();
             state.hardModeWords = state.words;
             state.easyModeWords = data;
@@ -407,7 +407,11 @@ function setHighContrast(enabled) {
 }
 
 async function getFromApi() {
-    const dailyRequest = await fetch("https://fxzfun.com/api/bibordle/?mode=daily&translation=" + settings.translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff");
+    const firstGameDate = new Date("2022-04-07");
+    const today = new Date();
+    const dailyNumber = Math.floor((today - firstGameDate) / (1000 * 60 * 60 * 24));
+
+    const dailyRequest = await fetch(`https://raw.githubusercontent.com/FXZFun/bibordle-api/refs/heads/main/${settings.translation.toLowerCase()}/${dailyNumber}.json`, {cache: "no-cache"});
     const dailyResponse = await dailyRequest.json();
     state.gameNumber = dailyResponse.dailyNumber;
     state.solution = dailyResponse.word;
@@ -415,7 +419,7 @@ async function getFromApi() {
     state.reference = dailyResponse.reference;
     state.wordCount = dailyResponse.wordCount;
 
-    const wordsRequest = await fetch("https://fxzfun.com/api/bibordle/getWordList/?translation=" + settings.translation + "&key=b9a7d5a9-fe58-4d6a-98a6-6173cf10bdff");
+    const wordsRequest = await fetch(`https://raw.githubusercontent.com/FXZFun/bibordle-api/refs/heads/main/${settings.translation.toLowerCase()}/words.json`);
     const wordsResponse = await wordsRequest.json();
     state.words = wordsResponse;
     state.hardModeWords = wordsResponse;
