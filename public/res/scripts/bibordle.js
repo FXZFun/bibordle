@@ -407,7 +407,7 @@ function setHighContrast(enabled) {
 }
 
 async function getFromApi() {
-    const firstGameDate = new Date("2022-04-07");
+    const firstGameDate = new Date(2022, 3, 7);
     const today = new Date();
     const dailyNumber = Math.floor((today - firstGameDate) / (1000 * 60 * 60 * 24));
 
