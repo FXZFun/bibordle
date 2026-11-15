@@ -194,7 +194,7 @@ function typeKey(key) {
         state.letterId++;
         state.currentLetters.push(key);
         const currentGuess = state.currentLetters.join("");
-        if (currentGuess.length == 5 && !state.words.includes(currentGuess)) {
+        if ((currentGuess.length == 5 && !state.words.includes(currentGuess)) || !state.words.some(w => w.startsWith(currentGuess))) {
             Game.getCurrentLine().classList = "notAWord";
         }
     }
